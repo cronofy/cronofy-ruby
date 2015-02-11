@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Sergii Paryzhskyi"]
   spec.email         = ["parizhskiy@gmail.com"]
   spec.summary       = %q{Cronofy - one API for all the calendars}
-  spec.homepage      = "https://github.com/HeeL/cronofy"
+  spec.homepage      = "https://github.com/cronofy/cronofy-ruby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
