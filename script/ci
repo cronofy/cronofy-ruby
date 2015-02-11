@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# Fail fast
+set -o errexit
+
+bundle install
+bundle exec rake spec
