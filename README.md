@@ -1,5 +1,7 @@
 # Cronofy
 
+[![Join the chat at https://gitter.im/cronofy/cronofy-ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cronofy/cronofy-ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [Cronofy](http://www.cronofy.com) - one API for all the calendars (Google, Outlook, iCloud, Exchange). This gem is an interface for easy use of [Cronofy API](http://www.cronofy.com/developers/api) with Ruby.
 
 ## Installation
