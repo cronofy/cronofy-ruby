@@ -1,5 +1,5 @@
 language: ruby
-script: 'ci/script'
+script: 'script/ci'
 rvm:
   - 2.0
   - 2.1
