@@ -87,3 +87,7 @@ To delete an event from user's calendar:
 ```ruby
 cronofy.delete_event(calendar_id, event_id)
 ```
+
+## Links
+
+ * [API mailing list](https://groups.google.com/d/forum/cronofy-api)
