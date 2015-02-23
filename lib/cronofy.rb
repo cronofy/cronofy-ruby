@@ -19,7 +19,7 @@ module Cronofy
       body[:end] = event_data[:end].utc.iso8601
       request(:post, "calendars/#{calendar_id}/events", body)
     end
-    alias :create_or_update_event, :upsert_event
+    alias_method :upsert_event, :create_or_update_event
 
     def delete_event(calendar_id, event_id)
       request(:delete, "calendars/#{calendar_id}/events", event_id: event_id)
