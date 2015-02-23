@@ -3,18 +3,19 @@ require "oauth2"
 module Cronofy
   class Auth
     API_URL = 'https://api.cronofy.com'
-    APP_URL = 'https://app.cronofy.com'
 
-    def initialize(client_id, client_secret, token)
+    attr_reader :access_token
+
+    def initialize(client_id, client_secret, token, refresh_token=nil)
       @client = OAuth2::Client.new(client_id, client_secret, site: API_URL)
-      @token = token
+      @access_token = OAuth2::AccessToken.new(@client, token, { refresh_token: refresh_token })
     end
 
     def user_auth_link(redirect_uri)
       url = @client.auth_code.authorize_url(
         :redirect_uri => redirect_uri,
         :response_type => 'code'
-      ).gsub(API_URL, APP_URL)
+      )
       "#{url}&scope=list_calendars read_events create_event delete_event"
     end
 
@@ -22,8 +23,17 @@ module Cronofy
       @client.auth_code.get_token(code, :redirect_uri => redirect_uri).token
     end
 
-    def request
-      @request ||= OAuth2::AccessToken.new(@client, @token)
+    # Public: Refreshes the access token
+    # Returns Hash of token elements to allow client to update in local store for user
+    def refresh!
+      @access_token = access_token.refresh!
+      {
+        access_token: @access_token.token,
+        refresh_token: @access_token.refresh_token,
+        expires_in: @access_token.expires_in,
+        expires_at: @access_token.expires_at
+      }
     end
+
   end
 end
