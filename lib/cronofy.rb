@@ -1,6 +1,7 @@
 require "cronofy/version"
 require "cronofy/auth"
 require "cronofy/response_parser"
+require "cronofy/errors"
 
 module Cronofy
   class Cronofy
@@ -40,7 +41,20 @@ module Cronofy
     private
 
     def request(method, path, params = {})
-      @auth.access_token.send(method, "/v1/#{path}", params: params)
+      begin
+        @auth.access_token.send(method, "/v1/#{path}", params: params)
+      rescue OAuth2::Error => e
+        response = e.response
+        status_message = response.headers['status']
+        case response.status
+        when 404
+          raise Errors::NotFound.new(status_message)
+        when 403
+          raise Errors::AuthorizationFailure.new(status_message)
+        else
+          raise Errors::UnknownError.new(status_message)
+        end
+      end
     end
 
   end
