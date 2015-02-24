@@ -1,20 +1,36 @@
 module Cronofy
-  module Errors
 
-    class NotFound < StandardError
+  class APIError < StandardError
+    attr_reader :response
 
+    def initialize(message, response=nil)
+      super(message)
+      @response = response
     end
 
-    class AuthorizationFailure < StandardError
-
-    end
-
-    class UnknownError < StandardError
-      attr_reader :body
-      def initialize(message, body)
-        @body = body
-        super(message)
-      end
+    def body
+      response.body if response
     end
   end
+
+  class NotFoundError < APIError
+
+  end
+
+  class AuthorizationFailureError < APIError
+
+  end
+
+  class InvalidRequestError < APIError
+
+  end
+
+  class TooManyRequestsError < APIError
+
+  end
+
+  class UnknownError < APIError
+
+  end
+
 end
