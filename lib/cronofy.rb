@@ -2,6 +2,7 @@ require "cronofy/version"
 require "cronofy/auth"
 require "cronofy/response_parser"
 require "cronofy/errors"
+require 'json'
 
 module Cronofy
   class Cronofy
@@ -45,7 +46,7 @@ module Cronofy
         'Content-Type' => 'application/json'
       }
 
-      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: body.to_json, headers: headers }) }
+      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: headers }) }
     end
     alias_method :upsert_event, :create_or_update_event
 
