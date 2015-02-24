@@ -41,7 +41,11 @@ module Cronofy
       body[:start] = event[:start].utc.iso8601
       body[:end] = event[:end].utc.iso8601
 
-      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: body.to_json }) }
+      headers = {
+        'Content-Type' => 'application/json'
+      }
+
+      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: body.to_json, headers: headers }) }
     end
     alias_method :upsert_event, :create_or_update_event
 
