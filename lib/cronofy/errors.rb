@@ -36,6 +36,10 @@ module Cronofy
 
   end
 
+  class AuthenticationFailureError < APIError
+
+  end
+
   class AuthorizationFailureError < APIError
 
   end

@@ -97,7 +97,8 @@ module Cronofy
   private
 
     ERROR_MAP = {
-      401 => AuthorizationFailureError,
+      401 => AuthenticationFailureError,
+      403 => AuthorizationFailureError,
       404 => NotFoundError,
       422 => InvalidRequestError,
       429 => TooManyRequestsError
