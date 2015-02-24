@@ -1,6 +1,17 @@
 module Cronofy
+  class CronofyError < StandardError
 
-  class APIError < StandardError
+  end
+
+  class CredentialsMissingError < CronofyError
+
+    def initialize(message=nil)
+      super(message || "No credentials supplied")
+    end
+
+  end
+
+  class APIError < CronofyError
     attr_reader :response
 
     def initialize(message, response=nil)
@@ -10,6 +21,14 @@ module Cronofy
 
     def body
       response.body if response
+    end
+
+    def headers
+      response.headers if response
+    end
+
+    def inspect
+      "<#{self.class.name} message=#{message} headers=#{headers.inspect} body=#{body}>"
     end
   end
 

@@ -6,8 +6,13 @@ require "cronofy/errors"
 module Cronofy
   class Cronofy
 
-    def initialize(client_id, client_secret, access_token=nil, refresh_token=nil)
-      @auth = Auth.new(client_id, client_secret, access_token, refresh_token)
+    def initialize(client_id, client_secret, token=nil, refresh_token=nil)
+      @auth = Auth.new(client_id, client_secret, token, refresh_token)
+    end
+
+    def access_token!
+      raise CredentialsMissingError.new unless @auth.access_token
+      @auth.access_token
     end
 
     # Public : Lists the calendars or the user across all of the calendar accounts
@@ -15,7 +20,7 @@ module Cronofy
     #
     # Returns Hash of calendars
     def list_calendars
-      response = do_request { @auth.access_token.get("/v1/calendars")  }
+      response = do_request { access_token!.get("/v1/calendars")  }
       ResponseParser.new(response).parse_json
     end
 
@@ -36,7 +41,7 @@ module Cronofy
       body[:start] = event[:start].utc.iso8601
       body[:end] = event[:end].utc.iso8601
 
-      do_request { @auth.access_token.post("/v1/calendars/#{calendar_id}/events", { body: body.to_json }) }
+      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: body.to_json }) }
     end
     alias_method :upsert_event, :create_or_update_event
 
@@ -50,7 +55,7 @@ module Cronofy
     def delete_event(calendar_id, event_id)
       params = { event_id: event_id }
 
-      do_request { @auth.access_token.delete("/v1/calendars/#{calendar_id}/events", { params: params }) }
+      do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { params: params }) }
     end
 
     # Public : Generate the authorization URL to send the user to in order to generate
