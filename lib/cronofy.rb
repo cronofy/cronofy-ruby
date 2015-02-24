@@ -6,7 +6,7 @@ require "cronofy/errors"
 module Cronofy
   class Cronofy
 
-    def initialize(client_id, client_secret, token = false, refresh_token = nil)
+    def initialize(client_id, client_secret, token = nil, refresh_token = nil)
       @auth = Auth.new(client_id, client_secret, token, refresh_token)
     end
 
