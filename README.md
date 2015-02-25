@@ -24,9 +24,9 @@ Or install it yourself as:
 
 ## Usage
 
-You have to register on cronofy website and create an application there. You will get a client id and client secret which you will have to pass to initializer. You can also pass a token that you will get later, or leave it blank in case if you don't have it now:
+You have to register on cronofy website and create an application there. You will get a client id and client secret which you will have to pass to initializer. You can also pass a token and refresh token that you will get later, or leave it blank in case if you don't have it now:
 ```ruby
-cronofy = Cronofy.new('CLIENT_ID', 'CLIENT_SECRET', 'TOKEN')
+cronofy = Cronofy::Client.new('CLIENT_ID', 'CLIENT_SECRET', 'TOKEN', 'REFRESH_TOKEN')
 ```
 
 Generate a link for a user to grant access for his calendars:
@@ -81,7 +81,7 @@ event_data = {
     description: "Meeting room"
   }
 }
-cronofy.create_or_update_event(calendar_id, event_data)
+cronofy.upsert(calendar_id, event_data)
 ```
 
 To delete an event from user's calendar:
@@ -91,4 +91,6 @@ cronofy.delete_event(calendar_id, event_id)
 
 ## Links
 
+ * [API Docs](http://www.cronofy.com/developers/api)
  * [API mailing list](https://groups.google.com/d/forum/cronofy-api)
+
