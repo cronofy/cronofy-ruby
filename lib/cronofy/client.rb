@@ -92,11 +92,11 @@ module Cronofy
   private
 
     ERROR_MAP = {
-      401 => AuthenticationFailureError,
-      403 => AuthorizationFailureError,
-      404 => NotFoundError,
-      422 => InvalidRequestError,
-      429 => TooManyRequestsError
+      401 => ::Cronofy::AuthenticationFailureError,
+      403 => ::Cronofy::AuthorizationFailureError,
+      404 => ::Cronofy::NotFoundError,
+      422 => ::Cronofy::InvalidRequestError,
+      429 => ::Cronofy::TooManyRequestsError
     }
 
     def do_request(&block)

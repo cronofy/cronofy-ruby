@@ -1,8 +1,8 @@
 require "cronofy/version"
+require "cronofy/errors"
 require "cronofy/auth"
 require "cronofy/client"
 require "cronofy/response_parser"
-require "cronofy/errors"
 require 'json'
 
 module Cronofy
