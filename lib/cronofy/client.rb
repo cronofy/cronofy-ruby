@@ -58,6 +58,31 @@ module Cronofy
       do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { params: params }) }
     end
 
+    def create_channel(callback_url) 
+      body = {
+        'callback_url' => callback_url
+      }
+      headers = {
+        'Content-Type' => 'application/json'
+      }
+
+      response = do_request do
+        access_token!.post("/v1/channels",
+                           {
+                             body: JSON.generate(body),
+                             headers: headers
+                           }
+                          )
+      end
+      
+      ResponseParser.new(response).parse_json
+    end
+
+    def list_channels
+      response = do_request {access_token!.get('v1/channels')}
+      ResponseParser.new(response).parse_json
+    end
+
     # Public : Generate the authorization URL to send the user to in order to generate
     #          and authorization code in order for an access_token to be issued
     #          see http://www.cronofy.com/developers/api#authorization
