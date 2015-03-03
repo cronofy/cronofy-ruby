@@ -58,6 +58,11 @@ module Cronofy
       do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { params: params }) }
     end
 
+    # Public : Creates a notification channel with a callback URL
+    #
+    # callback_url  - String URL with the callback
+    #
+    # Returns Hash of channel
     def create_channel(callback_url) 
       body = {
         'callback_url' => callback_url
@@ -78,6 +83,9 @@ module Cronofy
       ResponseParser.new(response).parse_json
     end
 
+    # Public : Lists the channels of the user
+    #
+    # Returns Hash of channels
     def list_channels
       response = do_request {access_token!.get('v1/channels')}
       ResponseParser.new(response).parse_json
