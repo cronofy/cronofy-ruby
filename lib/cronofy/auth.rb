@@ -50,15 +50,17 @@ module Cronofy
     end
 
     def get_token_from_code(code, redirect_uri)
-      auth_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
-      set_access_token_from_auth_token(auth_token)
-      Credentials.new(@access_token)
+      do_request do
+        auth_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
+        set_access_token_from_auth_token(auth_token)
+        Credentials.new(@access_token)
+      end
     end
 
     # Public: Refreshes the access token
     # Returns Hash of token elements to allow client to update in local store for user
     def refresh!
-      auth_token = access_token.refresh!
+      do_request{ auth_token = access_token.refresh! }
       set_access_token_from_auth_token(auth_token)
       Credentials.new(@access_token)
     end
@@ -71,5 +73,11 @@ module Cronofy
       @access_token = OAuth2::AccessToken.new(@api_client, token, { refresh_token: refresh_token })
     end
 
+    def do_request(&block)
+      block.call
+    rescue OAuth2::Error => e
+      error_class = e.response.status == 400? AuthorizationFailureError: UnknownError
+      raise error_class.new(e.response.headers['status'], e.response)
+    end
   end
 end
