@@ -52,9 +52,9 @@ module Cronofy
     def get_token_from_code(code, redirect_uri)
       do_request do
         auth_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
-        set_access_token_from_auth_token(auth_token)
-        Credentials.new(@access_token)
       end
+      set_access_token_from_auth_token(auth_token)
+      Credentials.new(auth_token)
     end
 
     # Public: Refreshes the access token
@@ -62,7 +62,7 @@ module Cronofy
     def refresh!
       do_request{ auth_token = access_token.refresh! }
       set_access_token_from_auth_token(auth_token)
-      Credentials.new(@access_token)
+      Credentials.new(oauth_token)
     end
 
     def set_access_token_from_auth_token(auth_token)
