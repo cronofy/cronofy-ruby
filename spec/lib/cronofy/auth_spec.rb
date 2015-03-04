@@ -40,7 +40,6 @@ describe Cronofy::Auth do
     context 'when fails' do
       let(:oauth_error) do
         OAuth2::Error.new(response)
-        # double('oauth_error', :response => response)
       end
       
       before(:each) do
