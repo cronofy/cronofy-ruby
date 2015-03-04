@@ -7,13 +7,15 @@ module Cronofy
       attr_reader :access_token,
                   :expires_at,
                   :expires_in,
-                  :refresh_token
+                  :refresh_token,
+                  :scope
 
       def initialize(oauth_token)
         @access_token = oauth_token.token
         @expires_at = oauth_token.expires_at
         @expires_in = oauth_token.expires_in
         @refresh_token = oauth_token.refresh_token
+        @scope = oauth_token.params['scope']
       end
 
       def to_hash
@@ -21,7 +23,8 @@ module Cronofy
           access_token: access_token,
           refresh_token: refresh_token,
           expires_in: expires_in,
-          expires_at: expires_at
+          expires_at: expires_at,
+          scope: scope
         }
       end
     end
@@ -51,18 +54,18 @@ module Cronofy
 
     def get_token_from_code(code, redirect_uri)
       do_request do
-        auth_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
+        @access_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
+        Credentials.new(@access_token)
       end
-      set_access_token_from_auth_token(auth_token)
-      Credentials.new(auth_token)
     end
 
     # Public: Refreshes the access token
     # Returns Hash of token elements to allow client to update in local store for user
     def refresh!
-      do_request{ auth_token = access_token.refresh! }
-      set_access_token_from_auth_token(auth_token)
-      Credentials.new(oauth_token)
+      do_request do
+        @access_token = access_token.refresh!
+        Credentials.new(@access_token)
+      end
     end
 
     def set_access_token_from_auth_token(auth_token)
