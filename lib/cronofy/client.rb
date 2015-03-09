@@ -45,6 +45,23 @@ module Cronofy
     end
     alias_method :upsert_event, :create_or_update_event
 
+    # Public : Returns a list of events within a given time period, 
+    #          that you have not created, across all of a users calendars. 
+    #          see http://www.cronofy.com/developers/api#read-events
+    # 
+    # from            - The minimum Time from which to return events. 
+    # to              - The Date to return events up until.
+    # tzid            - A String representing a known time zone identifier from the 
+    #                   IANA Time Zone Database. 
+    # include_deleted - A Boolean specifying whether events that have been deleted 
+    #                   should included or excluded from the results. 
+    # include_moved   - A Boolean specifying whether events that have ever existed 
+    #                   within the given window should be included or excluded from 
+    #                   the results. 
+    # last_modified   - The Time that events must be modified on or after 
+    #                   in order to be returned. 
+    #
+    # Returns Hash of events
     def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
                     include_moved: false, last_modified: nil)
       params = {
