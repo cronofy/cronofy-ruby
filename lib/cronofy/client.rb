@@ -45,6 +45,25 @@ module Cronofy
     end
     alias_method :upsert_event, :create_or_update_event
 
+    def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
+                    include_moved: false, last_modified: nil)
+      params = {
+        'from' => time_to_iso8601(from),
+        'to' => time_to_iso8601(to),
+        'tzid' => tzid,
+        'include_deleted' => include_deleted.to_s,
+        'include_moved' => include_moved.to_s,
+        'last_modified' => time_to_iso8601(last_modified)
+      }
+      params.delete_if { |key, value| !value }
+      
+      response = do_request do
+        access_token!.get('/v1/events', { params: params })
+      end
+
+      ResponseParser.new(response).parse_json
+    end
+
     # Public : Deletes an event from the specified calendar
     #          see http://www.cronofy.com/developers/api#delete-event
     #
@@ -138,6 +157,14 @@ module Cronofy
       rescue OAuth2::Error => e
         error_class = ERROR_MAP.fetch(e.response.status, UnknownError)
         raise error_class.new(e.response.headers['status'], e.response)
+      end
+    end
+
+    def time_to_iso8601(time)
+      if time
+        time.utc.iso8601
+      else
+        nil
       end
     end
 
