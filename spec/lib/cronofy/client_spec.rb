@@ -89,7 +89,7 @@ describe Cronofy::Client do
         'pages' => {
           'current' => 1,
           'total' => 2,
-          'next_page' => 'https =>//api.cronofy.com/v1/events/pages/08a07b034306679e'
+          'next_page' => 'https://api.cronofy.com/v1/events/pages/08a07b034306679e'
         },
         'events' => [
           {
@@ -154,6 +154,48 @@ describe Cronofy::Client do
 
       it_behaves_like 'a Cronofy request'
     end
+  end
+  
+  describe '#get_events_page' do
+    let(:request_url) { 'https://api.cronofy.com/v1/events/pages/08a07b034306679e' }
+    let(:method) { :get }
+    let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
+    let(:request_body) { '' }
+    let(:correct_response_body) do
+      {
+        'pages' => {
+          'current' => 2,
+          'total' => 2
+        },
+        'events' => [
+          {
+            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
+            'summary' => 'Company Retreat',
+            'description' => '',
+            'start' => '2014-09-06',
+            'end' => '2014-09-08',
+            'deleted' => false
+          },
+          {
+            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
+            'summary' => 'Dinner with Laura',
+            'description' => '',
+            'start' => '2014-09-13T19:00:00Z',
+            'end' => '2014-09-13T21:00:00Z',
+            'deleted' => false,
+            'location' => {
+              'description' => 'Pizzeria'
+            }
+          }
+        ]
+      }
+    end
+      
+    subject { client.get_events_page(request_url) }
+
+    it_behaves_like 'a Cronofy request'
   end
 
   describe 'Channels' do

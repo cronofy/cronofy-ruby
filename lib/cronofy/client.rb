@@ -45,7 +45,7 @@ module Cronofy
     end
     alias_method :upsert_event, :create_or_update_event
 
-    # Public : Returns a list of events within a given time period, 
+    # Public : Returns a paged list of events within a given time period, 
     #          that you have not created, across all of a users calendars. 
     #          see http://www.cronofy.com/developers/api#read-events
     # 
@@ -61,7 +61,7 @@ module Cronofy
     # last_modified   - The Time that events must be modified on or after 
     #                   in order to be returned. 
     #
-    # Returns Hash of events
+    # Returns paged Hash of events
     def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
                     include_moved: false, last_modified: nil)
       params = {
@@ -78,6 +78,21 @@ module Cronofy
         access_token!.get('/v1/events', { params: params })
       end
 
+      ResponseParser.new(response).parse_json
+    end
+
+    # Public : Returns a paged list of events given a page URL.
+    #          Page URLs are obtained from read_events requests and 
+    #          get_events_page requests (response.pages.next_page)
+    #          see http://www.cronofy.com/developers/api#read-events
+    # 
+    # page_url - the url of a page of Read Events results
+    #
+    # Returns paged Hash of events
+    def get_events_page(page_url)
+      page_path = page_url.sub(::Cronofy.api_url, '')
+      
+      response = do_request { access_token!.get(page_path) }
       ResponseParser.new(response).parse_json
     end
 
