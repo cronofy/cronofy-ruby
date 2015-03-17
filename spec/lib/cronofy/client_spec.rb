@@ -16,18 +16,31 @@ describe Cronofy::Client do
     { 'Content-Type' => 'application/json' }
   end
 
-  shared_examples 'a Cronofy request' do
+  shared_examples 'a Cronofy request with return value' do
     it 'returns the correct response when no error' do
       stub_request(method, request_url)
         .with(headers: request_headers,
               body: request_body)
-        .to_return(status: 200,
+        .to_return(status: correct_response_code,
                    headers: correct_response_headers,
                    body: correct_response_body.to_json)
 
       expect(subject).to eq correct_response_body
     end
+  end
       
+  shared_examples 'a Cronofy request' do
+    it "doesn't raise an error when response is correct" do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: correct_response_code,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+
+      expect{ subject }.not_to raise_error
+    end
+
     it 'raises AuthenticationFailureError on 401s' do
       stub_request(method, request_url)
         .with(headers: request_headers,
@@ -84,6 +97,7 @@ describe Cronofy::Client do
     let(:method) { :get }
     let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:request_body) { '' }
+    let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
         "calendars" => [
@@ -118,6 +132,54 @@ describe Cronofy::Client do
     subject { client.list_calendars }
 
     it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with return value'
+  end
+
+  describe '#create_or_update_event' do
+    let(:calendar_id) { 'calendar_id_123'}
+    let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+    let(:method) { :post }
+    let(:request_headers) do
+      { 
+        'Authorization' => "Bearer #{token}",
+        'Content-Type' => 'application/json'
+      }
+    end
+    let(:event) do
+      {
+        :event_id => "qTtZdczOccgaPncGJaCiLg",
+        :summary => "Board meeting",
+        :description => "Discuss plans for the next quarter.",
+        :start => start_datetime,
+        :end => end_datetime,
+        :location => {
+          :description => "Board room"
+        }
+      }
+    end
+    let(:request_body) do
+      hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
+                     :summary => "Board meeting",
+                     :description => "Discuss plans for the next quarter.",
+                     :start => start_datetime_string,
+                     :end => end_datetime_string,
+                     :location => {
+                       :description => "Board room"
+                     })
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { '' }
+
+    subject { client.create_or_update_event(calendar_id, event) }
+
+    context 'when start/end are Times' do
+      let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+      let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+      let(:start_datetime_string) { "2014-08-05T15:30:00Z" }
+      let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
+
+      it_behaves_like 'a Cronofy request'
+    end
   end
   
   describe '#read_events' do
@@ -125,6 +187,7 @@ describe Cronofy::Client do
     let(:method) { :get }
     let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:request_body) { '' }
+    let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
         'pages' => {
@@ -178,6 +241,7 @@ describe Cronofy::Client do
       end
 
       it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with return value'
     end
 
     context 'when some params are passed' do
@@ -194,6 +258,7 @@ describe Cronofy::Client do
       end
 
       it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with return value'
     end
   end
   
@@ -202,6 +267,7 @@ describe Cronofy::Client do
     let(:method) { :get }
     let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:request_body) { '' }
+    let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
         'pages' => {
@@ -237,6 +303,7 @@ describe Cronofy::Client do
     subject { client.get_events_page(request_url) }
 
     it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with return value'
   end
 
   describe 'Channels' do
@@ -253,6 +320,7 @@ describe Cronofy::Client do
       end
       let(:request_body) { hash_including(:callback_url => callback_url) }
 
+      let(:correct_response_code) { 200 }
       let(:correct_response_body) do
         {
           'channel' => {
@@ -266,6 +334,7 @@ describe Cronofy::Client do
       subject { client.create_channel(callback_url) }
 
       it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with return value'
     end
     
     describe '#list_channels' do
@@ -277,6 +346,7 @@ describe Cronofy::Client do
       end
       let(:request_body) { '' }
 
+      let(:correct_response_code) { 200 }
       let(:correct_response_body) do
         {
           'channels' => [
@@ -297,8 +367,7 @@ describe Cronofy::Client do
       subject { client.list_channels }
 
       it_behaves_like 'a Cronofy request'
-      
+      it_behaves_like 'a Cronofy request with return value'
     end
-
   end
 end
