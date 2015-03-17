@@ -34,7 +34,7 @@ module Cronofy
     # Returns nothing
     def create_or_update_event(calendar_id, event)
       body = event.dup
-      body[:start] = event[:start].utc.iso8601
+      body[:start] = event[:start].utc.iso8601 # TODO change for whole day events
       body[:end] = event[:end].utc.iso8601
 
       headers = {

@@ -78,6 +78,47 @@ describe Cronofy::Client do
       expect{ subject }.to raise_error(::Cronofy::TooManyRequestsError)
     end
   end
+
+  describe '#list_calendars' do
+    let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
+    let(:method) { :get }
+    let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
+    let(:request_body) { '' }
+    let(:correct_response_body) do
+      {
+        "calendars" => [
+                        {
+                          "provider_name" => "google",
+                          "profile_name" => "example@cronofy.com",
+                          "calendar_id" => "cal_n23kjnwrw2_jsdfjksn234",
+                          "calendar_name" => "Home",
+                          "calendar_readonly" => false,
+                          "calendar_deleted" => false
+                        },
+                        {
+                          "provider_name" => "google",
+                          "profile_name" => "example@cronofy.com",
+                          "calendar_id" => "cal_n23kjnwrw2_n1k323nkj23",
+                          "calendar_name" => "Work",
+                          "calendar_readonly" => true,
+                          "calendar_deleted" => true
+                        },
+                        {
+                          "provider_name" => "apple",
+                          "profile_name" => "example@cronofy.com",
+                          "calendar_id" => "cal_n23kjnwrw2_3nkj23wejk1",
+                          "calendar_name" => "Bank Holidays",
+                          "calendar_readonly" => true,
+                          "calendar_deleted" => false
+                        }
+                       ]
+      }
+    end
+
+    subject { client.list_calendars }
+
+    it_behaves_like 'a Cronofy request'
+  end
   
   describe '#read_events' do
     let(:request_url_prefix) { 'https://api.cronofy.com/v1/events' }
@@ -117,7 +158,7 @@ describe Cronofy::Client do
       }
     end
       
-    subject { client.read_events(params) } 
+    subject { client.read_events(params) }
 
     context 'when all params are passed' do
       let(:params) do
@@ -254,17 +295,6 @@ describe Cronofy::Client do
       end
 
       subject { client.list_channels }
-      
-      it 'returns the correct response when no error' do
-        stub_request(method, request_url)
-          .with(headers: request_headers,
-                body: request_body)
-          .to_return(status: 200,
-                     headers: correct_response_headers,
-                     body: correct_response_body.to_json)
-
-        expect(subject).to eq correct_response_body
-      end
 
       it_behaves_like 'a Cronofy request'
       
