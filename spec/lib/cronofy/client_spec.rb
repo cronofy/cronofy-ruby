@@ -135,175 +135,197 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with return value'
   end
 
-  describe '#create_or_update_event' do
-    let(:calendar_id) { 'calendar_id_123'}
-    let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
-    let(:method) { :post }
-    let(:request_headers) do
-      { 
-        'Authorization' => "Bearer #{token}",
-        'Content-Type' => 'application/json'
-      }
-    end
-    let(:event) do
-      {
-        :event_id => "qTtZdczOccgaPncGJaCiLg",
-        :summary => "Board meeting",
-        :description => "Discuss plans for the next quarter.",
-        :start => start_datetime,
-        :end => end_datetime,
-        :location => {
-          :description => "Board room"
+  describe 'Events' do
+    describe '#create_or_update_event' do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+      let(:method) { :post }
+      let(:request_headers) do
+        { 
+          'Authorization' => "Bearer #{token}",
+          'Content-Type' => 'application/json'
         }
-      }
-    end
-    let(:request_body) do
-      hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
-                     :summary => "Board meeting",
-                     :description => "Discuss plans for the next quarter.",
-                     :start => start_datetime_string,
-                     :end => end_datetime_string,
-                     :location => {
-                       :description => "Board room"
-                     })
-    end
-    let(:correct_response_code) { 202 }
-    let(:correct_response_body) { '' }
-
-    subject { client.create_or_update_event(calendar_id, event) }
-
-    context 'when start/end are Times' do
-      let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
-      let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
-      let(:start_datetime_string) { "2014-08-05T15:30:00Z" }
-      let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
-
-      it_behaves_like 'a Cronofy request'
-    end
-  end
-  
-  describe '#read_events' do
-    let(:request_url_prefix) { 'https://api.cronofy.com/v1/events' }
-    let(:method) { :get }
-    let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
-    let(:request_body) { '' }
-    let(:correct_response_code) { 200 }
-    let(:correct_response_body) do
-      {
-        'pages' => {
-          'current' => 1,
-          'total' => 2,
-          'next_page' => 'https://api.cronofy.com/v1/events/pages/08a07b034306679e'
-        },
-        'events' => [
-          {
-            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
-            'summary' => 'Company Retreat',
-            'description' => '',
-            'start' => '2014-09-06',
-            'end' => '2014-09-08',
-            'deleted' => false
-          },
-          {
-            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
-            'summary' => 'Dinner with Laura',
-            'description' => '',
-            'start' => '2014-09-13T19:00:00Z',
-            'end' => '2014-09-13T21:00:00Z',
-            'deleted' => false,
-            'location' => {
-              'description' => 'Pizzeria'
-            }
+      end
+      let(:event) do
+        {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :start => start_datetime,
+          :end => end_datetime,
+          :location => {
+            :description => "Board room"
           }
-        ]
-      }
+        }
+      end
+      let(:request_body) do
+        hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
+                       :summary => "Board meeting",
+                       :description => "Discuss plans for the next quarter.",
+                       :start => start_datetime_string,
+                       :end => end_datetime_string,
+                       :location => {
+                         :description => "Board room"
+                       })
+      end
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { '' }
+
+      subject { client.create_or_update_event(calendar_id, event) }
+
+      context 'when start/end are Times' do
+        let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+        let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+        let(:start_datetime_string) { "2014-08-05T15:30:00Z" }
+        let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
+
+        it_behaves_like 'a Cronofy request'
+      end
     end
+    
+    describe '#read_events' do
+      let(:request_url_prefix) { 'https://api.cronofy.com/v1/events' }
+      let(:method) { :get }
+      let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
+      let(:request_body) { '' }
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          'pages' => {
+            'current' => 1,
+            'total' => 2,
+            'next_page' => 'https://api.cronofy.com/v1/events/pages/08a07b034306679e'
+          },
+          'events' => [
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
+                         'summary' => 'Company Retreat',
+                         'description' => '',
+                         'start' => '2014-09-06',
+                         'end' => '2014-09-08',
+                         'deleted' => false
+                       },
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
+                         'summary' => 'Dinner with Laura',
+                         'description' => '',
+                         'start' => '2014-09-13T19:00:00Z',
+                         'end' => '2014-09-13T21:00:00Z',
+                         'deleted' => false,
+                         'location' => {
+                           'description' => 'Pizzeria'
+                         }
+                       }
+                      ]
+        }
+      end
       
-    subject { client.read_events(params) }
+      subject { client.read_events(params) }
 
-    context 'when all params are passed' do
-      let(:params) do
-        {
-          from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
-          to: Time.new(2014, 10, 1, 0, 0, 1, '+00:00'),
-          tzid: 'Etc/UTC',
-          include_deleted: false,
-          include_moved: true,
-          last_modified: Time.new(2014, 8, 1, 0, 0, 1, '+00:00')
-        }
-      end
-      let(:request_url) do
-        "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
-        "&to=2014-10-01T00:00:01Z&tzid=Etc/UTC&include_deleted=false" \
-        "&include_moved=true&last_modified=2014-08-01T00:00:01Z"
+      context 'when all params are passed' do
+        let(:params) do
+          {
+            from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
+            to: Time.new(2014, 10, 1, 0, 0, 1, '+00:00'),
+            tzid: 'Etc/UTC',
+            include_deleted: false,
+            include_moved: true,
+            last_modified: Time.new(2014, 8, 1, 0, 0, 1, '+00:00')
+          }
+        end
+        let(:request_url) do
+          "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
+          "&to=2014-10-01T00:00:01Z&tzid=Etc/UTC&include_deleted=false" \
+          "&include_moved=true&last_modified=2014-08-01T00:00:01Z"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with return value'
       end
 
-      it_behaves_like 'a Cronofy request'
-    it_behaves_like 'a Cronofy request with return value'
+      context 'when some params are passed' do
+        let(:params) do
+          {
+            from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
+            include_deleted: false,
+          }
+        end
+        let(:request_url) do
+          "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
+          "&tzid=Etc/UTC&include_deleted=false" \
+          "&include_moved=false"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with return value'
+      end
     end
-
-    context 'when some params are passed' do
-      let(:params) do
+    
+    describe '#get_events_page' do
+      let(:request_url) { 'https://api.cronofy.com/v1/events/pages/08a07b034306679e' }
+      let(:method) { :get }
+      let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
+      let(:request_body) { '' }
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
         {
-          from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
-          include_deleted: false,
+          'pages' => {
+            'current' => 2,
+            'total' => 2
+          },
+          'events' => [
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
+                         'summary' => 'Company Retreat',
+                         'description' => '',
+                         'start' => '2014-09-06',
+                         'end' => '2014-09-08',
+                         'deleted' => false
+                       },
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
+                         'summary' => 'Dinner with Laura',
+                         'description' => '',
+                         'start' => '2014-09-13T19:00:00Z',
+                         'end' => '2014-09-13T21:00:00Z',
+                         'deleted' => false,
+                         'location' => {
+                           'description' => 'Pizzeria'
+                         }
+                       }
+                      ]
         }
       end
-      let(:request_url) do
-        "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
-        "&tzid=Etc/UTC&include_deleted=false" \
-        "&include_moved=false"
-      end
+      
+      subject { client.get_events_page(request_url) }
 
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with return value'
     end
-  end
-  
-  describe '#get_events_page' do
-    let(:request_url) { 'https://api.cronofy.com/v1/events/pages/08a07b034306679e' }
-    let(:method) { :get }
-    let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
-    let(:request_body) { '' }
-    let(:correct_response_code) { 200 }
-    let(:correct_response_body) do
-      {
-        'pages' => {
-          'current' => 2,
-          'total' => 2
-        },
-        'events' => [
-          {
-            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
-            'summary' => 'Company Retreat',
-            'description' => '',
-            'start' => '2014-09-06',
-            'end' => '2014-09-08',
-            'deleted' => false
-          },
-          {
-            'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-            'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
-            'summary' => 'Dinner with Laura',
-            'description' => '',
-            'start' => '2014-09-13T19:00:00Z',
-            'end' => '2014-09-13T21:00:00Z',
-            'deleted' => false,
-            'location' => {
-              'description' => 'Pizzeria'
-            }
-          }
-        ]
-      }
-    end
-      
-    subject { client.get_events_page(request_url) }
 
-    it_behaves_like 'a Cronofy request'
-    it_behaves_like 'a Cronofy request with return value'
+    describe '#delete_event' do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+      let(:event_id) { 'event_id_456' }
+      let(:method) { :delete }
+      let(:request_headers) do
+        { 
+          'Authorization' => "Bearer #{token}",
+          'Content-Type' => 'application/json'
+        }
+      end
+      let(:request_body) { {:event_id => event_id} }
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { '' }
+
+      subject { client.delete_event(calendar_id, event_id) }
+
+      it_behaves_like 'a Cronofy request'
+    end
   end
 
   describe 'Channels' do

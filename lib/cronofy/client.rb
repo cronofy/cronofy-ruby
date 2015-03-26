@@ -104,9 +104,13 @@ module Cronofy
     #
     # Returns nothing
     def delete_event(calendar_id, event_id)
-      params = { event_id: event_id }
+      body = { event_id: event_id }
 
-      do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { params: params }) }
+      headers = {
+        'Content-Type' => 'application/json'
+      }
+
+      do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: headers }) } # TODO why in query params???
     end
 
     # Public : Creates a notification channel with a callback URL
