@@ -32,14 +32,11 @@ module Cronofy
     # Returns nothing
     def create_or_update_event(calendar_id, event)
       body = event.dup
-      body[:start] = event[:start].utc.iso8601 # TODO change for whole day events
-      body[:end] = event[:end].utc.iso8601
 
-      headers = {
-        'Content-Type' => 'application/json'
-      }
+      body[:start] = to_iso8601(body[:start])
+      body[:end] = to_iso8601(body[:end])
 
-      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: headers }) }
+      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: default_headers }) }
     end
     alias_method :upsert_event, :create_or_update_event
 
@@ -63,12 +60,12 @@ module Cronofy
     def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
                     include_moved: false, last_modified: nil)
       params = {
-        'from' => time_to_iso8601(from),
-        'to' => time_to_iso8601(to),
+        'from' => to_iso8601(from),
+        'to' => to_iso8601(to),
         'tzid' => tzid,
         'include_deleted' => include_deleted.to_s,
         'include_moved' => include_moved.to_s,
-        'last_modified' => time_to_iso8601(last_modified)
+        'last_modified' => to_iso8601(last_modified)
       }
       params.delete_if { |key, value| !value }
 
@@ -104,11 +101,12 @@ module Cronofy
     def delete_event(calendar_id, event_id)
       body = { event_id: event_id }
 
-      headers = {
-        'Content-Type' => 'application/json'
-      }
-
-      do_request { access_token!.delete("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: headers }) } # TODO why in query params???
+      do_request do
+        access_token!.delete(
+          "/v1/calendars/#{calendar_id}/events",
+          body: JSON.generate(body),
+          headers: default_headers)
+      end
     end
 
     # Public : Creates a notification channel with a callback URL
@@ -117,20 +115,11 @@ module Cronofy
     #
     # Returns Hash of channel
     def create_channel(callback_url)
-      body = {
-        'callback_url' => callback_url
-      }
-      headers = {
-        'Content-Type' => 'application/json'
-      }
-
       response = do_request do
-        access_token!.post("/v1/channels",
-                           {
-                             body: JSON.generate(body),
-                             headers: headers
-                           }
-                          )
+        access_token!.post(
+          "/v1/channels",
+          body: JSON.generate(callback_url: callback_url),
+          headers: default_headers)
       end
 
       ResponseParser.new(response).parse_json
@@ -140,7 +129,7 @@ module Cronofy
     #
     # Returns Hash of channels
     def list_channels
-      response = do_request {access_token!.get('v1/channels')}
+      response = do_request { access_token!.get('/v1/channels') }
       ResponseParser.new(response).parse_json
     end
 
@@ -177,6 +166,12 @@ module Cronofy
 
     private
 
+    def default_headers
+      {
+        'Content-Type' => 'application/json; charset=utf-8'
+      }
+    end
+
     def do_request(&block)
       begin
         block.call
@@ -185,17 +180,20 @@ module Cronofy
       end
     end
 
-    def time_to_iso8601(time)
-      if time
-        time.utc.iso8601
-      else
+    def to_iso8601(value)
+      case value
+      when NilClass
         nil
+      when Time
+        value.getutc.iso8601
+      else
+        value.iso8601
       end
     end
   end
 
   # Alias for backwards compatibility
-  # depcrectated will be removed
+  # Deprectated will be removed
   class Cronofy < Client
   end
 end
