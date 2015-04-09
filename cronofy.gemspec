@@ -1,7 +1,4 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'cronofy/version'
+require File.expand_path('../lib/cronofy/version', __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = "cronofy"
@@ -9,13 +6,16 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Sergii Paryzhskyi"]
   spec.email         = ["parizhskiy@gmail.com"]
   spec.summary       = %q{Cronofy - one API for all the calendars}
+  spec.description   = %q{Ruby wrapper for Cronofy's unified calendar API}
   spec.homepage      = "https://github.com/cronofy/cronofy-ruby"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
+
+  spec.files         = %w{Gemfile LICENSE.txt README.md Rakefile cronofy.gemspec}
+  spec.files        += Dir['lib/**/*.rb']
+  spec.files        += Dir['spec/**/*.rb']
+  spec.test_files    = Dir['spec/**/*.rb']
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
