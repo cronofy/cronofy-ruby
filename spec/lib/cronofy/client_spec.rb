@@ -29,6 +29,19 @@ describe Cronofy::Client do
     end
   end
 
+  shared_examples 'a Cronofy request with mapped return value' do
+    it 'returns the correct response when no error' do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: correct_response_code,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+
+      expect(subject).to eq correct_mapped_result
+    end
+  end
+
   shared_examples 'a Cronofy request' do
     it "doesn't raise an error when response is correct" do
       stub_request(method, request_url)
@@ -129,10 +142,14 @@ describe Cronofy::Client do
       }
     end
 
+    let(:correct_mapped_result) do
+      correct_response_body["calendars"].map { |cal| Cronofy::Calendar.new(cal) }
+    end
+
     subject { client.list_calendars }
 
     it_behaves_like 'a Cronofy request'
-    it_behaves_like 'a Cronofy request with return value'
+    it_behaves_like 'a Cronofy request with mapped return value'
   end
 
   describe 'Events' do

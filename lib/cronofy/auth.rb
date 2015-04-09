@@ -23,7 +23,7 @@ module Cronofy
           refresh_token: refresh_token,
           expires_in: expires_in,
           expires_at: expires_at,
-          scope: scope
+          scope: scope,
         }
       end
     end

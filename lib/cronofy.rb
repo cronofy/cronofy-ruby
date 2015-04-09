@@ -1,5 +1,6 @@
 require "cronofy/version"
 require "cronofy/errors"
+require "cronofy/types"
 require "cronofy/auth"
 require "cronofy/client"
 require "cronofy/response_parser"

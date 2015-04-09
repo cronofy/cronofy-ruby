@@ -15,7 +15,7 @@ module Cronofy
     # Returns Hash of calendars
     def list_calendars
       response = do_request { access_token!.get("/v1/calendars")  }
-      ResponseParser.new(response).parse_json
+      ResponseParser.new(response).parse_json("calendars", Calendar)
     end
 
     # Public : Creates or updates an existing event that matches the event_id, in the calendar
