@@ -1,7 +1,5 @@
 module Cronofy
-
   class Client
-
     def initialize(client_id, client_secret, token=nil, refresh_token=nil)
       @auth = Auth.new(client_id, client_secret, token, refresh_token)
     end
@@ -45,21 +43,21 @@ module Cronofy
     end
     alias_method :upsert_event, :create_or_update_event
 
-    # Public : Returns a paged list of events within a given time period, 
-    #          that you have not created, across all of a users calendars. 
+    # Public : Returns a paged list of events within a given time period,
+    #          that you have not created, across all of a users calendars.
     #          see http://www.cronofy.com/developers/api#read-events
-    # 
-    # from            - The minimum Time from which to return events. 
+    #
+    # from            - The minimum Time from which to return events.
     # to              - The Date to return events up until.
-    # tzid            - A String representing a known time zone identifier from the 
-    #                   IANA Time Zone Database. 
-    # include_deleted - A Boolean specifying whether events that have been deleted 
-    #                   should included or excluded from the results. 
-    # include_moved   - A Boolean specifying whether events that have ever existed 
-    #                   within the given window should be included or excluded from 
-    #                   the results. 
-    # last_modified   - The Time that events must be modified on or after 
-    #                   in order to be returned. 
+    # tzid            - A String representing a known time zone identifier from the
+    #                   IANA Time Zone Database.
+    # include_deleted - A Boolean specifying whether events that have been deleted
+    #                   should included or excluded from the results.
+    # include_moved   - A Boolean specifying whether events that have ever existed
+    #                   within the given window should be included or excluded from
+    #                   the results.
+    # last_modified   - The Time that events must be modified on or after
+    #                   in order to be returned.
     #
     # Returns paged Hash of events
     def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
@@ -73,7 +71,7 @@ module Cronofy
         'last_modified' => time_to_iso8601(last_modified)
       }
       params.delete_if { |key, value| !value }
-      
+
       response = do_request do
         access_token!.get('/v1/events', { params: params })
       end
@@ -82,16 +80,16 @@ module Cronofy
     end
 
     # Public : Returns a paged list of events given a page URL.
-    #          Page URLs are obtained from read_events requests and 
+    #          Page URLs are obtained from read_events requests and
     #          get_events_page requests (response.pages.next_page)
     #          see http://www.cronofy.com/developers/api#read-events
-    # 
+    #
     # page_url - the url of a page of Read Events results
     #
     # Returns paged Hash of events
     def get_events_page(page_url)
       page_path = page_url.sub(::Cronofy.api_url, '')
-      
+
       response = do_request { access_token!.get(page_path) }
       ResponseParser.new(response).parse_json
     end
@@ -118,7 +116,7 @@ module Cronofy
     # callback_url  - String URL with the callback
     #
     # Returns Hash of channel
-    def create_channel(callback_url) 
+    def create_channel(callback_url)
       body = {
         'callback_url' => callback_url
       }
@@ -134,7 +132,7 @@ module Cronofy
                            }
                           )
       end
-      
+
       ResponseParser.new(response).parse_json
     end
 
@@ -177,22 +175,13 @@ module Cronofy
       @auth.refresh!
     end
 
-  private
-
-    ERROR_MAP = {
-      401 => ::Cronofy::AuthenticationFailureError,
-      403 => ::Cronofy::AuthorizationFailureError,
-      404 => ::Cronofy::NotFoundError,
-      422 => ::Cronofy::InvalidRequestError,
-      429 => ::Cronofy::TooManyRequestsError
-    }
+    private
 
     def do_request(&block)
       begin
         block.call
       rescue OAuth2::Error => e
-        error_class = ERROR_MAP.fetch(e.response.status, UnknownError)
-        raise error_class.new(e.response.headers['status'], e.response)
+        raise Errors.map_oauth2_error(e)
       end
     end
 
@@ -203,13 +192,10 @@ module Cronofy
         nil
       end
     end
-
   end
 
   # Alias for backwards compatibility
   # depcrectated will be removed
   class Cronofy < Client
-
   end
-
 end

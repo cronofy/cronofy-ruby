@@ -3,7 +3,6 @@ require "oauth2"
 module Cronofy
   class Auth
     class Credentials
-
       attr_reader :access_token,
                   :expires_at,
                   :expires_in,
@@ -76,11 +75,12 @@ module Cronofy
       @access_token = OAuth2::AccessToken.new(@api_client, token, { refresh_token: refresh_token })
     end
 
+    private
+
     def do_request(&block)
       block.call
     rescue OAuth2::Error => e
-      error_class = e.response.status == 400? AuthorizationFailureError: UnknownError
-      raise error_class.new(e.response.headers['status'], e.response)
+      raise Errors.map_oauth2_error(e)
     end
   end
 end

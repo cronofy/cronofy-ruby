@@ -1,10 +1,9 @@
-
 require_relative '../../spec_helper'
 
 describe Cronofy::Auth do
   let(:client_id) { 'client_id_123' }
   let(:client_secret) { 'client_secret_456' }
-  
+
   before(:all) do
     WebMock.reset!
     WebMock.disable_net_connect!(allow_localhost: true)
@@ -23,7 +22,7 @@ describe Cronofy::Auth do
                                   'scope' => scope
                                 })
       end
-      
+
       before(:each) do
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token).and_return(oauth_token)
@@ -36,17 +35,17 @@ describe Cronofy::Auth do
         expect(subject.scope).to eq scope
       end
     end
-    
+
     context 'when fails' do
       let(:oauth_error) do
         OAuth2::Error.new(response)
       end
-      
+
       before(:each) do
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token).and_raise(oauth_error)
-      end 
-      
+      end
+
       context 'with 400' do
         let(:response) do
           double('response',
@@ -55,21 +54,21 @@ describe Cronofy::Auth do
                    'status' => 'Bad request'
                  }).as_null_object
         end
-        
-        it 'throws AuthorizationFailureError' do
-          expect{ subject }.to raise_error(Cronofy::AuthorizationFailureError)
+
+        it 'throws BadRequestError' do
+          expect{ subject }.to raise_error(Cronofy::BadRequestError)
         end
       end
 
-      context 'with code other than 400' do
+      context 'with recognized code' do
         let(:response) do
           double('response',
-                 :status => 401,
+                 :status => 418,
                  :headers => {
-                   'status' => 'Unauthorized'
+                   'status' => "I'm a teapot"
                  }).as_null_object
         end
-        
+
         it 'throws Unknown error' do
           expect{ subject }.to raise_error(Cronofy::UnknownError)
         end
@@ -80,21 +79,21 @@ describe Cronofy::Auth do
   describe '#get_token_from_code' do
     let(:code) { 'code_789' }
     let(:redirect_uri) { 'http://red.ire.ct/Uri' }
-    
+
     subject { Cronofy::Auth.new(client_id, client_secret).get_token_from_code(code, redirect_uri) }
-    
+
     it_behaves_like 'an authorization request'
   end
 
   describe '#refresh!' do
     let(:access_token) { 'access_token_123' }
     let(:refresh_token) { 'refresh_token_456' }
-    
+
     subject do
       Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
         .refresh!
     end
-    
+
     it_behaves_like 'an authorization request'
   end
 

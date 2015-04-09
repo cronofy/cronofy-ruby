@@ -6,7 +6,6 @@ require "cronofy/response_parser"
 require 'json'
 
 module Cronofy
-
   def self.api_url
     @api_url ||= (ENV['CRONOFY_API_URL'] || "https://api.cronofy.com")
   end
@@ -22,5 +21,4 @@ module Cronofy
   def self.app_url=(value)
     @app_url = value
   end
-
 end
