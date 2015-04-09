@@ -254,8 +254,7 @@ describe Cronofy::Client do
         end
         let(:request_url) do
           "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
-          "&tzid=Etc/UTC&include_deleted=false" \
-          "&include_moved=false"
+          "&tzid=Etc/UTC&include_deleted=false"
         end
 
         it_behaves_like 'a Cronofy request'

@@ -36,7 +36,9 @@ module Cronofy
       body[:start] = to_iso8601(body[:start])
       body[:end] = to_iso8601(body[:end])
 
-      do_request { access_token!.post("/v1/calendars/#{calendar_id}/events", { body: JSON.generate(body), headers: default_headers }) }
+      do_request do
+        access_token!.post("/v1/calendars/#{calendar_id}/events", json_request_args(body))
+      end
     end
     alias_method :upsert_event, :create_or_update_event
 
@@ -44,10 +46,10 @@ module Cronofy
     #          that you have not created, across all of a users calendars.
     #          see http://www.cronofy.com/developers/api#read-events
     #
-    # from            - The minimum Time from which to return events.
+    # from            - The minimum Date from which to return events.
     # to              - The Date to return events up until.
     # tzid            - A String representing a known time zone identifier from the
-    #                   IANA Time Zone Database.
+    #                   IANA Time Zone Database (default: Etc/UTC)
     # include_deleted - A Boolean specifying whether events that have been deleted
     #                   should included or excluded from the results.
     # include_moved   - A Boolean specifying whether events that have ever existed
@@ -57,17 +59,12 @@ module Cronofy
     #                   in order to be returned.
     #
     # Returns paged Hash of events
-    def read_events(from: nil, to: nil, tzid: 'Etc/UTC', include_deleted: false,
-                    include_moved: false, last_modified: nil)
-      params = {
-        'from' => to_iso8601(from),
-        'to' => to_iso8601(to),
-        'tzid' => tzid,
-        'include_deleted' => include_deleted.to_s,
-        'include_moved' => include_moved.to_s,
-        'last_modified' => to_iso8601(last_modified)
-      }
-      params.delete_if { |key, value| !value }
+    def read_events(opts = {})
+      params = READ_EVENTS_DEFAULT_PARAMS.merge(opts)
+
+      READ_EVENTS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+        params[tp] = to_iso8601(params[tp])
+      end
 
       response = do_request do
         access_token!.get('/v1/events', { params: params })
@@ -102,10 +99,7 @@ module Cronofy
       body = { event_id: event_id }
 
       do_request do
-        access_token!.delete(
-          "/v1/calendars/#{calendar_id}/events",
-          body: JSON.generate(body),
-          headers: default_headers)
+        access_token!.delete("/v1/calendars/#{calendar_id}/events", json_request_args(body))
       end
     end
 
@@ -118,8 +112,7 @@ module Cronofy
       response = do_request do
         access_token!.post(
           "/v1/channels",
-          body: JSON.generate(callback_url: callback_url),
-          headers: default_headers)
+          json_request_args(callback_url: callback_url))
       end
 
       ResponseParser.new(response).parse_json
@@ -166,11 +159,13 @@ module Cronofy
 
     private
 
-    def default_headers
-      {
-        'Content-Type' => 'application/json; charset=utf-8'
-      }
-    end
+    READ_EVENTS_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
+
+    READ_EVENTS_TIME_PARAMS = %i{
+      from
+      to
+      last_modified
+    }.freeze
 
     def do_request(&block)
       begin
@@ -178,6 +173,13 @@ module Cronofy
       rescue OAuth2::Error => e
         raise Errors.map_oauth2_error(e)
       end
+    end
+
+    def json_request_args(body_hash)
+      {
+        body: JSON.generate(body_hash),
+        headers: { "Content-Type" => "application/json; charset=utf-8" },
+      }
     end
 
     def to_iso8601(value)
