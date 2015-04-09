@@ -239,6 +239,10 @@ describe Cronofy::Client do
         }
       end
 
+      let(:correct_mapped_result) do
+        Cronofy::PagedEventsResult.new(correct_response_body)
+      end
+
       subject { client.read_events(params) }
 
       context 'when all params are passed' do
@@ -259,7 +263,7 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'a Cronofy request with return value'
+        it_behaves_like 'a Cronofy request with mapped return value'
       end
 
       context 'when some params are passed' do
@@ -275,7 +279,7 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'a Cronofy request with return value'
+        it_behaves_like 'a Cronofy request with mapped return value'
       end
     end
 
@@ -317,10 +321,14 @@ describe Cronofy::Client do
         }
       end
 
+      let(:correct_mapped_result) do
+        Cronofy::PagedEventsResult.new(correct_response_body)
+      end
+
       subject { client.get_events_page(request_url) }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with return value'
+      it_behaves_like 'a Cronofy request with mapped return value'
     end
 
     describe '#delete_event' do
@@ -369,10 +377,14 @@ describe Cronofy::Client do
         }
       end
 
+      let(:correct_mapped_result) do
+        Cronofy::Channel.new(correct_response_body["channel"])
+      end
+
       subject { client.create_channel(callback_url) }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with return value'
+      it_behaves_like 'a Cronofy request with mapped return value'
     end
 
     describe '#list_channels' do
@@ -402,10 +414,14 @@ describe Cronofy::Client do
         }
       end
 
+      let(:correct_mapped_result) do
+        correct_response_body["channels"].map { |ch| Cronofy::Channel.new(ch) }
+      end
+
       subject { client.list_channels }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with return value'
+      it_behaves_like 'a Cronofy request with mapped return value'
     end
   end
 end

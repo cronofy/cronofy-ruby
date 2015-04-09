@@ -15,7 +15,7 @@ module Cronofy
     # Returns Hash of calendars
     def list_calendars
       response = do_request { access_token!.get("/v1/calendars")  }
-      ResponseParser.new(response).parse_json("calendars", Calendar)
+      ResponseParser.new(response).parse_collection("calendars", Calendar)
     end
 
     # Public : Creates or updates an existing event that matches the event_id, in the calendar
@@ -70,7 +70,7 @@ module Cronofy
         access_token!.get('/v1/events', { params: params })
       end
 
-      ResponseParser.new(response).parse_json
+      ResponseParser.new(response).parse_json(PagedEventsResult)
     end
 
     # Public : Returns a paged list of events given a page URL.
@@ -85,7 +85,7 @@ module Cronofy
       page_path = page_url.sub(::Cronofy.api_url, '')
 
       response = do_request { access_token!.get(page_path) }
-      ResponseParser.new(response).parse_json
+      ResponseParser.new(response).parse_json(PagedEventsResult)
     end
 
     # Public : Deletes an event from the specified calendar
@@ -115,7 +115,7 @@ module Cronofy
           json_request_args(callback_url: callback_url))
       end
 
-      ResponseParser.new(response).parse_json
+      ResponseParser.new(response).parse_one("channel", Channel)
     end
 
     # Public : Lists the channels of the user
@@ -123,7 +123,7 @@ module Cronofy
     # Returns Hash of channels
     def list_channels
       response = do_request { access_token!.get('/v1/channels') }
-      ResponseParser.new(response).parse_json
+      ResponseParser.new(response).parse_collection("channels", Channel)
     end
 
     # Public : Generate the authorization URL to send the user to in order to generate
