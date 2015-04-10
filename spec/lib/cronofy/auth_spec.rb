@@ -4,70 +4,101 @@ describe Cronofy::Auth do
   let(:client_id) { 'client_id_123' }
   let(:client_secret) { 'client_secret_456' }
 
+  let(:code) { 'code_789' }
+  let(:redirect_uri) { 'http://red.ire.ct/Uri' }
+  let(:access_token) { 'access_token_123' }
+  let(:refresh_token) { 'refresh_token_456' }
+
+  let(:new_access_token) { "new_access_token_2342" }
+  let(:new_refresh_token) { "new_refresh_token_7898" }
+  let(:expires_in) { 10000 }
+  let(:scope) { 'read_events list_calendars create_event' }
+
   before(:all) do
     WebMock.reset!
     WebMock.disable_net_connect!(allow_localhost: true)
   end
 
+  let(:response_status) { 200 }
+
+  before(:each) do
+    stub_request(:post, "https://api.cronofy.com/oauth/token")
+      .with(
+        body: {
+          client_id: client_id,
+          client_secret: client_secret,
+          grant_type: "refresh_token",
+          refresh_token: refresh_token,
+        },
+        headers: {
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+        }
+      )
+      .to_return(
+        status: response_status,
+        body: {
+          access_token: new_access_token,
+          token_type: 'bearer',
+          expires_in: expires_in,
+          refresh_token: new_refresh_token,
+          scope: scope,
+        }.to_json,
+        headers: {
+          "Content-Type" => "application/json; charset=utf-8"
+        }
+      )
+
+    stub_request(:post, "https://app.cronofy.com/oauth/token")
+      .with(
+        body: {
+          client_id: client_id,
+          client_secret: client_secret,
+          code: code,
+          grant_type: "authorization_code",
+          redirect_uri: redirect_uri,
+        },
+        headers: {
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+        }
+      )
+      .to_return(
+        status: response_status,
+        body: {
+          access_token: new_access_token,
+          token_type: 'bearer',
+          expires_in: expires_in,
+          refresh_token: new_refresh_token,
+          scope: scope,
+        }.to_json,
+        headers: {
+          "Content-Type" => "application/json; charset=utf-8"
+        }
+      )
+  end
+
   shared_examples 'an authorization request' do
     context 'when succeeds' do
-      let(:access_token) { 'access_token_123' }
-      let(:refresh_token) { 'refresh_token_456' }
-      let(:expires_in) { 10000 }
-      let(:scope) { 'read_events list_calendars create_event' }
-      let(:oauth_token) do
-        OAuth2::AccessToken.new(nil, access_token, {
-                                  'expires_in' => expires_in,
-                                  'refresh_token' => refresh_token,
-                                  'scope' => scope
-                                })
-      end
-
-      before(:each) do
-        allow_any_instance_of(OAuth2::Client)
-          .to receive(:get_token).and_return(oauth_token)
-        end
-
       it 'returns a correct Credentials object' do
-        expect(subject.access_token).to eq access_token
+        expect(subject.access_token).to eq new_access_token
         expect(subject.expires_in).to eq expires_in
-        expect(subject.refresh_token).to eq refresh_token
+        expect(subject.refresh_token).to eq new_refresh_token
         expect(subject.scope).to eq scope
       end
     end
 
     context 'when fails' do
-      let(:oauth_error) do
-        OAuth2::Error.new(response)
-      end
-
-      before(:each) do
-        allow_any_instance_of(OAuth2::Client)
-          .to receive(:get_token).and_raise(oauth_error)
-      end
-
       context 'with 400' do
-        let(:response) do
-          double('response',
-                 :status => 400,
-                 :headers => {
-                   'status' => 'Bad request'
-                 }).as_null_object
-        end
+        let(:response_status) { 400 }
 
         it 'throws BadRequestError' do
           expect{ subject }.to raise_error(Cronofy::BadRequestError)
         end
       end
 
-      context 'with recognized code' do
-        let(:response) do
-          double('response',
-                 :status => 418,
-                 :headers => {
-                   'status' => "I'm a teapot"
-                 }).as_null_object
-        end
+      context 'with unrecognized code' do
+        let(:response_status) { 418 }
 
         it 'throws Unknown error' do
           expect{ subject }.to raise_error(Cronofy::UnknownError)
@@ -77,24 +108,16 @@ describe Cronofy::Auth do
   end
 
   describe '#get_token_from_code' do
-    let(:code) { 'code_789' }
-    let(:redirect_uri) { 'http://red.ire.ct/Uri' }
-
     subject { Cronofy::Auth.new(client_id, client_secret).get_token_from_code(code, redirect_uri) }
 
     it_behaves_like 'an authorization request'
   end
 
   describe '#refresh!' do
-    let(:access_token) { 'access_token_123' }
-    let(:refresh_token) { 'refresh_token_456' }
-
     subject do
-      Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
-        .refresh!
+      Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token).refresh!
     end
 
     it_behaves_like 'an authorization request'
   end
-
 end
