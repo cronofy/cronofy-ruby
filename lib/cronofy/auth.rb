@@ -30,7 +30,7 @@ module Cronofy
 
     attr_reader :access_token
 
-    def initialize(client_id, client_secret, token=nil, refresh_token=nil)
+    def initialize(client_id, client_secret, token = nil, refresh_token = nil)
       @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url)
       @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url)
 
@@ -45,15 +45,15 @@ module Cronofy
     #                 see: http://www.cronofy.com/developers/api#authorization
     #
     # Returns String URL
-    def user_auth_link(redirect_uri, scope=nil)
+    def user_auth_link(redirect_uri, scope = nil)
       scope ||= %w{read_account list_calendars read_events create_event delete_event}
 
-      @auth_client.auth_code.authorize_url(:redirect_uri => redirect_uri, :response_type => 'code', :scope => scope.join(' '))
+      @auth_client.auth_code.authorize_url(redirect_uri: redirect_uri, response_type: 'code', scope: scope.join(' '))
     end
 
     def get_token_from_code(code, redirect_uri)
       do_request do
-        @access_token = @auth_client.auth_code.get_token(code, :redirect_uri => redirect_uri)
+        @access_token = @auth_client.auth_code.get_token(code, redirect_uri: redirect_uri)
         Credentials.new(@access_token)
       end
     end
@@ -72,7 +72,7 @@ module Cronofy
     end
 
     def set_access_token(token, refresh_token)
-      @access_token = OAuth2::AccessToken.new(@api_client, token, { refresh_token: refresh_token })
+      @access_token = OAuth2::AccessToken.new(@api_client, token, refresh_token: refresh_token)
     end
 
     private
