@@ -319,21 +319,21 @@ module Cronofy
     end
 
     def get(url, opts = {})
-      access_token!.get(url, opts)
-    rescue OAuth2::Error => e
-      raise Errors.map_oauth2_error(e)
+      wrapped_request { access_token!.get(url, opts) }
     end
 
     def post(url, body)
-      access_token!.post(url, json_request_args(body))
-    rescue OAuth2::Error => e
-      raise Errors.map_oauth2_error(e)
+      wrapped_request { access_token!.post(url, json_request_args(body)) }
     end
 
     def delete(url, body = nil)
-      access_token!.delete(url, json_request_args(body))
+      wrapped_request { access_token!.delete(url, json_request_args(body)) }
+    end
+
+    def wrapped_request
+      yield
     rescue OAuth2::Error => e
-      raise Errors.map_oauth2_error(e)
+      raise Errors.map_error(e)
     end
 
     def parse_collection(type, attr, response)

@@ -53,7 +53,7 @@ module Cronofy
     def do_request(&block)
       block.call
     rescue OAuth2::Error => e
-      raise Errors.map_oauth2_error(e)
+      raise Errors.map_error(e)
     end
   end
 end

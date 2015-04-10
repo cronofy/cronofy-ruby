@@ -61,7 +61,7 @@ module Cronofy
       429 => TooManyRequestsError,
     }.freeze
 
-    def self.map_oauth2_error(error)
+    def self.map_error(error)
       raise_error(error.response)
     end
 
