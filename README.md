@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/cronofy.svg)](http://badge.fury.io/rb/cronofy)
 [![Join the chat at https://gitter.im/cronofy/cronofy-ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cronofy/cronofy-ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Cronofy](http://www.cronofy.com) - one API for all the calendars (Google, Outlook, iCloud, Exchange). This gem is an interface for easy use of [Cronofy API](http://www.cronofy.com/developers/api) with Ruby.
+[Cronofy](http://www.cronofy.com) - one API for all the calendars (Google, Outlook, iCloud, Exchange).
 
 ## Installation
 
@@ -26,12 +26,15 @@ Or install it yourself as:
 
 You have to register on the Cronofy website and create an application there. You will then get a client id and client secret.
 
-You can either set them as the enviroment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` and have them picked up automatically when creating a new `Cronofy::Client`, or you can specify them explicitly:
+You can either set them as the enviroment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` and have them picked up automatically when creating a new `Cronofy::Client`:
 
 ```ruby
-# From environment variables
 cronofy = Cronofy::Client.new
-# Or explicitly
+```
+
+Or you can specify them explicitly:
+
+```ruby
 cronofy = Cronofy::Client.new(client_id: 'CLIENT_ID', client_secret: 'CLIENT_SECRET')
 ```
 
@@ -40,6 +43,8 @@ You can also pass an existing access token and refresh token if you already have
 ```ruby
 cronofy = Cronofy::Client.new(access_token: 'ACCESS_TOKEN', refresh_token: 'REFRESH_TOKEN')
 ```
+
+### Authorization
 
 Generate a link for a user to grant access for their calendars:
 
@@ -54,6 +59,8 @@ token = cronofy.get_token_from_code(code, 'http://localhost:3000/oauth2/callback
 ```
 
 You should save the `access_token` and `refresh_token` for later use.
+
+### List calendars
 
 Get a list of all the user calendars:
 
@@ -83,7 +90,9 @@ calendar.calendar_id
 # => "cal_YYYYYYYY-UNIQUE_CAL_ID_HERE-YYYYYYYY"
 ```
 
-To create/update an event in user's calendar:
+### Create or update events
+
+To create/update an event in the user's calendar:
 
 ```ruby
 event_data = {
@@ -97,8 +106,10 @@ event_data = {
   }
 }
 
-cronofy.upsert(calendar_id, event_data)
+cronofy.upsert_event(calendar_id, event_data)
 ```
+
+### Delete events
 
 To delete an event from user's calendar:
 
