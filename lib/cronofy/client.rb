@@ -153,30 +153,22 @@ module Cronofy
       last_modified
     }.freeze
 
-    def do_request(&block)
-      begin
-        block.call
-      rescue OAuth2::Error => e
-        raise Errors.map_oauth2_error(e)
-      end
-    end
-
     def get(url, opts = {})
-      do_request do
-        access_token!.get(url, opts)
-      end
+      access_token!.get(url, opts)
+    rescue OAuth2::Error => e
+      raise Errors.map_oauth2_error(e)
     end
 
     def post(url, body)
-      do_request do
-        access_token!.post(url, json_request_args(body))
-      end
+      access_token!.post(url, json_request_args(body))
+    rescue OAuth2::Error => e
+      raise Errors.map_oauth2_error(e)
     end
 
     def delete(url, body)
-      do_request do
-        access_token!.delete(url, json_request_args(body))
-      end
+      access_token!.delete(url, json_request_args(body))
+    rescue OAuth2::Error => e
+      raise Errors.map_oauth2_error(e)
     end
 
     def parse_collection(type, attr, response)
