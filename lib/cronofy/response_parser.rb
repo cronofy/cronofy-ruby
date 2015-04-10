@@ -7,9 +7,8 @@ module Cronofy
     end
 
     def parse_collection(type, attribute = nil)
-      parsing_target(attribute).map do |item|
-        type.new(item)
-      end
+      target = parsing_target(attribute)
+      target.map { |item| type.new(item) }
     end
 
     def parse_json(type, attribute = nil)

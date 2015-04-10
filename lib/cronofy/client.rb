@@ -14,9 +14,8 @@ module Cronofy
     #
     # Returns Hash of calendars
     def list_calendars
-      request_collection(Calendar, "calendars") do
-        access_token!.get("/v1/calendars")
-      end
+      response = get("/v1/calendars")
+      parse_collection(Calendar, "calendars", response)
     end
 
     # Public : Creates or updates an existing event that matches the event_id, in the calendar
@@ -37,9 +36,7 @@ module Cronofy
       body[:start] = to_iso8601(body[:start])
       body[:end] = to_iso8601(body[:end])
 
-      do_request do
-        access_token!.post("/v1/calendars/#{calendar_id}/events", json_request_args(body))
-      end
+      post("/v1/calendars/#{calendar_id}/events", body)
     end
     alias_method :upsert_event, :create_or_update_event
 
@@ -67,9 +64,8 @@ module Cronofy
         params[tp] = to_iso8601(params[tp])
       end
 
-      request_json(PagedEventsResult) do
-        access_token!.get('/v1/events', { params: params })
-      end
+      response = get("/v1/events", params: params)
+      parse_json(PagedEventsResult, response)
     end
 
     # Public : Returns a paged list of events given a page URL.
@@ -83,9 +79,8 @@ module Cronofy
     def get_events_page(page_url)
       page_path = page_url.sub(::Cronofy.api_url, '')
 
-      request_json(PagedEventsResult) do
-        access_token!.get(page_path)
-      end
+      response = get(page_path)
+      parse_json(PagedEventsResult, response)
     end
 
     # Public : Deletes an event from the specified calendar
@@ -96,11 +91,7 @@ module Cronofy
     #
     # Returns nothing
     def delete_event(calendar_id, event_id)
-      body = { event_id: event_id }
-
-      do_request do
-        access_token!.delete("/v1/calendars/#{calendar_id}/events", json_request_args(body))
-      end
+      delete("/v1/calendars/#{calendar_id}/events", event_id: event_id)
     end
 
     # Public : Creates a notification channel with a callback URL
@@ -109,20 +100,16 @@ module Cronofy
     #
     # Returns Hash of channel
     def create_channel(callback_url)
-      request_json(Channel, "channel") do
-        access_token!.post(
-          "/v1/channels",
-          json_request_args(callback_url: callback_url))
-      end
+      response = post("/v1/channels", callback_url: callback_url)
+      parse_json(Channel, "channel", response)
     end
 
     # Public : Lists the channels of the user
     #
     # Returns Hash of channels
     def list_channels
-      request_collection(Channel, "channels") do
-        access_token!.get('/v1/channels')
-      end
+      response = get("/v1/channels")
+      parse_collection(Channel, "channels", response)
     end
 
     # Public : Generate the authorization URL to send the user to in order to generate
@@ -174,13 +161,29 @@ module Cronofy
       end
     end
 
-    def request_collection(type, attr, &block)
-      response = do_request(&block)
+    def get(url, opts = {})
+      do_request do
+        access_token!.get(url, opts)
+      end
+    end
+
+    def post(url, body)
+      do_request do
+        access_token!.post(url, json_request_args(body))
+      end
+    end
+
+    def delete(url, body)
+      do_request do
+        access_token!.delete(url, json_request_args(body))
+      end
+    end
+
+    def parse_collection(type, attr, response)
       ResponseParser.new(response).parse_collection(type, attr)
     end
 
-    def request_json(type, attr = nil, &block)
-      response = do_request(&block)
+    def parse_json(type, attr = nil, response)
       ResponseParser.new(response).parse_json(type, attr)
     end
 
