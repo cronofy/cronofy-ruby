@@ -15,13 +15,11 @@ module Cronofy
     #
     # redirect_uri    String, the URI to return to after authorization
     # scope           Array of String, the scope requested
-    #                 Default: [read_account, list_calendars, read_events, create_event, delete_event]
-    #                 see: http://www.cronofy.com/developers/api#authorization
     #
-    # Returns String URL
-    def user_auth_link(redirect_uri, scope = nil)
-      scope ||= %w{read_account list_calendars read_events create_event delete_event}
-
+    # See http://www.cronofy.com/developers/api#authorization for reference.
+    #
+    # Returns the URL as a String.
+    def user_auth_link(redirect_uri, scope)
       @auth_client.auth_code.authorize_url(redirect_uri: redirect_uri, response_type: 'code', scope: scope.join(' '))
     end
 

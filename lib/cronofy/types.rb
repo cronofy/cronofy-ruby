@@ -3,11 +3,11 @@ require "hashie"
 
 module Cronofy
   class Credentials
-    attr_reader :access_token,
-    :expires_at,
-    :expires_in,
-    :refresh_token,
-    :scope
+    attr_reader :access_token
+    attr_reader :expires_at
+    attr_reader :expires_in
+    attr_reader :refresh_token
+    attr_reader :scope
 
     def initialize(oauth_token)
       @access_token = oauth_token.token
@@ -20,9 +20,9 @@ module Cronofy
     def to_hash
       {
         access_token: access_token,
-        refresh_token: refresh_token,
-        expires_in: expires_in,
         expires_at: expires_at,
+        expires_in: expires_in,
+        refresh_token: refresh_token,
         scope: scope,
       }
     end
