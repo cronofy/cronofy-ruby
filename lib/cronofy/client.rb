@@ -103,6 +103,15 @@ module Cronofy
       parse_collection(Channel, "channels", response)
     end
 
+    # Public: Closes a notification channel.
+    #
+    # channel_id - String channel ID
+    #
+    # Returns nothing.
+    def close_channel(channel_id)
+      delete("/v1/channels/#{channel_id}")
+    end
+
     # Public : Generate the authorization URL to send the user to in order to generate
     #          and authorization code in order for an access_token to be issued
     #          see http://www.cronofy.com/developers/api#authorization
@@ -156,7 +165,7 @@ module Cronofy
       raise Errors.map_oauth2_error(e)
     end
 
-    def delete(url, body)
+    def delete(url, body = nil)
       access_token!.delete(url, json_request_args(body))
     rescue OAuth2::Error => e
       raise Errors.map_oauth2_error(e)
@@ -171,10 +180,14 @@ module Cronofy
     end
 
     def json_request_args(body_hash)
-      {
-        body: JSON.generate(body_hash),
-        headers: { "Content-Type" => "application/json; charset=utf-8" },
-      }
+      if body_hash
+        {
+          body: JSON.generate(body_hash),
+          headers: { "Content-Type" => "application/json; charset=utf-8" },
+        }
+      else
+        {}
+      end
     end
 
     def to_iso8601(value)

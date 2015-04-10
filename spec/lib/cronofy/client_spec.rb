@@ -473,5 +473,19 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
     end
+
+    describe '#close_channel' do
+      let(:channel_id) { "chn_1234567890" }
+      let(:method) { :delete }
+      let(:request_url) { "https://api.cronofy.com/v1/channels/#{channel_id}" }
+      let(:request_body) { nil }
+
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { nil }
+
+      subject { client.close_channel(channel_id) }
+
+      it_behaves_like 'a Cronofy request'
+    end
   end
 end
