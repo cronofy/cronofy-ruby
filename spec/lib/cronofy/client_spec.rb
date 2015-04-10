@@ -24,9 +24,14 @@ describe Cronofy::Client do
   end
 
   let(:client) do
-    Cronofy::Client.new('client_id_123', 'client_secret_456',
-                        token, 'refresh_token_456')
+    Cronofy::Client.new(
+      client_id: 'client_id_123',
+      client_secret: 'client_secret_456',
+      access_token: token,
+      refresh_token: 'refresh_token_456',
+    )
   end
+
   let(:correct_response_headers) do
     { 'Content-Type' => 'application/json; charset=utf-8' }
   end

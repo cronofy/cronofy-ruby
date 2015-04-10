@@ -13,35 +13,22 @@ module Cronofy
 
     # Public: Initialize a new Cronofy::Client.
     #
-    # client_id     - The client ID String of your Cronofy OAuth application
-    #                 (optional).
-    # client_secret - The client secret String of your Cronofy OAuth application
-    #                 (optional).
-    # access_token  - An existing access token String for the user's account
-    #                 (optional).
-    # refresh_token - An existing refresh token String for the user's account
-    #                 (optional).
-    # options       - A Hash of options used to initialize the client (default:
-    #                 {}):
-    #                 :client_id     - The client ID String of your Cronofy
-    #                                  OAuth application (optional).
-    #                 :client_secret - The client secret String of your Cronofy
-    #                                  OAuth application (optional).
-    #                 :access_token  - An existing access token String for the
-    #                                  user's account (optional).
-    #                 :refresh_token - An existing refresh token String for the
-    #                                  user's account (optional).
-    #
-    # If the client ID is not specified in either form, it will be read from the
-    # CRONOFY_CLIENT_ID environment variable. Similarly, if the client secret is
-    # not specified in either form, it will be read from the
-    # CRONOFY_CLIENT_SECRET environment variable.
-    def initialize(client_id = nil, client_secret = nil, access_token = nil, refresh_token = nil, options = {})
-      client_id     = options.fetch(:client_id, client_id) or ENV["CRONOFY_CLIENT_ID"]
-      client_secret = options.fetch(:client_secret, client_secret) or ENV["CRONOFY_CLIENT_SECRET"]
-
-      access_token = options.fetch(:access_token, access_token)
-      refresh_token = options.fetch(:refresh_token, refresh_token)
+    # options - A Hash of options used to initialize the client (default: {}):
+    #           :access_token  - An existing access token String for the user's
+    #                            account (optional).
+    #           :client_id     - The client ID String of your Cronofy OAuth
+    #                            application (default:
+    #                            ENV["CRONOFY_CLIENT_ID"]).
+    #           :client_secret - The client secret String of your Cronofy OAuth
+    #                            application (default:
+    #                            ENV["CRONOFY_CLIENT_SECRET"]).
+    #           :refresh_token - An existing refresh token String for the user's
+    #                            account (optional).
+    def initialize(options = {})
+      access_token  = options[:access_token]
+      client_id     = options.fetch(:client_id, ENV["CRONOFY_CLIENT_ID"])
+      client_secret = options.fetch(:client_secret, ENV["CRONOFY_CLIENT_SECRET"])
+      refresh_token = options[:refresh_token]
 
       @auth = Auth.new(client_id, client_secret, access_token, refresh_token)
     end
