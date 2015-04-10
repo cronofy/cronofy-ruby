@@ -1,6 +1,7 @@
 require "oauth2"
 
 module Cronofy
+  # Internal: Class for dealing with authentication and authorization issues.
   class Auth
     attr_reader :access_token
 

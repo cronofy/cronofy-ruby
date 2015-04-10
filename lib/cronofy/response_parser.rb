@@ -1,6 +1,7 @@
 require 'json'
 
 module Cronofy
+  # Internal: Class for dealing with the parsing of API responses.
   class ResponseParser
     def initialize(response)
       @response = response

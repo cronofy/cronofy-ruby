@@ -50,6 +50,7 @@ module Cronofy
   class UnknownError < APIError
   end
 
+  # Internal: Helper methods for raising more meaningful errors.
   class Errors
     ERROR_MAP = {
       400 => BadRequestError,
