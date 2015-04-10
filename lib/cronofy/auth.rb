@@ -2,32 +2,6 @@ require "oauth2"
 
 module Cronofy
   class Auth
-    class Credentials
-      attr_reader :access_token,
-                  :expires_at,
-                  :expires_in,
-                  :refresh_token,
-                  :scope
-
-      def initialize(oauth_token)
-        @access_token = oauth_token.token
-        @expires_at = oauth_token.expires_at
-        @expires_in = oauth_token.expires_in
-        @refresh_token = oauth_token.refresh_token
-        @scope = oauth_token.params['scope']
-      end
-
-      def to_hash
-        {
-          access_token: access_token,
-          refresh_token: refresh_token,
-          expires_in: expires_in,
-          expires_at: expires_at,
-          scope: scope,
-        }
-      end
-    end
-
     attr_reader :access_token
 
     def initialize(client_id, client_secret, token = nil, refresh_token = nil)
