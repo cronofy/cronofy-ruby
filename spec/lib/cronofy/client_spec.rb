@@ -16,19 +16,6 @@ describe Cronofy::Client do
     { 'Content-Type' => 'application/json; charset=utf-8' }
   end
 
-  shared_examples 'a Cronofy request with return value' do
-    it 'returns the correct response when no error' do
-      stub_request(method, request_url)
-        .with(headers: request_headers,
-              body: request_body)
-        .to_return(status: correct_response_code,
-                   headers: correct_response_headers,
-                   body: correct_response_body.to_json)
-
-      expect(subject).to eq correct_response_body
-    end
-  end
-
   shared_examples 'a Cronofy request with mapped return value' do
     it 'returns the correct response when no error' do
       stub_request(method, request_url)
