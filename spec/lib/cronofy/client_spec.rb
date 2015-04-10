@@ -55,9 +55,7 @@ describe Cronofy::Client do
 
       expect{ subject }.not_to raise_error
     end
-  end
 
-  shared_examples 'an error-wrapping Cronofy request' do
     it 'raises AuthenticationFailureError on 401s' do
       stub_request(method, request_url)
         .with(headers: request_headers,
@@ -152,7 +150,6 @@ describe Cronofy::Client do
     subject { client.list_calendars }
 
     it_behaves_like 'a Cronofy request'
-    it_behaves_like 'an error-wrapping Cronofy request'
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
@@ -196,7 +193,6 @@ describe Cronofy::Client do
         let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'an error-wrapping Cronofy request'
       end
     end
 
@@ -323,7 +319,6 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'an error-wrapping Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
@@ -340,7 +335,6 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'an error-wrapping Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
@@ -361,7 +355,6 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
-        it_behaves_like 'an error-wrapping Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
@@ -416,7 +409,6 @@ describe Cronofy::Client do
       subject { client.delete_event(calendar_id, event_id) }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'an error-wrapping Cronofy request'
     end
   end
 
@@ -447,7 +439,6 @@ describe Cronofy::Client do
       subject { client.create_channel(callback_url) }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'an error-wrapping Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
     end
 
@@ -480,7 +471,6 @@ describe Cronofy::Client do
       subject { client.list_channels }
 
       it_behaves_like 'a Cronofy request'
-      it_behaves_like 'an error-wrapping Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
     end
   end
