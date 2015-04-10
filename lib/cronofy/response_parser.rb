@@ -6,25 +6,32 @@ module Cronofy
       @response = response
     end
 
-    def parse_collection(collection_attribute, collection_type)
-      hash = parse_json
-
-      hash[collection_attribute].map { |item| collection_type.new(item) }
+    def parse_collection(type, attribute = nil)
+      parsing_target(attribute).map do |item|
+        type.new(item)
+      end
     end
 
-    def parse_one(attribute, type)
-      hash = parse_json
-
-      type.new(hash[attribute])
+    def parse_json(type, attribute = nil)
+      target = parsing_target(attribute)
+      type.new(target)
     end
 
-    def parse_json(type = nil)
-      hash = JSON.parse(@response.body)
+    def json
+      json_hash.dup
+    end
 
-      if type
-        type.new(hash)
+    private
+
+    def json_hash
+      @json_hash ||= JSON.parse(@response.body)
+    end
+
+    def parsing_target(attribute)
+      if attribute
+        json_hash[attribute]
       else
-        hash
+        json_hash
       end
     end
   end

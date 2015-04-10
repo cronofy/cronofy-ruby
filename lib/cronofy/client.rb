@@ -1,6 +1,6 @@
 module Cronofy
   class Client
-    def initialize(client_id, client_secret, token=nil, refresh_token=nil)
+    def initialize(client_id, client_secret, token = nil, refresh_token = nil)
       @auth = Auth.new(client_id, client_secret, token, refresh_token)
     end
 
@@ -14,8 +14,9 @@ module Cronofy
     #
     # Returns Hash of calendars
     def list_calendars
-      response = do_request { access_token!.get("/v1/calendars")  }
-      ResponseParser.new(response).parse_collection("calendars", Calendar)
+      request_collection(Calendar, "calendars") do
+        access_token!.get("/v1/calendars")
+      end
     end
 
     # Public : Creates or updates an existing event that matches the event_id, in the calendar
@@ -66,11 +67,9 @@ module Cronofy
         params[tp] = to_iso8601(params[tp])
       end
 
-      response = do_request do
+      request_json(PagedEventsResult) do
         access_token!.get('/v1/events', { params: params })
       end
-
-      ResponseParser.new(response).parse_json(PagedEventsResult)
     end
 
     # Public : Returns a paged list of events given a page URL.
@@ -84,8 +83,9 @@ module Cronofy
     def get_events_page(page_url)
       page_path = page_url.sub(::Cronofy.api_url, '')
 
-      response = do_request { access_token!.get(page_path) }
-      ResponseParser.new(response).parse_json(PagedEventsResult)
+      request_json(PagedEventsResult) do
+        access_token!.get(page_path)
+      end
     end
 
     # Public : Deletes an event from the specified calendar
@@ -109,21 +109,20 @@ module Cronofy
     #
     # Returns Hash of channel
     def create_channel(callback_url)
-      response = do_request do
+      request_json(Channel, "channel") do
         access_token!.post(
           "/v1/channels",
           json_request_args(callback_url: callback_url))
       end
-
-      ResponseParser.new(response).parse_one("channel", Channel)
     end
 
     # Public : Lists the channels of the user
     #
     # Returns Hash of channels
     def list_channels
-      response = do_request { access_token!.get('/v1/channels') }
-      ResponseParser.new(response).parse_collection("channels", Channel)
+      request_collection(Channel, "channels") do
+        access_token!.get('/v1/channels')
+      end
     end
 
     # Public : Generate the authorization URL to send the user to in order to generate
@@ -134,7 +133,7 @@ module Cronofy
     # scope         - Array of scopes describing access required to the users calendars (default: all scopes)
     #
     # Returns String
-    def user_auth_link(redirect_uri, scope=nil)
+    def user_auth_link(redirect_uri, scope = nil)
       @auth.user_auth_link(redirect_uri, scope)
     end
 
@@ -173,6 +172,16 @@ module Cronofy
       rescue OAuth2::Error => e
         raise Errors.map_oauth2_error(e)
       end
+    end
+
+    def request_collection(type, attr, &block)
+      response = do_request(&block)
+      ResponseParser.new(response).parse_collection(type, attr)
+    end
+
+    def request_json(type, attr = nil, &block)
+      response = do_request(&block)
+      ResponseParser.new(response).parse_json(type, attr)
     end
 
     def json_request_args(body_hash)
