@@ -8,6 +8,21 @@ describe Cronofy::Client do
   end
 
   let(:token) { 'token_123' }
+  let(:base_request_headers) do
+    {
+      "Authorization" => "Bearer #{token}",
+      "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+    }
+  end
+
+  let(:json_request_headers) do
+    base_request_headers.merge("Content-Type" => "application/json; charset=utf-8")
+  end
+
+  let(:request_headers) do
+    base_request_headers
+  end
+
   let(:client) do
     Cronofy::Client.new('client_id_123', 'client_secret_456',
                         token, 'refresh_token_456')
@@ -40,7 +55,9 @@ describe Cronofy::Client do
 
       expect{ subject }.not_to raise_error
     end
+  end
 
+  shared_examples 'an error-wrapping Cronofy request' do
     it 'raises AuthenticationFailureError on 401s' do
       stub_request(method, request_url)
         .with(headers: request_headers,
@@ -95,7 +112,6 @@ describe Cronofy::Client do
   describe '#list_calendars' do
     let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
     let(:method) { :get }
-    let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:request_body) { '' }
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
@@ -136,6 +152,7 @@ describe Cronofy::Client do
     subject { client.list_calendars }
 
     it_behaves_like 'a Cronofy request'
+    it_behaves_like 'an error-wrapping Cronofy request'
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
@@ -144,12 +161,7 @@ describe Cronofy::Client do
       let(:calendar_id) { 'calendar_id_123'}
       let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
       let(:method) { :post }
-      let(:request_headers) do
-        {
-          'Authorization' => "Bearer #{token}",
-          'Content-Type' => 'application/json; charset=utf-8'
-        }
-      end
+      let(:request_headers) { json_request_headers }
       let(:event) do
         {
           :event_id => "qTtZdczOccgaPncGJaCiLg",
@@ -184,21 +196,44 @@ describe Cronofy::Client do
         let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
 
         it_behaves_like 'a Cronofy request'
+        it_behaves_like 'an error-wrapping Cronofy request'
       end
     end
 
     describe '#read_events' do
+      before do
+        stub_request(method, request_url)
+          .with(headers: request_headers,
+                body: request_body)
+          .to_return(status: correct_response_code,
+                     headers: correct_response_headers,
+                     body: correct_response_body.to_json)
+
+        stub_request(:get, next_page_url)
+          .with(headers: request_headers)
+          .to_return(status: correct_response_code,
+            headers: correct_response_headers,
+            body: next_page_body.to_json)
+      end
+
+
       let(:request_url_prefix) { 'https://api.cronofy.com/v1/events' }
       let(:method) { :get }
-      let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
       let(:request_body) { '' }
       let(:correct_response_code) { 200 }
+      let(:next_page_url) do
+        "https://next.page.com/08a07b034306679e"
+      end
+
+      let(:params) { Hash.new }
+      let(:request_url) { request_url_prefix + "?tzid=Etc/UTC" }
+
       let(:correct_response_body) do
         {
           'pages' => {
             'current' => 1,
             'total' => 2,
-            'next_page' => 'https://api.cronofy.com/v1/events/pages/08a07b034306679e'
+            'next_page' => next_page_url
           },
           'events' => [
                        {
@@ -226,11 +261,49 @@ describe Cronofy::Client do
         }
       end
 
-      let(:correct_mapped_result) do
-        Cronofy::PagedEventsResult.new(correct_response_body)
+      let(:next_page_body) do
+        {
+          'pages' => {
+            'current' => 2,
+            'total' => 2,
+          },
+          'events' => [
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a4173023402934d',
+                         'summary' => 'Company Retreat Extended',
+                         'description' => '',
+                         'start' => '2014-09-06',
+                         'end' => '2014-09-08',
+                         'deleted' => false
+                       },
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'event_uid' => 'evt_external_54008b1a4a41198273921312',
+                         'summary' => 'Dinner with Paul',
+                         'description' => '',
+                         'start' => '2014-09-13T19:00:00Z',
+                         'end' => '2014-09-13T21:00:00Z',
+                         'deleted' => false,
+                         'location' => {
+                           'description' => 'Cafe'
+                         }
+                       }
+                      ]
+        }
       end
 
-      subject { client.read_events(params) }
+      let(:correct_mapped_result) do
+        first_page_events = correct_response_body['events'].map { |event| Cronofy::Event.new(event) }
+        second_page_events = next_page_body['events'].map { |event| Cronofy::Event.new(event) }
+
+        first_page_events + second_page_events
+      end
+
+      subject do
+        # By default force evaluation
+        client.read_events(params).to_a
+      end
 
       context 'when all params are passed' do
         let(:params) do
@@ -250,6 +323,7 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
+        it_behaves_like 'an error-wrapping Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
@@ -266,56 +340,67 @@ describe Cronofy::Client do
         end
 
         it_behaves_like 'a Cronofy request'
+        it_behaves_like 'an error-wrapping Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
-    end
 
-    describe '#get_events_page' do
-      let(:request_url) { 'https://api.cronofy.com/v1/events/pages/08a07b034306679e' }
-      let(:method) { :get }
-      let(:request_headers) { { 'Authorization' => "Bearer #{token}" } }
-      let(:request_body) { '' }
-      let(:correct_response_code) { 200 }
-      let(:correct_response_body) do
-        {
-          'pages' => {
-            'current' => 2,
-            'total' => 2
-          },
-          'events' => [
-                       {
-                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6037',
-                         'summary' => 'Company Retreat',
-                         'description' => '',
-                         'start' => '2014-09-06',
-                         'end' => '2014-09-08',
-                         'deleted' => false
-                       },
-                       {
-                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
-                         'event_uid' => 'evt_external_54008b1a4a41730f8d5c6038',
-                         'summary' => 'Dinner with Laura',
-                         'description' => '',
-                         'start' => '2014-09-13T19:00:00Z',
-                         'end' => '2014-09-13T21:00:00Z',
-                         'deleted' => false,
-                         'location' => {
-                           'description' => 'Pizzeria'
-                         }
-                       }
-                      ]
-        }
+      context "when unknown flags are passed" do
+        let(:params) do
+          {
+            unknown_bool: true,
+            unknown_number: 5,
+            unknown_string: "foo-bar-baz",
+          }
+        end
+
+        let(:request_url) do
+          "#{request_url_prefix}?tzid=Etc/UTC" \
+          "&unknown_bool=true" \
+          "&unknown_number=5" \
+          "&unknown_string=foo-bar-baz"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'an error-wrapping Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
       end
 
-      let(:correct_mapped_result) do
-        Cronofy::PagedEventsResult.new(correct_response_body)
+      context "next page not found" do
+        before do
+          stub_request(:get, next_page_url)
+            .with(headers: request_headers)
+            .to_return(status: 404,
+              headers: correct_response_headers,
+              body: '')
+        end
+
+        it "raises an error" do
+          expect{ subject }.to raise_error(::Cronofy::NotFoundError)
+        end
       end
 
-      subject { client.get_events_page(request_url) }
+      context "only first event" do
+        before do
+          # Ensure an error if second page is requested
+          stub_request(:get, next_page_url)
+            .with(headers: request_headers)
+            .to_return(status: 404,
+              headers: correct_response_headers,
+              body: '')
+        end
 
-      it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with mapped return value'
+        let(:first_event) do
+          Cronofy::Event.new(correct_response_body["events"].first)
+        end
+
+        subject do
+          client.read_events(params).first
+        end
+
+        it "returns the first event from the first page" do
+          expect(subject).to eq(first_event)
+        end
+      end
     end
 
     describe '#delete_event' do
@@ -323,12 +408,7 @@ describe Cronofy::Client do
       let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
       let(:event_id) { 'event_id_456' }
       let(:method) { :delete }
-      let(:request_headers) do
-        {
-          'Authorization' => "Bearer #{token}",
-          'Content-Type' => 'application/json; charset=utf-8'
-        }
-      end
+      let(:request_headers) { json_request_headers }
       let(:request_body) { {:event_id => event_id} }
       let(:correct_response_code) { 202 }
       let(:correct_response_body) { '' }
@@ -336,6 +416,7 @@ describe Cronofy::Client do
       subject { client.delete_event(calendar_id, event_id) }
 
       it_behaves_like 'a Cronofy request'
+      it_behaves_like 'an error-wrapping Cronofy request'
     end
   end
 
@@ -345,12 +426,7 @@ describe Cronofy::Client do
     describe '#create_channel' do
       let(:method) { :post }
       let(:callback_url) { 'http://call.back/url' }
-      let(:request_headers) do
-        {
-          'Content-Type' => 'application/json; charset=utf-8',
-          'Authorization' => "Bearer #{token}"
-        }
-      end
+      let(:request_headers) { json_request_headers }
       let(:request_body) { hash_including(:callback_url => callback_url) }
 
       let(:correct_response_code) { 200 }
@@ -371,16 +447,12 @@ describe Cronofy::Client do
       subject { client.create_channel(callback_url) }
 
       it_behaves_like 'a Cronofy request'
+      it_behaves_like 'an error-wrapping Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
     end
 
     describe '#list_channels' do
       let(:method) { :get }
-      let(:request_headers) do
-        {
-          'Authorization' => "Bearer #{token}"
-        }
-      end
       let(:request_body) { '' }
 
       let(:correct_response_code) { 200 }
@@ -408,6 +480,7 @@ describe Cronofy::Client do
       subject { client.list_channels }
 
       it_behaves_like 'a Cronofy request'
+      it_behaves_like 'an error-wrapping Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
     end
   end

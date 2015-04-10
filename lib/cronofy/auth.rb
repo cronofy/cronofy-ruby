@@ -31,8 +31,8 @@ module Cronofy
     attr_reader :access_token
 
     def initialize(client_id, client_secret, token = nil, refresh_token = nil)
-      @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url)
-      @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url)
+      @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
+      @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
       set_access_token(token, refresh_token) if token
     end

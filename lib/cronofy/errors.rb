@@ -61,8 +61,19 @@ module Cronofy
     }.freeze
 
     def self.map_oauth2_error(error)
-      error_class = ERROR_MAP.fetch(error.response.status, UnknownError)
-      raise error_class.new(error.response.headers['status'], error.response)
+      raise_error(error.response)
+    end
+
+    def self.raise_if_error(response)
+      return if response.status == 200
+      raise_error(response)
+    end
+
+    private
+
+    def self.raise_error(response)
+      error_class = ERROR_MAP.fetch(response.status, UnknownError)
+      raise error_class.new(response.headers['status'], response)
     end
   end
 end

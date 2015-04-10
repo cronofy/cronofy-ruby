@@ -40,47 +40,38 @@ module Cronofy
     end
     alias_method :upsert_event, :create_or_update_event
 
-    # Public : Returns a paged list of events within a given time period,
-    #          that you have not created, across all of a users calendars.
-    #          see http://www.cronofy.com/developers/api#read-events
+    # Public: Returns a lazily-evaluated Enumerable of Events that satisfy the
+    # given query criteria.
     #
-    # from            - The minimum Date from which to return events.
-    # to              - The Date to return events up until.
-    # tzid            - A String representing a known time zone identifier from the
-    #                   IANA Time Zone Database (default: Etc/UTC)
-    # include_deleted - A Boolean specifying whether events that have been deleted
-    #                   should included or excluded from the results.
-    # include_moved   - A Boolean specifying whether events that have ever existed
-    #                   within the given window should be included or excluded from
-    #                   the results.
-    # last_modified   - The Time that events must be modified on or after
-    #                   in order to be returned.
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :from            - The minimum Date from which to return events
+    #                              (optional).
+    #           :to              - The Date to return events up until (optional).
+    #           :tzid            - A String representing a known time zone
+    #                              identifier from the IANA Time Zone Database
+    #                              (default: Etc/UTC).
+    #           :include_deleted - A Boolean specifying whether events that have
+    #                              been deleted should included or excluded from
+    #                              the results (optional).
+    #           :include_moved   - A Boolean specifying whether events that have
+    #                              ever existed within the given window should
+    #                              be included or excluded from the results
+    #                              (optional).
+    #           :last_modified   - The Time that events must be modified on or
+    #                              after in order to be returned (optional).
     #
-    # Returns paged Hash of events
-    def read_events(opts = {})
-      params = READ_EVENTS_DEFAULT_PARAMS.merge(opts)
+    # See http://www.cronofy.com/developers/api#read-events for reference.
+    #
+    # Returns a lazily-evaluated Enumerable of Events
+    def read_events(options = {})
+      params = READ_EVENTS_DEFAULT_PARAMS.merge(options)
 
       READ_EVENTS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
         params[tp] = to_iso8601(params[tp])
       end
 
-      response = get("/v1/events", params: params)
-      parse_json(PagedEventsResult, response)
-    end
-
-    # Public : Returns a paged list of events given a page URL.
-    #          Page URLs are obtained from read_events requests and
-    #          get_events_page requests (response.pages.next_page)
-    #          see http://www.cronofy.com/developers/api#read-events
-    #
-    # page_url - the url of a page of Read Events results
-    #
-    # Returns paged Hash of events
-    def get_events_page(page_url)
-      page_path = page_url.sub(::Cronofy.api_url, '')
-
-      response = get(page_path)
-      parse_json(PagedEventsResult, response)
+      url = ::Cronofy.api_url + "/v1/events"
+      ReadEventsIterator.new(access_token!, url, params)
     end
 
     # Public : Deletes an event from the specified calendar
@@ -194,6 +185,60 @@ module Cronofy
         value.getutc.iso8601
       else
         value.iso8601
+      end
+    end
+
+    class ReadEventsIterator
+      include Enumerable
+
+      def initialize(access_token, url, params)
+        @access_token = access_token
+        @url = url
+        @params = params
+      end
+
+      def each
+        page = get_page(url, params)
+
+        page.events.each do |event|
+          yield event
+        end
+
+        while page.pages.next_page?
+          page = get_page(page.pages.next_page)
+
+          page.events.each do |event|
+            yield event
+          end
+        end
+      end
+
+      private
+
+      attr_reader :access_token
+      attr_reader :params
+      attr_reader :url
+
+      def get_page(url, params = {})
+        response = http_get(url, params)
+        parse_page(response)
+      end
+
+      def http_get(url, params = {})
+        response = Faraday.get(url, params, oauth_headers)
+        Errors.raise_if_error(response)
+        response
+      end
+
+      def oauth_headers
+        {
+          "Authorization" => "Bearer #{access_token.token}",
+          "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        }
+      end
+
+      def parse_page(response)
+        ResponseParser.new(response).parse_json(PagedEventsResult)
       end
     end
   end
