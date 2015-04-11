@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/cronofy.svg)](http://badge.fury.io/rb/cronofy)
 [![Join the chat at https://gitter.im/cronofy/cronofy-ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cronofy/cronofy-ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Cronofy](http://www.cronofy.com) - one API for all the calendars (Google, Outlook, iCloud, Exchange). This gem is an interface for easy use of [Cronofy API](http://www.cronofy.com/developers/api) with Ruby.
+[Cronofy](http://www.cronofy.com) - one API for all the calendars (Google, Outlook, iCloud, Exchange).
 
 ## Installation
 
@@ -24,69 +24,97 @@ Or install it yourself as:
 
 ## Usage
 
-You have to register on cronofy website and create an application there. You will get a client id and client secret which you will have to pass to initializer. You can also pass a token and refresh token that you will get later, or leave it blank in case if you don't have it now:
+You have to register on the Cronofy website and create an application there. You will then get a client id and client secret.
+
+You can either set them as the enviroment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` and have them picked up automatically when creating a new `Cronofy::Client`:
+
 ```ruby
-cronofy = Cronofy::Client.new('CLIENT_ID', 'CLIENT_SECRET', 'TOKEN', 'REFRESH_TOKEN')
+cronofy = Cronofy::Client.new
 ```
 
-Generate a link for a user to grant access for his calendars:
+Or you can specify them explicitly:
+
+```ruby
+cronofy = Cronofy::Client.new(client_id: 'CLIENT_ID', client_secret: 'CLIENT_SECRET')
+```
+
+You can also pass an existing access token and refresh token if you already have a pair for the user:
+
+```ruby
+cronofy = Cronofy::Client.new(access_token: 'ACCESS_TOKEN', refresh_token: 'REFRESH_TOKEN')
+```
+
+### Authorization
+
+Generate a link for a user to grant access for their calendars:
+
 ```ruby
 cronofy.user_auth_link('http://localhost:3000/oauth2/callback')
 ```
 
-The specified url is a page on your website that will handle callback and get a code parameter out of it. On a callback you will have a param[:code] that you will need in order to get a token:
+The returned URL is a page on your website that will handle the OAuth 2.0 callback and receive a code parameter. You can then use that code to retrieve an OAuth token granting access to the user's Cronofy account:
+
 ```ruby
 token = cronofy.get_token_from_code(code, 'http://localhost:3000/oauth2/callback')
 ```
-You can now save a token to pass it later to initializer.
+
+You should save the `access_token` and `refresh_token` for later use.
+
+### List calendars
 
 Get a list of all the user calendars:
+
 ```ruby
 cronofy.list_calendars
 ```
 
-You will get a list of user's calendars in a json format. The example of such a response:
+You will get a list of the user's calendars with each entry being a wrapped
+version of the following JSON structure:
+
 ```json
 {
-   "calendars":[
-      {
-         "provider_name":"google",
-         "profile_name":"YYYYYYYY@gmail.com",
-         "calendar_id":"cal_YYYYYYYY-UNIQUE_CAL_ID_HERE-YYYYYYYY",
-         "calendar_name":"Office Calendar",
-         "calendar_readonly":false,
-         "calendar_deleted":false
-      },
-      {
-         "provider_name":"google",
-         "profile_name":"XXXXXXX@gmail.com",
-         "calendar_id":"cal_XXXXXXXX-UNIQUE_CAL_ID_HERE-XXXXXXXXX",
-         "calendar_name":"Home Calendar",
-         "calendar_readonly":false,
-         "calendar_deleted":false
-      }
-   ]
+   "provider_name": "google",
+   "profile_name": "YYYYYYYY@gmail.com",
+   "calendar_id": "cal_YYYYYYYY-UNIQUE_CAL_ID_HERE-YYYYYYYY",
+   "calendar_name": "Office Calendar",
+   "calendar_readonly": false,
+   "calendar_deleted": false
 }
 ```
 
-To create/update an event in user's calendar:
+The properties can be accessed like so:
+
+```ruby
+calendar = cronofy.list_calendars.first
+calendar.calendar_id
+# => "cal_YYYYYYYY-UNIQUE_CAL_ID_HERE-YYYYYYYY"
+```
+
+### Create or update events
+
+To create/update an event in the user's calendar:
+
 ```ruby
 event_data = {
-  event_id: 'uniq-id', # uniq id of event
+  event_id: 'uniq-id',
   summary: 'Event summary',
   description: 'Event description',
-  start: Time.now + 60 * 60 * 24, # will be converted to .utc.iso8601 internally,
-  end: Time.now + 60 * 60 * 25, # the same convertion here
+  start: Time.now + 60 * 60 * 24,
+  end: Time.now + 60 * 60 * 25,
   location: {
     description: "Meeting room"
   }
 }
-cronofy.upsert(calendar_id, event_data)
+
+cronofy.upsert_event(calendar_id, event_data)
 ```
 
+### Delete events
+
 To delete an event from user's calendar:
+
 ```ruby
-cronofy.delete_event(calendar_id, event_id)
+cronofy.delete_event(calendar_id, 'uniq-id')
 ```
 
 ## Links

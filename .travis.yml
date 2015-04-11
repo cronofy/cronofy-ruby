@@ -1,5 +1,6 @@
 language: ruby
 script: 'script/ci'
+sudo: false
 rvm:
   - 2.0
   - 2.1
@@ -7,6 +8,9 @@ rvm:
   - jruby-head
   - rbx-2
   - ruby-head
+matrix:
+  allow_failures:
+    - rvm: ruby-head
 notifications:
   webhooks:
     urls:
