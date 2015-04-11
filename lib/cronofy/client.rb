@@ -39,6 +39,7 @@ module Cronofy
     #
     # Returns an Array of Calendars
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -89,6 +90,7 @@ module Cronofy
     #
     # Returns nothing.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -135,6 +137,7 @@ module Cronofy
     #
     # Returns a lazily-evaluated Enumerable of Events
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -165,6 +168,7 @@ module Cronofy
     #
     # Returns nothing.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -188,6 +192,7 @@ module Cronofy
     #
     # Returns a Channel.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -208,6 +213,7 @@ module Cronofy
     #
     # Returns an Array of Channels.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -225,6 +231,7 @@ module Cronofy
     #
     # Returns nothing.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
@@ -243,6 +250,7 @@ module Cronofy
     #
     # Returns an Account.
     #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
