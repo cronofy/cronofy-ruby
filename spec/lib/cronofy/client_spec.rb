@@ -23,6 +23,8 @@ describe Cronofy::Client do
     base_request_headers
   end
 
+  let(:request_body) { nil }
+
   let(:client) do
     Cronofy::Client.new(
       client_id: 'client_id_123',
@@ -115,7 +117,6 @@ describe Cronofy::Client do
   describe '#list_calendars' do
     let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
     let(:method) { :get }
-    let(:request_body) { '' }
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
@@ -187,7 +188,7 @@ describe Cronofy::Client do
                        })
       end
       let(:correct_response_code) { 202 }
-      let(:correct_response_body) { '' }
+      let(:correct_response_body) { nil }
 
       subject { client.create_or_update_event(calendar_id, event) }
 
@@ -220,7 +221,6 @@ describe Cronofy::Client do
 
       let(:request_url_prefix) { 'https://api.cronofy.com/v1/events' }
       let(:method) { :get }
-      let(:request_body) { '' }
       let(:correct_response_code) { 200 }
       let(:next_page_url) do
         "https://next.page.com/08a07b034306679e"
@@ -368,8 +368,7 @@ describe Cronofy::Client do
           stub_request(:get, next_page_url)
             .with(headers: request_headers)
             .to_return(status: 404,
-              headers: correct_response_headers,
-              body: '')
+              headers: correct_response_headers)
         end
 
         it "raises an error" do
@@ -383,8 +382,7 @@ describe Cronofy::Client do
           stub_request(:get, next_page_url)
             .with(headers: request_headers)
             .to_return(status: 404,
-              headers: correct_response_headers,
-              body: '')
+              headers: correct_response_headers)
         end
 
         let(:first_event) do
@@ -407,9 +405,9 @@ describe Cronofy::Client do
       let(:event_id) { 'event_id_456' }
       let(:method) { :delete }
       let(:request_headers) { json_request_headers }
-      let(:request_body) { {:event_id => event_id} }
+      let(:request_body) { { :event_id => event_id } }
       let(:correct_response_code) { 202 }
-      let(:correct_response_body) { '' }
+      let(:correct_response_body) { nil }
 
       subject { client.delete_event(calendar_id, event_id) }
 
@@ -449,7 +447,6 @@ describe Cronofy::Client do
 
     describe '#list_channels' do
       let(:method) { :get }
-      let(:request_body) { '' }
 
       let(:correct_response_code) { 200 }
       let(:correct_response_body) do
@@ -483,7 +480,6 @@ describe Cronofy::Client do
       let(:channel_id) { "chn_1234567890" }
       let(:method) { :delete }
       let(:request_url) { "https://api.cronofy.com/v1/channels/#{channel_id}" }
-      let(:request_body) { nil }
 
       let(:correct_response_code) { 202 }
       let(:correct_response_body) { nil }
@@ -491,6 +487,33 @@ describe Cronofy::Client do
       subject { client.close_channel(channel_id) }
 
       it_behaves_like 'a Cronofy request'
+    end
+  end
+
+  describe "Account" do
+    let(:request_url) { "https://api.cronofy.com/v1/account" }
+
+    describe "#account" do
+      let(:method) { :get }
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          "account" => {
+            "account_id" => "acc_id_123",
+            "email" => "foo@example.com",
+          }
+        }
+      end
+
+      let(:correct_mapped_result) do
+        Cronofy::Account.new(correct_response_body["account"])
+      end
+
+      subject { client.account }
+
+      it_behaves_like "a Cronofy request"
+      it_behaves_like "a Cronofy request with mapped return value"
     end
   end
 end

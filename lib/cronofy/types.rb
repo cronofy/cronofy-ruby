@@ -119,6 +119,9 @@ module Cronofy
     end
   end
 
+  class Account < Hashie::Mash
+  end
+
   class Calendar < Hashie::Mash
   end
 

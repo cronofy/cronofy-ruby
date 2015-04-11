@@ -237,6 +237,23 @@ module Cronofy
       nil
     end
 
+    # Public: Retrieves the details of the account.
+    #
+    # See http://www.cronofy.com/developers/api#account for reference.
+    #
+    # Returns an Account.
+    #
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def account
+      response = get("/v1/account")
+      parse_json(Account, "account", response)
+    end
+
     # Public: Generates a URL to send the user to in order to perform the OAuth
     # 2.0 authorization process.
     #
