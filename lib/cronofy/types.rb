@@ -1,5 +1,6 @@
 require "date"
 require "hashie"
+require "time"
 
 module Cronofy
   class Credentials
@@ -40,7 +41,7 @@ module Cronofy
 
     def self.coerce(value)
       begin
-        time = Time.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
+        time = Time.iso8601(value)
       rescue
         begin
           date = Date.strptime(value, '%Y-%m-%d')
