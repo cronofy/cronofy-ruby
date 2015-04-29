@@ -187,8 +187,7 @@ module Cronofy
     #
     # callback_url - A String specifing the callback URL for the channel.
     #
-    # See http://www.cronofy.com/developers/api/alpha#create-channel for
-    # reference.
+    # See http://www.cronofy.com/developers/api#create-channel for reference.
     #
     # Returns a Channel.
     #
@@ -208,8 +207,7 @@ module Cronofy
 
     # Public: Lists all the notification channels for the account.
     #
-    # See http://www.cronofy.com/developers/api/alpha#list-channels for
-    # reference.
+    # See http://www.cronofy.com/developers/api#list-channels for reference.
     #
     # Returns an Array of Channels.
     #
@@ -228,6 +226,8 @@ module Cronofy
     # Public: Closes a notification channel.
     #
     # channel_id - The String Cronofy ID for the channel to close.
+    #
+    # See http://www.cronofy.com/developers/api#close-channel for reference.
     #
     # Returns nothing.
     #
@@ -313,6 +313,22 @@ module Cronofy
     # not valid.
     def refresh_access_token
       @auth.refresh!
+    end
+
+    # Public: Revokes the account's refresh token and access token.
+    #
+    # After making this call the Client will become unusable. You should also
+    # delete the stored credentials used to create this instance.
+    #
+    # See http://www.cronofy.com/developers/api#revoke-authorization for
+    # reference.
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
+    # not valid.
+    def revoke_authorization
+      @auth.revoke!
     end
 
     private

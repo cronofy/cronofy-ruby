@@ -12,7 +12,7 @@ module Cronofy
       set_access_token(token, refresh_token) if token
     end
 
-    # Public: generate a URL for authorizing the application with Cronofy
+    # Internal: generate a URL for authorizing the application with Cronofy
     #
     # redirect_uri    String, the URI to return to after authorization
     # scope           Array of String, the scope requested
@@ -31,7 +31,7 @@ module Cronofy
       end
     end
 
-    # Public: Refreshes the access token
+    # Internal: Refreshes the access token
     # Returns Hash of token elements to allow client to update in local store for user
     def refresh!
       do_request do
@@ -46,6 +46,22 @@ module Cronofy
 
     def set_access_token(token, refresh_token)
       @access_token = OAuth2::AccessToken.new(@api_client, token, refresh_token: refresh_token)
+    end
+
+    # Internal: Revokes the refresh token and corresponding access tokens.
+    #
+    # Returns nothing.
+    def revoke!
+      do_request do
+        body = {
+          client_id: @api_client.id,
+          client_secret: @api_client.secret,
+          token: access_token.refresh_token,
+        }
+
+        @api_client.request(:post, "/oauth/token/revoke", body: body)
+        @access_token = nil
+      end
     end
 
     private

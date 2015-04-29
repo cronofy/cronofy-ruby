@@ -120,4 +120,40 @@ describe Cronofy::Auth do
 
     it_behaves_like 'an authorization request'
   end
+
+  describe "#revoke!" do
+    let(:auth) do
+      Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
+    end
+
+    let!(:revocation_request) do
+      stub_request(:post, "https://api.cronofy.com/oauth/token/revoke")
+        .with(
+          body: {
+            client_id: client_id,
+            client_secret: client_secret,
+            token: refresh_token,
+          },
+          headers: {
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+          }
+        )
+        .to_return(
+          status: response_status,
+        )
+    end
+
+    before do
+      auth.revoke!
+    end
+
+    it "unsets the access token" do
+      expect(auth.access_token).to be_nil
+    end
+
+    it "makes the revocation request" do
+      expect(revocation_request).to have_been_requested
+    end
+  end
 end
