@@ -133,6 +133,9 @@ module Cronofy
     #           :last_modified   - The Time that events must be modified on or
     #                              after in order to be returned (optional).
     #
+    # The first page will be retrieved eagerly so that common errors will happen
+    # inline. However, subsequent pages (if any) will be requested lazily.
+    #
     # See http://www.cronofy.com/developers/api#read-events for reference.
     #
     # Returns a lazily-evaluated Enumerable of Events
@@ -401,10 +404,11 @@ module Cronofy
         @access_token = access_token
         @url = url
         @params = params
+        @first_page = get_page(url, params)
       end
 
       def each
-        page = get_page(url, params)
+        page = @first_page
 
         page.events.each do |event|
           yield event

@@ -396,6 +396,17 @@ describe Cronofy::Client do
           expect(subject).to eq(first_event)
         end
       end
+
+      context "without calling #to_a to force full evaluation" do
+        subject { client.read_events(params) }
+
+        it_behaves_like 'a Cronofy request'
+
+        # We expect it to behave like a Cronofy request as the first page is
+        # requested eagerly so that the majority of errors will happen inline
+        # rather than lazily happening wherever the iterator may have been
+        # passed.
+      end
     end
 
     describe '#delete_event' do
