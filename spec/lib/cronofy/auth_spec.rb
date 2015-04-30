@@ -78,6 +78,65 @@ describe Cronofy::Auth do
       )
   end
 
+  describe '#user_auth_link' do
+    let(:scope_array) { %w{read_events list_calendars create_event} }
+    let(:scheme) { 'https' }
+    let(:host) { 'app.cronofy.com' }
+    let(:path) { '/oauth/authorize' }
+    let(:default_params) do
+      {
+        'client_id' => client_id,
+        'redirect_uri' => redirect_uri,
+        'response_type' => 'code',
+        'scope' => scope
+      }
+    end
+
+    let(:auth) do
+      Cronofy::Auth.new(client_id, client_secret)
+    end
+
+    subject do
+      url = auth.user_auth_link(redirect_uri, scope: scope_array, state: state)
+      URI.parse(url)
+    end
+
+    shared_examples 'a user auth link provider' do
+      it 'contains the correct scheme' do
+        expect(subject.scheme).to eq scheme
+      end
+
+      it 'contains the correct host' do
+        expect(subject.host).to eq host
+      end
+
+      it 'contains the correct path' do
+        expect(subject.path).to eq path
+      end
+
+      it 'contains the correct query params' do
+        expect(Rack::Utils.parse_query(subject.query)).to eq params
+      end
+    end
+
+    context 'when no state' do
+      let(:state) { nil }
+      let(:params) { default_params }
+
+      it_behaves_like 'a user auth link provider'
+    end
+
+    context 'when state is passed' do
+      let(:state) { SecureRandom.hex }
+      let(:params) do
+        default_params['state'] = state
+        default_params
+      end
+
+      it_behaves_like 'a user auth link provider'
+    end
+  end
+
   shared_examples 'an authorization request' do
     context 'when succeeds' do
       it 'returns a correct Credentials object' do
