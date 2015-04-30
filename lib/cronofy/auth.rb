@@ -16,12 +16,19 @@ module Cronofy
     #
     # redirect_uri    String, the URI to return to after authorization
     # scope           Array of String, the scope requested
+    # state           OAuth 2.0-specified state
     #
     # See http://www.cronofy.com/developers/api#authorization for reference.
     #
     # Returns the URL as a String.
-    def user_auth_link(redirect_uri, scope)
-      @auth_client.auth_code.authorize_url(redirect_uri: redirect_uri, response_type: 'code', scope: scope.join(' '))
+    def user_auth_link(redirect_uri, scope, state = nil)
+      params = {
+        redirect_uri: redirect_uri,
+        response_type: 'code',
+        scope: scope.join(' '),
+        state: state
+      }.delete_if { |key, value| value.nil? }
+      @auth_client.auth_code.authorize_url(params)
     end
 
     def get_token_from_code(code, redirect_uri)
