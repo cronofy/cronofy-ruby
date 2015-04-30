@@ -277,8 +277,8 @@ module Cronofy
     # See http://www.cronofy.com/developers/api#authorization for reference.
     #
     # Returns the URL as a String.
-    def user_auth_link(redirect_url, scope = DEFAULT_OAUTH_SCOPE)
-      @auth.user_auth_link(redirect_url, scope)
+    def user_auth_link(redirect_url, scope = DEFAULT_OAUTH_SCOPE, state = nil)
+      @auth.user_auth_link(redirect_url, scope, state)
     end
 
     # Public: Retrieves the OAuth credentials authorized for the given code and
