@@ -268,17 +268,22 @@ module Cronofy
     # Public: Generates a URL to send the user to in order to perform the OAuth
     # 2.0 authorization process.
     #
-    # redirect_url - A String specifing the URL to return the user to once they
+    # redirect_uri - A String specifing the URI to return the user to once they
     #                have completed the authorization steps.
-    # scope        - Array of scopes describing the access to request from the
-    #                user to the users calendars (default:
-    #                DEFAULT_OAUTH_SCOPE).
+    # options      - The Hash options used to refine the selection
+    #                (default: {}):
+    #                :scope - Array of scopes describing the access to request
+    #                         from the user to the users calendars
+    #                         (default: DEFAULT_OAUTH_SCOPE).
+    #                :state - String containing the state value to retain during
+    #                         the OAuth authorization process (optional).
     #
     # See http://www.cronofy.com/developers/api#authorization for reference.
     #
     # Returns the URL as a String.
-    def user_auth_link(redirect_url, scope = DEFAULT_OAUTH_SCOPE, state = nil)
-      @auth.user_auth_link(redirect_url, scope, state)
+    def user_auth_link(redirect_url, options = {})
+      options = { scope: DEFAULT_OAUTH_SCOPE }.merge(options)
+      @auth.user_auth_link(redirect_url, options)
     end
 
     # Public: Retrieves the OAuth credentials authorized for the given code and

@@ -91,11 +91,13 @@ describe Cronofy::Auth do
         'scope' => scope
       }
     end
-    
+
+    let(:auth) do
+      Cronofy::Auth.new(client_id, client_secret)
+    end
+
     subject do
-      url = Cronofy::Auth.new(client_id, client_secret).user_auth_link(redirect_uri,
-                                                                       scope_array,
-                                                                       state)
+      url = auth.user_auth_link(redirect_uri, scope: scope_array, state: state)
       URI.parse(url)
     end
 
@@ -116,7 +118,7 @@ describe Cronofy::Auth do
         expect(Rack::Utils.parse_query(subject.query)).to eq params
       end
     end
-    
+
     context 'when no state' do
       let(:state) { nil }
       let(:params) { default_params }
@@ -131,7 +133,7 @@ describe Cronofy::Auth do
         default_params
       end
 
-      it_behaves_like 'a user auth link provider'      
+      it_behaves_like 'a user auth link provider'
     end
   end
 
