@@ -130,6 +130,13 @@ module Cronofy
     #                              ever existed within the given window should
     #                              be included or excluded from the results
     #                              (optional).
+    #           :include_managed - A Boolean specifying whether events that you
+    #                              are managing for the account should be
+    #                              included or excluded from the results
+    #                              (optional).
+    #           :only_managed    - A Boolean specifying whether only events that
+    #                              you are managing for the account should
+    #                              trigger notifications (optional).
     #           :last_modified   - The Time that events must be modified on or
     #                              after in order to be returned (optional).
     #
