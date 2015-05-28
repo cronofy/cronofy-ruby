@@ -139,6 +139,8 @@ module Cronofy
     #                              trigger notifications (optional).
     #           :last_modified   - The Time that events must be modified on or
     #                              after in order to be returned (optional).
+    #           :calendar_ids    - An Array of calendar ID strings to restrict
+    #                              the returned events to (optional).
     #
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.

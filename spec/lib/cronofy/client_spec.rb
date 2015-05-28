@@ -362,6 +362,24 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context "when calendar_ids are passed" do
+        let(:params) do
+          {
+            calendar_ids: ["cal_1234_abcd", "cal_1234_efgh", "cal_5678_ijkl"],
+          }
+        end
+
+        let(:request_url) do
+          "#{request_url_prefix}?tzid=Etc/UTC" \
+          "&calendar_ids[]=cal_1234_abcd" \
+          "&calendar_ids[]=cal_1234_efgh" \
+          "&calendar_ids[]=cal_5678_ijkl"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "next page not found" do
         before do
           stub_request(:get, next_page_url)
