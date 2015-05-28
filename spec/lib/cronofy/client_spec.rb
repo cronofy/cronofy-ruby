@@ -177,14 +177,16 @@ describe Cronofy::Client do
         }
       end
       let(:request_body) do
-        hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
-                       :summary => "Board meeting",
-                       :description => "Discuss plans for the next quarter.",
-                       :start => start_datetime_string,
-                       :end => end_datetime_string,
-                       :location => {
-                         :description => "Board room"
-                       })
+        {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :start => start_datetime_string,
+          :end => end_datetime_string,
+          :location => {
+            :description => "Board room"
+          }
+        }
       end
       let(:correct_response_code) { 202 }
       let(:correct_response_body) { nil }
@@ -450,7 +452,6 @@ describe Cronofy::Client do
       let(:method) { :post }
       let(:callback_url) { 'http://call.back/url' }
       let(:request_headers) { json_request_headers }
-      let(:request_body) { hash_including(:callback_url => callback_url) }
 
       let(:correct_response_code) { 200 }
       let(:correct_response_body) do
@@ -467,10 +468,40 @@ describe Cronofy::Client do
         Cronofy::Channel.new(correct_response_body["channel"])
       end
 
-      subject { client.create_channel(callback_url) }
+      context "with filters" do
+        let(:request_body) do
+          {
+            callback_url: callback_url,
+            filters: filters,
+          }
+        end
 
-      it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with mapped return value'
+        let(:filters) do
+          {
+            calendar_ids: ["cal_1234_abcd", "cal_1234_efgh", "cal_5678_ijkl"],
+            only_managed: true,
+            future_parameter: "for flexibility",
+          }
+        end
+
+        subject { client.create_channel(callback_url, filters: filters) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "without filters" do
+        let(:request_body) do
+          {
+            callback_url: callback_url,
+          }
+        end
+
+        subject { client.create_channel(callback_url) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
     end
 
     describe '#list_channels' do

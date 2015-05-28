@@ -198,6 +198,18 @@ module Cronofy
     # Public: Creates a notification channel with a callback URL
     #
     # callback_url - A String specifing the callback URL for the channel.
+    # options      - The Hash options used to refine the notifications of the
+    #                channel (default: {}):
+    #                :filters - A Hash of filters to use for the notification
+    #                           channel (optional):
+    #                           :calendar_ids - An Array of calendar ID strings
+    #                                           to restrict the returned events
+    #                                           to (optional).
+    #                           :only_managed - A Boolean specifying whether
+    #                                           only events that you are
+    #                                           managing for the account should
+    #                                           trigger notifications
+    #                                           (optional).
     #
     # See http://www.cronofy.com/developers/api#create-channel for reference.
     #
@@ -212,8 +224,10 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def create_channel(callback_url)
-      response = post("/v1/channels", callback_url: callback_url)
+    def create_channel(callback_url, options = {})
+      params = options.merge(callback_url: callback_url)
+
+      response = post("/v1/channels", params)
       parse_json(Channel, "channel", response)
     end
 
