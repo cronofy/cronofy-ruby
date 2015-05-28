@@ -102,7 +102,17 @@ describe Cronofy::Client do
       expect{ subject }.to raise_error(::Cronofy::InvalidRequestError)
     end
 
-    it 'raises AuthenticationFailureError on 401s' do
+    it 'raises AccountLockedError on 423s' do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: 423,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+      expect{ subject }.to raise_error(::Cronofy::AccountLockedError)
+    end
+
+    it 'raises TooManyRequestsError on 429s' do
       stub_request(method, request_url)
         .with(headers: request_headers,
               body: request_body)
@@ -111,6 +121,50 @@ describe Cronofy::Client do
                    body: correct_response_body.to_json)
       expect{ subject }.to raise_error(::Cronofy::TooManyRequestsError)
     end
+
+    it 'raises ServerError on 500s' do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: 500,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+      expect{ subject }.to raise_error(::Cronofy::ServerError)
+    end
+  end
+
+  describe '#create_calendar' do
+    let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        :profile_id => "pro_1234",
+        :name => "Home",
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "calendar" => {
+          "provider_name" => "google",
+          "profile_name" => "example@cronofy.com",
+          "calendar_id" => "cal_n23kjnwrw2_jsdfjksn234",
+          "calendar_name" => "Home",
+          "calendar_readonly" => false,
+          "calendar_deleted" => false
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::Calendar.new(correct_response_body["calendar"])
+    end
+
+    subject { client.create_calendar("pro_1234", "Home") }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
   end
 
   describe '#list_calendars' do
