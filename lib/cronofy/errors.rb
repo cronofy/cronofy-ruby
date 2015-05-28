@@ -42,6 +42,14 @@ module Cronofy
   end
 
   class InvalidRequestError < APIError
+    def errors
+      @errors ||= begin
+        json = JSON.parse(self.body)
+        json.fetch("errors", Hash.new)
+      rescue
+        Hash.new
+      end
+    end
   end
 
   class TooManyRequestsError < APIError
