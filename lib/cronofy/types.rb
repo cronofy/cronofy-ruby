@@ -134,6 +134,9 @@ module Cronofy
 
     coerce_key :start, DateOrTime
     coerce_key :end, DateOrTime
+
+    coerce_key :created, ->(v) { Time.iso8601(v) }
+    coerce_key :updated, ->(v) { Time.iso8601(v) }
   end
 
   class PagedEventsResult < Hashie::Mash
