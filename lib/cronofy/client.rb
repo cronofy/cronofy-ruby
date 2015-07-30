@@ -103,11 +103,27 @@ module Cronofy
     def upsert_event(calendar_id, event)
       body = event.dup
 
-      body[:start] = to_iso8601(body[:start])
-      body[:end] = to_iso8601(body[:end])
+      body[:start] = encode_event_time(body[:start])
+      body[:end] = encode_event_time(body[:end])
 
       post("/v1/calendars/#{calendar_id}/events", body)
       nil
+    end
+
+    def encode_event_time(time)
+      result = time
+
+      case time
+      when Hash
+        if time[:time]
+          encoded_time = encode_event_time(time[:time])
+          time.merge(time: encoded_time)
+        else
+          time
+        end
+      else
+        to_iso8601(time)
+      end
     end
 
     # Public: Alias for #upsert_event

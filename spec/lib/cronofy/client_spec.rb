@@ -180,8 +180,8 @@ describe Cronofy::Client do
         hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
                        :summary => "Board meeting",
                        :description => "Discuss plans for the next quarter.",
-                       :start => start_datetime_string,
-                       :end => end_datetime_string,
+                       :start => encoded_start_datetime,
+                       :end => encoded_end_datetime,
                        :location => {
                          :description => "Board room"
                        })
@@ -194,8 +194,37 @@ describe Cronofy::Client do
       context 'when start/end are Times' do
         let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
         let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
-        let(:start_datetime_string) { "2014-08-05T15:30:00Z" }
-        let(:end_datetime_string) { "2014-08-05T17:00:00Z" }
+        let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+        let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context 'when start/end are complex times' do
+        let(:start_datetime) do
+          {
+            :time => Time.utc(2014, 8, 5, 15, 30, 0),
+            :tzid => "Europe/London",
+          }
+        end
+        let(:end_datetime) do
+          {
+            :time => Time.utc(2014, 8, 5, 17, 0, 0),
+            :tzid => "America/Los_Angeles",
+          }
+        end
+        let(:encoded_start_datetime) do
+          {
+            :time => "2014-08-05T15:30:00Z",
+            :tzid => "Europe/London",
+          }
+        end
+        let(:encoded_end_datetime) do
+          {
+            :time => "2014-08-05T17:00:00Z",
+            :tzid => "America/Los_Angeles",
+          }
+        end
 
         it_behaves_like 'a Cronofy request'
       end
