@@ -5,7 +5,6 @@ module Cronofy
     # caller.
     DEFAULT_OAUTH_SCOPE = %w{
       read_account
-      list_calendars
       read_events
       create_event
       delete_event
@@ -42,8 +41,6 @@ module Cronofy
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
-    # Raises Cronofy::AuthorizationFailureError if the access token does not
-    # include the required scope.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def list_calendars
@@ -286,6 +283,22 @@ module Cronofy
     def account
       response = get("/v1/account")
       parse_json(Account, "account", response)
+    end
+
+    # Public: Lists all the profiles for the account.
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#profiles for reference.
+    #
+    # Returns an Array of Profiles
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def list_profiles
+      response = get("/v1/profiles")
+      parse_collection(Profile, "profiles", response)
     end
 
     # Public: Generates a URL to send the user to in order to perform the OAuth

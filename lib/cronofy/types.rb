@@ -144,4 +144,7 @@ module Cronofy
 
     coerce_key :events, Array[Event]
   end
+
+  class Profile < Hashie::Mash
+  end
 end
