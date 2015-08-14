@@ -3,5 +3,12 @@
 # Fail fast
 set -o errexit
 
-bundle install
-bundle exec rake spec
+gemfiles="Gemfile Gemfile-downgraded-hashie"
+
+for gemfile in $gemfiles; do
+  echo
+  echo "Testing with $gemfile"
+  echo
+  bundle install --gemfile $gemfile
+  bundle exec rake spec
+done

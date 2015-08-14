@@ -29,6 +29,12 @@ module Cronofy
     end
   end
 
+  module ISO8601Time
+    def self.coerce(value)
+      Time.iso8601(value)
+    end
+  end
+
   class DateOrTime
     def initialize(args)
       # Prefer time if both provided as it is more accurate
@@ -41,7 +47,7 @@ module Cronofy
 
     def self.coerce(value)
       begin
-        time = Time.iso8601(value)
+        time = ISO8601Time.coerce(value)
       rescue
         begin
           date = Date.strptime(value, '%Y-%m-%d')
@@ -135,13 +141,22 @@ module Cronofy
     coerce_key :start, DateOrTime
     coerce_key :end, DateOrTime
 
-    coerce_key :created, ->(v) { Time.iso8601(v) }
-    coerce_key :updated, ->(v) { Time.iso8601(v) }
+    coerce_key :created, ISO8601Time
+    coerce_key :updated, ISO8601Time
+  end
+
+  module Events
+    def self.coerce(values)
+      values.map { |v| Event.new(v) }
+    end
   end
 
   class PagedEventsResult < Hashie::Mash
     include Hashie::Extensions::Coercion
 
-    coerce_key :events, Array[Event]
+    coerce_key :events, Events
+  end
+
+  class Profile < Hashie::Mash
   end
 end

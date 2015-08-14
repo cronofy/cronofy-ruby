@@ -5,7 +5,6 @@ module Cronofy
     # caller.
     DEFAULT_OAUTH_SCOPE = %w{
       read_account
-      list_calendars
       read_events
       create_event
       delete_event
@@ -68,8 +67,6 @@ module Cronofy
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
-    # Raises Cronofy::AuthorizationFailureError if the access token does not
-    # include the required scope.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def list_calendars
@@ -129,11 +126,27 @@ module Cronofy
     def upsert_event(calendar_id, event)
       body = event.dup
 
-      body[:start] = to_iso8601(body[:start])
-      body[:end] = to_iso8601(body[:end])
+      body[:start] = encode_event_time(body[:start])
+      body[:end] = encode_event_time(body[:end])
 
       post("/v1/calendars/#{calendar_id}/events", body)
       nil
+    end
+
+    def encode_event_time(time)
+      result = time
+
+      case time
+      when Hash
+        if time[:time]
+          encoded_time = encode_event_time(time[:time])
+          time.merge(time: encoded_time)
+        else
+          time
+        end
+      else
+        to_iso8601(time)
+      end
     end
 
     # Public: Alias for #upsert_event
@@ -312,6 +325,22 @@ module Cronofy
     def account
       response = get("/v1/account")
       parse_json(Account, "account", response)
+    end
+
+    # Public: Lists all the profiles for the account.
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#profiles for reference.
+    #
+    # Returns an Array of Profiles
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def list_profiles
+      response = get("/v1/profiles")
+      parse_collection(Profile, "profiles", response)
     end
 
     # Public: Generates a URL to send the user to in order to perform the OAuth
