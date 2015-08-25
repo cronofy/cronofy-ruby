@@ -163,6 +163,15 @@ describe Cronofy::Auth do
           expect{ subject }.to raise_error(Cronofy::UnknownError)
         end
       end
+
+      context "client_id and client_secret not set" do
+        let(:client_id) { " " }
+        let(:client_secret) { " " }
+
+        it "throws a credentials missing error" do
+          expect { subject }.to raise_error(Cronofy::CredentialsMissingError, "OAuth client_id and client_secret must be set")
+        end
+      end
     end
   end
 

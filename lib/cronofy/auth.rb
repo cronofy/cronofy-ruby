@@ -6,6 +6,8 @@ module Cronofy
     attr_reader :access_token
 
     def initialize(client_id, client_secret, token = nil, refresh_token = nil)
+      @client_credentials_missing = blank?(client_id) || blank?(client_secret)
+
       @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
       @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
@@ -81,9 +83,16 @@ module Cronofy
     private
 
     def do_request(&block)
+      if @client_credentials_missing
+        raise CredentialsMissingError.new("OAuth client_id and client_secret must be set")
+      end
       block.call
     rescue OAuth2::Error => e
       raise Errors.map_error(e)
+    end
+
+    def blank?(value)
+      value.nil? || value.strip.empty?
     end
   end
 end
