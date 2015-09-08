@@ -92,7 +92,7 @@ calendar.calendar_id
 
 ### Read events
 
-```
+```ruby
 events = cronofy.read_events
 events.first
 # => {"calendar_id" => ....}
