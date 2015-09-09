@@ -53,6 +53,10 @@ describe Cronofy::Event do
     it "coerces the updated time" do
       expect(subject.updated).to eq(Time.parse("2014-09-01T09:24:16Z"))
     end
+
+    it "can be inspected" do
+      expect(subject.inspect).to_not be_nil
+    end
   end
 
   context "localized times" do

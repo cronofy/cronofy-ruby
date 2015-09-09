@@ -31,7 +31,14 @@ module Cronofy
 
   module ISO8601Time
     def self.coerce(value)
-      Time.iso8601(value)
+      case value
+      when Time
+        value
+      when String
+        Time.iso8601(value)
+      else
+        raise ArgumentError, "Cannot coerce #{value.inspect} to Time"
+      end
     end
   end
 
