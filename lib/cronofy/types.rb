@@ -31,7 +31,14 @@ module Cronofy
 
   module ISO8601Time
     def self.coerce(value)
-      Time.iso8601(value)
+      case value
+      when Time
+        value
+      when String
+        Time.iso8601(value)
+      else
+        raise ArgumentError, "Cannot coerce #{value.inspect} to Time"
+      end
     end
   end
 
@@ -135,11 +142,44 @@ module Cronofy
   class Channel < Hashie::Mash
   end
 
+  class EventTime
+    attr_reader :time
+    attr_reader :tzid
+
+    def initialize(time, tzid)
+      @time = time
+      @tzid = tzid
+    end
+
+    def self.coerce(value)
+      case value
+      when String
+        DateOrTime.coerce(value)
+      when Hash
+        time_value = value["time"]
+        tzid = value["tzid"]
+
+        date_or_time = DateOrTime.coerce(time_value)
+
+        new(date_or_time, tzid)
+      end
+    end
+
+    def ==(other)
+      case other
+      when EventTime
+        self.time == other.time && self.tzid == other.tzid
+      else
+        false
+      end
+    end
+  end
+
   class Event < Hashie::Mash
     include Hashie::Extensions::Coercion
 
-    coerce_key :start, DateOrTime
-    coerce_key :end, DateOrTime
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
 
     coerce_key :created, ISO8601Time
     coerce_key :updated, ISO8601Time

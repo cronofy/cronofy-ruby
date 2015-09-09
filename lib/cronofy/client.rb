@@ -234,6 +234,28 @@ module Cronofy
       nil
     end
 
+    # Public: Deletes all events you are managing for the account.
+    #
+    # See http://www.cronofy.com/developers/api/alpha#bulk-delete-events for
+    # reference.
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::NotFoundError if the calendar does not exist.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def delete_all_events
+      delete("/v1/events", all_events: true)
+      nil
+    end
+
     # Public: Creates a notification channel with a callback URL
     #
     # callback_url - A String specifing the callback URL for the channel.

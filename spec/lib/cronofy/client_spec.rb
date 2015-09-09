@@ -526,6 +526,19 @@ describe Cronofy::Client do
 
       it_behaves_like 'a Cronofy request'
     end
+
+    describe '#delete_all_events' do
+      let(:request_url) { "https://api.cronofy.com/v1/events" }
+      let(:method) { :delete }
+      let(:request_headers) { json_request_headers }
+      let(:request_body) { { :all_events => true } }
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { nil }
+
+      subject { client.delete_all_events }
+
+      it_behaves_like 'a Cronofy request'
+    end
   end
 
   describe 'Channels' do

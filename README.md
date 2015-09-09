@@ -90,6 +90,15 @@ calendar.calendar_id
 # => "cal_YYYYYYYY-UNIQUE_CAL_ID_HERE-YYYYYYYY"
 ```
 
+### Read events
+
+```ruby
+events = cronofy.read_events
+events.first
+# => {"calendar_id" => ....}
+```
+
+
 ### Create or update events
 
 To create/update an event in the user's calendar:
