@@ -177,7 +177,49 @@ module Cronofy
       end
 
       url = ::Cronofy.api_url + "/v1/events"
-      ReadEventsIterator.new(access_token!, url, params)
+      PagedResultIterator.new(PagedEventsResult, :events, access_token!, url, params)
+    end
+
+    # Public: Returns a lazily-evaluated Enumerable of FreeBusy that satisfy the
+    # given query criteria.
+    #
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :from            - The minimum Date from which to return events
+    #                              (optional).
+    #           :to              - The Date to return events up until (optional).
+    #           :tzid            - A String representing a known time zone
+    #                              identifier from the IANA Time Zone Database
+    #                              (default: Etc/UTC).
+    #           :include_managed - A Boolean specifying whether events that you
+    #                              are managing for the account should be
+    #                              included or excluded from the results
+    #                              (optional).
+    #
+    # The first page will be retrieved eagerly so that common errors will happen
+    # inline. However, subsequent pages (if any) will be requested lazily.
+    #
+    # See http://www.cronofy.com/developers/api/alpha#free-busy for reference.
+    #
+    # Returns a lazily-evaluated Enumerable of FreeBusy
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def free_busy(options = {})
+      params = FREE_BUSY_DEFAULT_PARAMS.merge(options)
+
+      FREE_BUSY_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+        params[tp] = to_iso8601(params[tp])
+      end
+
+      url = ::Cronofy.api_url + "/v1/free_busy"
+      PagedResultIterator.new(PagedFreeBusyResult, :free_busy, access_token!, url, params)
     end
 
     # Public: Deletes an event from the specified calendar
@@ -399,8 +441,13 @@ module Cronofy
 
     private
 
-    READ_EVENTS_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
+    FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
+    FREE_BUSY_TIME_PARAMS = %i{
+      from
+      to
+    }.freeze
 
+    READ_EVENTS_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
     READ_EVENTS_TIME_PARAMS = %i{
       from
       to
@@ -460,10 +507,12 @@ module Cronofy
       end
     end
 
-    class ReadEventsIterator
+    class PagedResultIterator
       include Enumerable
 
-      def initialize(access_token, url, params)
+      def initialize(page_parser, items_key, access_token, url, params)
+        @page_parser = page_parser
+        @items_key = items_key
         @access_token = access_token
         @url = url
         @params = params
@@ -473,15 +522,15 @@ module Cronofy
       def each
         page = @first_page
 
-        page.events.each do |event|
-          yield event
+        page[@items_key].each do |item|
+          yield item
         end
 
         while page.pages.next_page?
           page = get_page(page.pages.next_page)
 
-          page.events.each do |event|
-            yield event
+          page[@items_key].each do |item|
+            yield item
           end
         end
       end
@@ -511,7 +560,7 @@ module Cronofy
       end
 
       def parse_page(response)
-        ResponseParser.new(response).parse_json(PagedEventsResult)
+        ResponseParser.new(response).parse_json(@page_parser)
       end
     end
   end

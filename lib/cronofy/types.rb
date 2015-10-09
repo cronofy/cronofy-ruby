@@ -197,6 +197,25 @@ module Cronofy
     coerce_key :events, Events
   end
 
+  class FreeBusy < Hashie::Mash
+    include Hashie::Extensions::Coercion
+
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+  end
+
+  module FreeBusyEnumerable
+    def self.coerce(values)
+      values.map { |v| FreeBusy.new(v) }
+    end
+  end
+
+  class PagedFreeBusyResult < Hashie::Mash
+    include Hashie::Extensions::Coercion
+
+    coerce_key :free_busy, FreeBusyEnumerable
+  end
+
   class Profile < Hashie::Mash
   end
 end

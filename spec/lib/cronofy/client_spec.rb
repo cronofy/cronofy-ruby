@@ -606,4 +606,192 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request with mapped return value'
     end
   end
+
+  describe 'Free busy' do
+    describe '#free_busy' do
+      before do
+        stub_request(method, request_url)
+          .with(headers: request_headers,
+                body: request_body)
+          .to_return(status: correct_response_code,
+                     headers: correct_response_headers,
+                     body: correct_response_body.to_json)
+
+        stub_request(:get, next_page_url)
+          .with(headers: request_headers)
+          .to_return(status: correct_response_code,
+            headers: correct_response_headers,
+            body: next_page_body.to_json)
+      end
+
+
+      let(:request_url_prefix) { 'https://api.cronofy.com/v1/free_busy' }
+      let(:method) { :get }
+      let(:correct_response_code) { 200 }
+      let(:next_page_url) do
+        "https://next.page.com/08a07b034306679e"
+      end
+
+      let(:params) { Hash.new }
+      let(:request_url) { request_url_prefix + "?tzid=Etc/UTC" }
+
+      let(:correct_response_body) do
+        {
+          'pages' => {
+            'current' => 1,
+            'total' => 2,
+            'next_page' => next_page_url
+          },
+          'free_busy' => [
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'start' => '2014-09-06',
+                         'end' => '2014-09-08',
+                         'free_busy_status' => 'busy',
+                       },
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'start' => '2014-09-13T19:00:00Z',
+                         'end' => '2014-09-13T21:00:00Z',
+                         'free_busy_status' => 'tentative',
+                       }
+                      ]
+        }
+      end
+
+      let(:next_page_body) do
+        {
+          'pages' => {
+            'current' => 2,
+            'total' => 2,
+          },
+          'free_busy' => [
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'start' => '2014-09-07',
+                         'end' => '2014-09-09',
+                         'free_busy_status' => 'busy',
+                       },
+                       {
+                         'calendar_id' => 'cal_U9uuErStTG@EAAAB_IsAsykA2DBTWqQTf-f0kJw',
+                         'start' => '2014-09-14T19:00:00Z',
+                         'end' => '2014-09-14T21:00:00Z',
+                         'free_busy_status' => 'tentative',
+                       }
+                      ]
+        }
+      end
+
+      let(:correct_mapped_result) do
+        first_page_items = correct_response_body['free_busy'].map { |period| Cronofy::FreeBusy.new(period) }
+        second_page_items = next_page_body['free_busy'].map { |period| Cronofy::FreeBusy.new(period) }
+
+        first_page_items + second_page_items
+      end
+
+      subject do
+        # By default force evaluation
+        client.free_busy(params).to_a
+      end
+
+      context 'when all params are passed' do
+        let(:params) do
+          {
+            from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
+            to: Time.new(2014, 10, 1, 0, 0, 1, '+00:00'),
+            tzid: 'Etc/UTC',
+            include_managed: true,
+          }
+        end
+        let(:request_url) do
+          "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
+          "&to=2014-10-01T00:00:01Z&tzid=Etc/UTC&include_managed=true"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context 'when some params are passed' do
+        let(:params) do
+          {
+            from: Time.new(2014, 9, 1, 0, 0, 1, '+00:00'),
+          }
+        end
+        let(:request_url) do
+          "#{request_url_prefix}?from=2014-09-01T00:00:01Z" \
+          "&tzid=Etc/UTC"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "when unknown flags are passed" do
+        let(:params) do
+          {
+            unknown_bool: true,
+            unknown_number: 5,
+            unknown_string: "foo-bar-baz",
+          }
+        end
+
+        let(:request_url) do
+          "#{request_url_prefix}?tzid=Etc/UTC" \
+          "&unknown_bool=true" \
+          "&unknown_number=5" \
+          "&unknown_string=foo-bar-baz"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "next page not found" do
+        before do
+          stub_request(:get, next_page_url)
+            .with(headers: request_headers)
+            .to_return(status: 404,
+              headers: correct_response_headers)
+        end
+
+        it "raises an error" do
+          expect{ subject }.to raise_error(::Cronofy::NotFoundError)
+        end
+      end
+
+      context "only first period" do
+        before do
+          # Ensure an error if second page is requested
+          stub_request(:get, next_page_url)
+            .with(headers: request_headers)
+            .to_return(status: 404,
+              headers: correct_response_headers)
+        end
+
+        let(:first_period) do
+          Cronofy::FreeBusy.new(correct_response_body["free_busy"].first)
+        end
+
+        subject do
+          client.free_busy(params).first
+        end
+
+        it "returns the first period from the first page" do
+          expect(subject).to eq(first_period)
+        end
+      end
+
+      context "without calling #to_a to force full evaluation" do
+        subject { client.free_busy(params) }
+
+        it_behaves_like 'a Cronofy request'
+
+        # We expect it to behave like a Cronofy request as the first page is
+        # requested eagerly so that the majority of errors will happen inline
+        # rather than lazily happening wherever the iterator may have been
+        # passed.
+      end
+    end
+  end
 end
