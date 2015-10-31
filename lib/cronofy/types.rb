@@ -18,7 +18,7 @@ module Cronofy
       @scope = oauth_token.params['scope']
     end
 
-    def to_hash
+    def to_h
       {
         access_token: access_token,
         expires_at: expires_at,
