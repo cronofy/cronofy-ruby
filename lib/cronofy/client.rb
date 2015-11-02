@@ -107,22 +107,6 @@ module Cronofy
       nil
     end
 
-    def encode_event_time(time)
-      result = time
-
-      case time
-      when Hash
-        if time[:time]
-          encoded_time = encode_event_time(time[:time])
-          time.merge(time: encoded_time)
-        else
-          time
-        end
-      else
-        to_iso8601(time)
-      end
-    end
-
     # Public: Alias for #upsert_event
     alias_method :create_or_update_event, :upsert_event
 
@@ -504,6 +488,22 @@ module Cronofy
         value.getutc.iso8601
       else
         value.iso8601
+      end
+    end
+
+    def encode_event_time(time)
+      result = time
+
+      case time
+      when Hash
+        if time[:time]
+          encoded_time = encode_event_time(time[:time])
+          time.merge(time: encoded_time)
+        else
+          time
+        end
+      else
+        to_iso8601(time)
       end
     end
 
