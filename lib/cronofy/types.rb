@@ -18,7 +18,7 @@ module Cronofy
       @scope = oauth_token.params['scope']
     end
 
-    def to_hash
+    def to_h
       {
         access_token: access_token,
         expires_at: expires_at,
@@ -26,6 +26,11 @@ module Cronofy
         refresh_token: refresh_token,
         scope: scope,
       }
+    end
+
+    def to_hash
+      warn "#to_hash has been deprecated, use #to_h instead"
+      to_h
     end
   end
 
