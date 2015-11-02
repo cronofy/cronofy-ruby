@@ -24,10 +24,10 @@ module Cronofy
     #           :refresh_token - An existing refresh token String for the user's
     #                            account (optional).
     def initialize(options = {})
-      access_token  = options[:access_token]
-      client_id     = options.fetch(:client_id, ENV["CRONOFY_CLIENT_ID"])
-      client_secret = options.fetch(:client_secret, ENV["CRONOFY_CLIENT_SECRET"])
-      refresh_token = options[:refresh_token]
+      access_token  = options[:access_token] || options['access_token']
+      client_id     = options[:client_id] || options['client_id'] || ENV["CRONOFY_CLIENT_ID"]
+      client_secret = options[:client_secret] || options['client_secret'] || ENV["CRONOFY_CLIENT_SECRET"]
+      refresh_token = options[:refresh_token] || options['refresh_token']
 
       @auth = Auth.new(client_id, client_secret, access_token, refresh_token)
     end
