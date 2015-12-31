@@ -4,18 +4,28 @@ require "time"
 
 module Cronofy
   class Credentials
+    class LinkingProfile < Hashie::Mash
+    end
+
     attr_reader :access_token
+    attr_reader :account_id
     attr_reader :expires_at
     attr_reader :expires_in
+    attr_reader :linking_profile
     attr_reader :refresh_token
     attr_reader :scope
 
     def initialize(oauth_token)
       @access_token = oauth_token.token
+      @account_id = oauth_token.params['account_id']
       @expires_at = oauth_token.expires_at
       @expires_in = oauth_token.expires_in
       @refresh_token = oauth_token.refresh_token
       @scope = oauth_token.params['scope']
+
+      if details = oauth_token.params['linking_profile']
+        @linking_profile = LinkingProfile.new(details)
+      end
     end
 
     def to_h

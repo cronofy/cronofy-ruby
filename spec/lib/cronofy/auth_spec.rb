@@ -14,6 +14,9 @@ describe Cronofy::Auth do
   let(:expires_in) { 10000 }
   let(:scope) { 'read_events list_calendars create_event' }
 
+  let(:linking_profile_hash) { nil }
+  let(:account_id) { nil }
+
   before(:all) do
     WebMock.reset!
     WebMock.disable_net_connect!(allow_localhost: true)
@@ -71,6 +74,8 @@ describe Cronofy::Auth do
           expires_in: expires_in,
           refresh_token: new_refresh_token,
           scope: scope,
+          account_id: account_id,
+          linking_profile: linking_profile_hash,
         }.to_json,
         headers: {
           "Content-Type" => "application/json; charset=utf-8"
@@ -177,6 +182,29 @@ describe Cronofy::Auth do
 
   describe '#get_token_from_code' do
     subject { Cronofy::Auth.new(client_id, client_secret).get_token_from_code(code, redirect_uri) }
+
+    context "with account_id" do
+      let(:account_id) { "acc_0123456789abc" }
+
+      it 'exposes the account_id' do
+        expect(subject.account_id).to eq account_id
+      end
+    end
+
+    context "with linking profile" do
+      let(:linking_profile_hash) do
+        {
+          provider_name: "google",
+          profile_id: "pro_VmrZnDitjScsAAAG",
+          profile_name: "bob@example.com",
+        }
+      end
+
+      it "exposes the linking profile" do
+        expected = Cronofy::Credentials::LinkingProfile.new(linking_profile_hash)
+        expect(subject.linking_profile).to eq expected
+      end
+    end
 
     it_behaves_like 'an authorization request'
   end
