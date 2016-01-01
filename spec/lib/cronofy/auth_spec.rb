@@ -189,6 +189,19 @@ describe Cronofy::Auth do
       it 'exposes the account_id' do
         expect(subject.account_id).to eq account_id
       end
+
+      it "includes the account_id in its hash" do
+        expected = {
+          :access_token => subject.access_token,
+          :expires_at => subject.expires_at,
+          :expires_in => subject.expires_in,
+          :refresh_token => subject.refresh_token,
+          :scope => subject.scope,
+          :account_id => account_id,
+        }
+
+        expect(subject.to_h).to eq(expected)
+      end
     end
 
     context "with linking profile" do
@@ -203,6 +216,19 @@ describe Cronofy::Auth do
       it "exposes the linking profile" do
         expected = Cronofy::Credentials::LinkingProfile.new(linking_profile_hash)
         expect(subject.linking_profile).to eq expected
+      end
+
+      it "includes the linking profile in its hash" do
+        expected = {
+          :access_token => subject.access_token,
+          :expires_at => subject.expires_at,
+          :expires_in => subject.expires_in,
+          :refresh_token => subject.refresh_token,
+          :scope => subject.scope,
+          :linking_profile => linking_profile_hash,
+        }
+
+        expect(subject.to_h).to eq(expected)
       end
     end
 

@@ -4,7 +4,33 @@ require "time"
 
 module Cronofy
   class Credentials
-    class LinkingProfile < Hashie::Mash
+    class LinkingProfile
+      attr_reader :provider_name
+      attr_reader :profile_id
+      attr_reader :profile_name
+
+      def initialize(hash)
+        @provider_name = hash['provider_name'] || hash[:provider_name]
+        @profile_id = hash['profile_id'] || hash[:profile_id]
+        @profile_name = hash['profile_name'] || hash[:profile_name]
+      end
+
+      def to_h
+        {
+          provider_name: provider_name,
+          profile_id: profile_id,
+          profile_name: profile_name,
+        }
+      end
+
+      def ==(other)
+        case other
+        when LinkingProfile
+          self.provider_name == other.provider_name &&
+            self.profile_id == other.profile_id &&
+            self.profile_name == other.profile_name
+        end
+      end
     end
 
     attr_reader :access_token
@@ -29,13 +55,23 @@ module Cronofy
     end
 
     def to_h
-      {
+      hash = {
         access_token: access_token,
         expires_at: expires_at,
         expires_in: expires_in,
         refresh_token: refresh_token,
         scope: scope,
       }
+
+      if account_id
+        hash[:account_id] = account_id
+      end
+
+      if linking_profile
+        hash[:linking_profile] = linking_profile.to_h
+      end
+
+      hash
     end
 
     def to_hash
