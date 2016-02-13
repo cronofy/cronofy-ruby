@@ -121,7 +121,7 @@ module Cronofy
     #                              identifier from the IANA Time Zone Database
     #                              (default: Etc/UTC).
     #           :include_deleted - A Boolean specifying whether events that have
-    #                              been deleted should included or excluded from
+    #                              been deleted should be included or excluded from
     #                              the results (optional).
     #           :include_moved   - A Boolean specifying whether events that have
     #                              ever existed within the given window should
@@ -136,6 +136,8 @@ module Cronofy
     #                              trigger notifications (optional).
     #           :last_modified   - The Time that events must be modified on or
     #                              after in order to be returned (optional).
+    #           :calendar_ids    - An Array of calendar ids for restricting the
+    #                              returned events (optional).
     #
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.
