@@ -121,8 +121,8 @@ module Cronofy
     #                              identifier from the IANA Time Zone Database
     #                              (default: Etc/UTC).
     #           :include_deleted - A Boolean specifying whether events that have
-    #                              been deleted should be included or excluded from
-    #                              the results (optional).
+    #                              been deleted should be included or excluded
+    #                              from the results (optional).
     #           :include_moved   - A Boolean specifying whether events that have
     #                              ever existed within the given window should
     #                              be included or excluded from the results
@@ -134,6 +134,10 @@ module Cronofy
     #           :only_managed    - A Boolean specifying whether only events that
     #                              you are managing for the account should
     #                              trigger notifications (optional).
+    #           :localized_times - A Boolean specifying whether the start and
+    #                              end times should be returned with any
+    #                              available localization information
+    #                              (optional).
     #           :last_modified   - The Time that events must be modified on or
     #                              after in order to be returned (optional).
     #           :calendar_ids    - An Array of calendar ids for restricting the
@@ -180,6 +184,12 @@ module Cronofy
     #                              are managing for the account should be
     #                              included or excluded from the results
     #                              (optional).
+    #           :localized_times - A Boolean specifying whether the start and
+    #                              end times should be returned with any
+    #                              available localization information
+    #                              (optional).
+    #           :calendar_ids    - An Array of calendar ids for restricting the
+    #                              returned events (optional).
     #
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.
