@@ -457,7 +457,7 @@ describe Cronofy::Client do
       let(:request_url) { "https://api.cronofy.com/v1/events" }
       let(:method) { :delete }
       let(:request_headers) { json_request_headers }
-      let(:request_body) { { :all_events => true } }
+      let(:request_body) { { :delete_all => true } }
       let(:correct_response_code) { 202 }
       let(:correct_response_body) { nil }
 

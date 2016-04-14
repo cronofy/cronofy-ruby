@@ -262,7 +262,7 @@ module Cronofy
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def delete_all_events
-      delete("/v1/events", all_events: true)
+      delete("/v1/events", delete_all: true)
       nil
     end
 
