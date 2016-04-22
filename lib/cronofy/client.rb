@@ -371,8 +371,8 @@ module Cronofy
     #                :scope - Array of scopes describing the access to request
     #                         from the user to the users calendars
     #                         (default: DEFAULT_OAUTH_SCOPE).
-    #                :state - String containing the state value to retain during
-    #                         the OAuth authorization process (optional).
+    #                :state - Array of states to retain during the OAuth
+    #                         authorization process (optional).
     #
     # See http://www.cronofy.com/developers/api#authorization for reference.
     #
