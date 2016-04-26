@@ -84,7 +84,8 @@ describe Cronofy::Auth do
   end
 
   describe '#user_auth_link' do
-    let(:scope_array) { %w{read_events list_calendars create_event} }
+    let(:input_scope) { %w{read_events list_calendars create_event} }
+    let(:state) { nil }
     let(:scheme) { 'https' }
     let(:host) { 'app.cronofy.com' }
     let(:path) { '/oauth/authorize' }
@@ -93,7 +94,7 @@ describe Cronofy::Auth do
         'client_id' => client_id,
         'redirect_uri' => redirect_uri,
         'response_type' => 'code',
-        'scope' => scope
+        'scope' => scope,
       }
     end
 
@@ -102,7 +103,7 @@ describe Cronofy::Auth do
     end
 
     subject do
-      url = auth.user_auth_link(redirect_uri, scope: scope_array, state: state)
+      url = auth.user_auth_link(redirect_uri, scope: input_scope, state: state)
       URI.parse(url)
     end
 
@@ -134,9 +135,15 @@ describe Cronofy::Auth do
     context 'when state is passed' do
       let(:state) { SecureRandom.hex }
       let(:params) do
-        default_params['state'] = state
-        default_params
+        default_params.merge('state' => state)
       end
+
+      it_behaves_like 'a user auth link provider'
+    end
+
+    context 'when scope is a string' do
+      let(:input_scope) { scope }
+      let(:params) { default_params }
 
       it_behaves_like 'a user auth link provider'
     end

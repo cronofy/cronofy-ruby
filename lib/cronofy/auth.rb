@@ -20,8 +20,9 @@ module Cronofy
     #                have completed the authorization steps.
     # options      - The Hash options used to refine the selection
     #                (default: {}):
-    #                :scope - Array of scopes describing the access to request
-    #                         from the user to the users calendars (required).
+    #                :scope - Array or String of scopes describing the access to
+    #                         request from the user to the users calendars
+    #                         (required).
     #                :state - Array of states to retain during the OAuth
     #                         authorization process (optional).
     #
@@ -35,7 +36,10 @@ module Cronofy
 
       # Reformat params as needed
       params.delete(:state) if params[:state].nil?
-      params[:scope] = params[:scope].join(' ')
+
+      if params[:scope].respond_to?(:join)
+        params[:scope] = params[:scope].join(' ')
+      end
 
       @auth_client.auth_code.authorize_url(params)
     end

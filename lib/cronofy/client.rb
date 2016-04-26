@@ -368,8 +368,8 @@ module Cronofy
     #                have completed the authorization steps.
     # options      - The Hash options used to refine the selection
     #                (default: {}):
-    #                :scope - Array of scopes describing the access to request
-    #                         from the user to the users calendars
+    #                :scope - Array or String of scopes describing the access to
+    #                         request from the user to the users calendars
     #                         (default: DEFAULT_OAUTH_SCOPE).
     #                :state - Array of states to retain during the OAuth
     #                         authorization process (optional).
