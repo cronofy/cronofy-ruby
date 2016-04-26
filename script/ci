@@ -3,6 +3,12 @@
 # Fail fast
 set -o errexit
 
+echo
+echo "Installing bundler"
+echo
+gem install bundler
+echo
+
 gemfiles="Gemfile Gemfile-downgraded-hashie"
 
 for gemfile in $gemfiles; do
