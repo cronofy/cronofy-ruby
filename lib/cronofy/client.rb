@@ -32,6 +32,32 @@ module Cronofy
       @auth = Auth.new(client_id, client_secret, access_token, refresh_token)
     end
 
+    # Public: Creates a new calendar for the account.
+    #
+    # profile_id - The String ID of the profile to create the calendar within.
+    # name       - A String to use as the name of the calendar.
+    #
+    # See http://www.cronofy.com/developers/api/alpah#create-calendar for
+    # reference.
+    #
+    # Returns the created Calendar
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::AccountLockedError if the profile is not in a writable
+    # state and so a calendar cannot be created.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def create_calendar(profile_id, name)
+      response = post("/v1/calendars", profile_id: profile_id, name: name)
+      parse_json(Calendar, "calendar", response)
+    end
+
     # Public: Lists all the calendars for the account.
     #
     # See http://www.cronofy.com/developers/api#calendars for reference.
@@ -269,6 +295,18 @@ module Cronofy
     # Public: Creates a notification channel with a callback URL
     #
     # callback_url - A String specifing the callback URL for the channel.
+    # options      - The Hash options used to refine the notifications of the
+    #                channel (default: {}):
+    #                :filters - A Hash of filters to use for the notification
+    #                           channel (optional):
+    #                           :calendar_ids - An Array of calendar ID strings
+    #                                           to restrict the returned events
+    #                                           to (optional).
+    #                           :only_managed - A Boolean specifying whether
+    #                                           only events that you are
+    #                                           managing for the account should
+    #                                           trigger notifications
+    #                                           (optional).
     #
     # See http://www.cronofy.com/developers/api#create-channel for reference.
     #
@@ -283,8 +321,10 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def create_channel(callback_url)
-      response = post("/v1/channels", callback_url: callback_url)
+    def create_channel(callback_url, options = {})
+      params = options.merge(callback_url: callback_url)
+
+      response = post("/v1/channels", params)
       parse_json(Channel, "channel", response)
     end
 

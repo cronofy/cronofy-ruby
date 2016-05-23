@@ -102,7 +102,17 @@ describe Cronofy::Client do
       expect{ subject }.to raise_error(::Cronofy::InvalidRequestError)
     end
 
-    it 'raises AuthenticationFailureError on 401s' do
+    it 'raises AccountLockedError on 423s' do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: 423,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+      expect{ subject }.to raise_error(::Cronofy::AccountLockedError)
+    end
+
+    it 'raises TooManyRequestsError on 429s' do
       stub_request(method, request_url)
         .with(headers: request_headers,
               body: request_body)
@@ -111,6 +121,50 @@ describe Cronofy::Client do
                    body: correct_response_body.to_json)
       expect{ subject }.to raise_error(::Cronofy::TooManyRequestsError)
     end
+
+    it 'raises ServerError on 500s' do
+      stub_request(method, request_url)
+        .with(headers: request_headers,
+              body: request_body)
+        .to_return(status: 500,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+      expect{ subject }.to raise_error(::Cronofy::ServerError)
+    end
+  end
+
+  describe '#create_calendar' do
+    let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        :profile_id => "pro_1234",
+        :name => "Home",
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "calendar" => {
+          "provider_name" => "google",
+          "profile_name" => "example@cronofy.com",
+          "calendar_id" => "cal_n23kjnwrw2_jsdfjksn234",
+          "calendar_name" => "Home",
+          "calendar_readonly" => false,
+          "calendar_deleted" => false
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::Calendar.new(correct_response_body["calendar"])
+    end
+
+    subject { client.create_calendar("pro_1234", "Home") }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
   end
 
   describe '#list_calendars' do
@@ -177,14 +231,16 @@ describe Cronofy::Client do
         }
       end
       let(:request_body) do
-        hash_including(:event_id => "qTtZdczOccgaPncGJaCiLg",
-                       :summary => "Board meeting",
-                       :description => "Discuss plans for the next quarter.",
-                       :start => encoded_start_datetime,
-                       :end => encoded_end_datetime,
-                       :location => {
-                         :description => "Board room"
-                       })
+        {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :start => encoded_start_datetime,
+          :end => encoded_end_datetime,
+          :location => {
+            :description => "Board room"
+          }
+        }
       end
       let(:correct_response_code) { 202 }
       let(:correct_response_body) { nil }
@@ -391,6 +447,24 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context "when calendar_ids are passed" do
+        let(:params) do
+          {
+            calendar_ids: ["cal_1234_abcd", "cal_1234_efgh", "cal_5678_ijkl"],
+          }
+        end
+
+        let(:request_url) do
+          "#{request_url_prefix}?tzid=Etc/UTC" \
+          "&calendar_ids[]=cal_1234_abcd" \
+          "&calendar_ids[]=cal_1234_efgh" \
+          "&calendar_ids[]=cal_5678_ijkl"
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "next page not found" do
         before do
           stub_request(:get, next_page_url)
@@ -474,7 +548,6 @@ describe Cronofy::Client do
       let(:method) { :post }
       let(:callback_url) { 'http://call.back/url' }
       let(:request_headers) { json_request_headers }
-      let(:request_body) { hash_including(:callback_url => callback_url) }
 
       let(:correct_response_code) { 200 }
       let(:correct_response_body) do
@@ -491,10 +564,40 @@ describe Cronofy::Client do
         Cronofy::Channel.new(correct_response_body["channel"])
       end
 
-      subject { client.create_channel(callback_url) }
+      context "with filters" do
+        let(:request_body) do
+          {
+            callback_url: callback_url,
+            filters: filters,
+          }
+        end
 
-      it_behaves_like 'a Cronofy request'
-      it_behaves_like 'a Cronofy request with mapped return value'
+        let(:filters) do
+          {
+            calendar_ids: ["cal_1234_abcd", "cal_1234_efgh", "cal_5678_ijkl"],
+            only_managed: true,
+            future_parameter: "for flexibility",
+          }
+        end
+
+        subject { client.create_channel(callback_url, filters: filters) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "without filters" do
+        let(:request_body) do
+          {
+            callback_url: callback_url,
+          }
+        end
+
+        subject { client.create_channel(callback_url) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
     end
 
     describe '#list_channels' do

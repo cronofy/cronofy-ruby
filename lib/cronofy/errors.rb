@@ -52,7 +52,13 @@ module Cronofy
     end
   end
 
+  class AccountLockedError < APIError
+  end
+
   class TooManyRequestsError < APIError
+  end
+
+  class ServerError < APIError
   end
 
   class UnknownError < APIError
@@ -66,7 +72,9 @@ module Cronofy
       403 => AuthorizationFailureError,
       404 => NotFoundError,
       422 => InvalidRequestError,
+      423 => AccountLockedError,
       429 => TooManyRequestsError,
+      500 => ServerError,
     }.freeze
 
     def self.map_error(error)
