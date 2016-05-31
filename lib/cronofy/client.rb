@@ -401,6 +401,31 @@ module Cronofy
       parse_collection(Profile, "profiles", response)
     end
 
+
+    # Public: Attempts to authorize the email with impersonation from a service
+    # account
+    #
+    # email - the email address to impersonate
+    # scope - the scopes to request for the email
+    # callback_url - the url to callback to
+    #
+    # Returns nothing
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def authorize_with_service_account(email, scope, callback_url)
+      params = {
+        email: email,
+        scope: scope,
+        callback_url: callback_url
+      }
+      post("/v1/service_account_authorizations", params)
+      nil
+    end
+
     # Public: Generates a URL to send the user to in order to perform the OAuth
     # 2.0 authorization process.
     #
