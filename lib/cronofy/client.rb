@@ -401,6 +401,24 @@ module Cronofy
       parse_collection(Profile, "profiles", response)
     end
 
+    # Public: Retrieves the userinfo for the account
+    #
+    # See  http://openid.net/specs/openid-connect-core-1_0.html#UserInfo for
+    # reference.
+    #
+    # Returns an UserInfo.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def userinfo
+      response = get("/v1/userinfo")
+      parse_json(UserInfo, nil, response)
+    end
 
     # Public: Attempts to authorize the email with impersonation from a service
     # account
