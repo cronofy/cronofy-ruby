@@ -424,7 +424,8 @@ module Cronofy
     # account
     #
     # email - the email address to impersonate
-    # scope - the scopes to request for the email
+    # scope - Array or String of scopes describing the access to
+    #         request from the user to the users calendars (required).
     # callback_url - the url to callback to
     #
     # Returns nothing
@@ -435,6 +436,10 @@ module Cronofy
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def authorize_with_service_account(email, scope, callback_url)
+      if scope.respond_to?(:join)
+        scope = scope.join(' ')
+      end
+
       params = {
         email: email,
         scope: scope,
