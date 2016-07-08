@@ -525,6 +525,33 @@ module Cronofy
       @auth.revoke!
     end
 
+    # Public: Requests elevated permissions for a set of calendars.
+    #
+    # In the case of normal accounts:
+    # After making this call the end user will have to grant the extended
+    # permissions to their calendar via rhe url returned from the response.
+    #
+    # In the case of service accounts:
+    # After making this call the exteneded permissions will be granted provided
+    # the relevant scope has been granted to the account
+    #
+    # Returns a extended permissions response.
+    #
+    # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
+    # not valid.
+    def elevated_permission(permissions_hash, redirect_uri = nil)
+      filtered_permissions = permissions_hash.map do |permission|
+        { calendar_id: permission[:calendar_id], permission_level: permission[:permission_level] }
+      end
+
+      body = { permissions: filtered_permissions }
+      body[:redirect_uri] = redirect_uri if redirect_uri
+
+      response = post("/v1/permissions", body)
+      parse_json(PermissionResponse, "permission", response)
+    end
+
+
     private
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
