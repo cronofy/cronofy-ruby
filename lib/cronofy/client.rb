@@ -472,6 +472,7 @@ module Cronofy
     #
     # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
     # not valid.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     def revoke_authorization
       @auth.revoke!
     end

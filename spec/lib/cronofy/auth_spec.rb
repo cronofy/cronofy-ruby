@@ -281,38 +281,76 @@ describe Cronofy::Auth do
   end
 
   describe "#revoke!" do
-    let(:auth) do
-      Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
+    shared_examples 'successful revocation' do
+      let!(:revocation_request) do
+        stub_request(:post, "https://api.cronofy.com/oauth/token/revoke")
+          .with(
+            body: {
+              client_id: client_id,
+              client_secret: client_secret,
+              token: revoke_token,
+            },
+            headers: {
+              'Content-Type' => 'application/x-www-form-urlencoded',
+              'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+            }
+          )
+          .to_return(
+            status: response_status,
+          )
+      end
+
+      before do
+        auth.revoke!
+      end
+
+      it "unsets the access token" do
+        expect(auth.access_token).to be_nil
+      end
+
+      it "makes the revocation request" do
+        expect(revocation_request).to have_been_requested
+      end
     end
 
-    let!(:revocation_request) do
-      stub_request(:post, "https://api.cronofy.com/oauth/token/revoke")
-        .with(
-          body: {
-            client_id: client_id,
-            client_secret: client_secret,
-            token: refresh_token,
-          },
-          headers: {
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
-          }
-        )
-        .to_return(
-          status: response_status,
-        )
+    context "access_token and refresh_token present" do
+      let(:auth) do
+        Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
+      end
+
+      let(:revoke_token) { refresh_token }
+
+      it_behaves_like 'successful revocation'
     end
 
-    before do
-      auth.revoke!
+    context "only refresh_token" do
+      let(:auth) do
+        Cronofy::Auth.new(client_id, client_secret, nil, refresh_token)
+      end
+
+      let(:revoke_token) { refresh_token }
+
+      it_behaves_like 'successful revocation'
     end
 
-    it "unsets the access token" do
-      expect(auth.access_token).to be_nil
+    context "only access_token" do
+      let(:auth) do
+        Cronofy::Auth.new(client_id, client_secret, access_token, nil)
+      end
+
+      let(:revoke_token) { access_token }
+
+      it_behaves_like 'successful revocation'
     end
 
-    it "makes the revocation request" do
-      expect(revocation_request).to have_been_requested
+    context "no access_token or refresh_token" do
+      let(:auth) do
+        Cronofy::Auth.new(client_id, client_secret, nil, nil)
+      end
+
+      it "raises a credentials missing error" do
+        expect { auth.revoke! }.to raise_error(Cronofy::CredentialsMissingError)
+      end
     end
   end
 end
