@@ -455,6 +455,7 @@ module Cronofy
     # been revoked.
     # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
     # not valid.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     def refresh_access_token
       @auth.refresh!
     end

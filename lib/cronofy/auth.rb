@@ -52,7 +52,11 @@ module Cronofy
     end
 
     # Internal: Refreshes the access token
-    # Returns Hash of token elements to allow client to update in local store for user
+    #
+    # Returns Hash of token elements to allow client to update in local store
+    # for user
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     def refresh!
       raise CredentialsMissingError.new("No credentials to refresh") unless access_token
       raise CredentialsMissingError.new("No refresh_token provided") unless access_token.refresh_token
