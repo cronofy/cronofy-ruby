@@ -243,11 +243,33 @@ describe Cronofy::Auth do
   end
 
   describe '#refresh!' do
-    subject do
-      Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token).refresh!
+    context "access_token and refresh_token present" do
+      subject do
+        Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token).refresh!
+      end
+
+      it_behaves_like 'an authorization request'
     end
 
-    it_behaves_like 'an authorization request'
+    context "no refresh_token" do
+      subject do
+        Cronofy::Auth.new(client_id, client_secret, access_token, nil).refresh!
+      end
+
+      it "raises a credentials missing error" do
+        expect { subject }.to raise_error(Cronofy::CredentialsMissingError)
+      end
+    end
+
+    context "no access_token or refresh_token" do
+      subject do
+        Cronofy::Auth.new(client_id, client_secret, nil, nil).refresh!
+      end
+
+      it "raises a credentials missing error" do
+        expect { subject }.to raise_error(Cronofy::CredentialsMissingError)
+      end
+    end
   end
 
   describe "#revoke!" do
