@@ -551,7 +551,6 @@ module Cronofy
       parse_json(PermissionResponse, "permission", response)
     end
 
-
     private
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
