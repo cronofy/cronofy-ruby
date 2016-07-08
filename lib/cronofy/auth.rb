@@ -11,7 +11,7 @@ module Cronofy
       @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
       @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
-      set_access_token(token, refresh_token) if token
+      set_access_token(token, refresh_token) if token || refresh_token
     end
 
     # Internal: generate a URL for authorizing the application with Cronofy

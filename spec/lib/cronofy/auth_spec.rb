@@ -270,6 +270,14 @@ describe Cronofy::Auth do
         expect { subject }.to raise_error(Cronofy::CredentialsMissingError)
       end
     end
+
+    context "only refresh_token" do
+      subject do
+        Cronofy::Auth.new(client_id, client_secret, nil, refresh_token).refresh!
+      end
+
+      it_behaves_like 'an authorization request'
+    end
   end
 
   describe "#revoke!" do
