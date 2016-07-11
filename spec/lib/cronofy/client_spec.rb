@@ -662,6 +662,71 @@ describe Cronofy::Client do
     end
   end
 
+  describe "ElevatedPermissions" do
+
+    describe '#elevated_permissions' do
+      let(:method) { :post }
+      let(:request_url) { "https://api.cronofy.com/v1/permissions" }
+
+      let(:correct_response_code) { 202 }
+
+      let(:redirect_uri) { "http://www.example.com/redirect" }
+      let(:permissions) do
+        [
+          {
+            calendar_id: "cal_1234567",
+            permission_level: "unrestricted"
+          },
+          {
+            calendar_id: "cal_1234453",
+            permission_level: "sandbox"
+          }
+        ]
+      end
+
+      let(:request_body) do
+        {
+          permissions: permissions,
+          redirect_uri: redirect_uri,
+        }
+      end
+
+      let(:correct_mapped_result) do
+        Cronofy::PermissionsResponse.new(correct_response_body[:permissions_request])
+      end
+
+      describe "with uri supplied" do
+        let(:correct_response_body) do
+          {
+            permissions_request: {
+              url: "http://app.cronofy.com/permissions/"
+            }
+          }
+        end
+
+        subject { client.elevated_permissions(permissions: permissions, redirect_uri: redirect_uri) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      describe "without uri supplied" do
+        let(:correct_response_body) do
+          {
+            permissions_request: {
+              accepted: true
+            }
+          }
+        end
+
+        subject { client.elevated_permissions(permissions: permissions, redirect_uri: redirect_uri) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+    end
+  end
+
   describe "Account" do
     let(:request_url) { "https://api.cronofy.com/v1/account" }
 
