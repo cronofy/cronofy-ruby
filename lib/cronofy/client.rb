@@ -527,6 +527,13 @@ module Cronofy
 
     # Public: Requests elevated permissions for a set of calendars.
     #
+    # permissions  - An Array of calendar permission hashes to set on the each
+    #                hash must contain symbols for both `calendar_id` and
+    #                `permission_level`
+    # redirect_uri - A uri to redirect the end user back to after they have
+    #                either granted or rejected the request for elevated
+    #                permission.
+    #
     # In the case of normal accounts:
     # After making this call the end user will have to grant the extended
     # permissions to their calendar via rhe url returned from the response.
@@ -539,8 +546,8 @@ module Cronofy
     #
     # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
     # not valid.
-    def elevated_permission(permissions_hash, redirect_uri = nil)
-      filtered_permissions = permissions_hash.map do |permission|
+    def elevated_permission(permissions, redirect_uri = nil)
+      filtered_permissions = permissions.map do |permission|
         { calendar_id: permission[:calendar_id], permission_level: permission[:permission_level] }
       end
 
