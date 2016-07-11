@@ -669,13 +669,6 @@ describe Cronofy::Client do
       let(:request_url) { "https://api.cronofy.com/v1/permissions" }
 
       let(:correct_response_code) { 202 }
-      let(:correct_response_body) do
-        {
-          permission: {
-            url: "http://app.cronofy.com/permissions/"
-          }
-        }
-      end
 
       let(:redirect_uri) { "http://www.example.com/redirect" }
       let(:permissions) do
