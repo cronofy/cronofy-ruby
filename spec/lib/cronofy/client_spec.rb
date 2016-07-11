@@ -662,9 +662,9 @@ describe Cronofy::Client do
     end
   end
 
-  describe "ElevatedPermission" do
+  describe "ElevatedPermissions" do
 
-    describe '#elevated_permission' do
+    describe '#elevated_permissions' do
       let(:method) { :post }
       let(:request_url) { "https://api.cronofy.com/v1/permissions" }
 
@@ -699,19 +699,19 @@ describe Cronofy::Client do
       end
 
       let(:correct_mapped_result) do
-        Cronofy::PermissionResponse.new(correct_response_body[:permission])
+        Cronofy::PermissionsResponse.new(correct_response_body[:permissions_request])
       end
 
       describe "with uri supplied" do
         let(:correct_response_body) do
           {
-            permission: {
+            permissions_request: {
               url: "http://app.cronofy.com/permissions/"
             }
           }
         end
 
-        subject { client.elevated_permission(permissions, redirect_uri) }
+        subject { client.elevated_permissions(permissions: permissions, redirect_uri: redirect_uri) }
 
         it_behaves_like 'a Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
@@ -720,13 +720,13 @@ describe Cronofy::Client do
       describe "without uri supplied" do
         let(:correct_response_body) do
           {
-            permission: {
+            permissions_request: {
               accepted: true
             }
           }
         end
 
-        subject { client.elevated_permission(permissions, redirect_uri) }
+        subject { client.elevated_permissions(permissions: permissions, redirect_uri: redirect_uri) }
 
         it_behaves_like 'a Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
