@@ -273,6 +273,6 @@ module Cronofy
   class Profile < Hashie::Mash
   end
 
-  class PermissionResponse < Hashie::Mash
+  class PermissionsResponse < Hashie::Mash
   end
 end
