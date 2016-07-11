@@ -11,7 +11,7 @@ module Cronofy
       @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
       @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url, connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
-      set_access_token(token, refresh_token) if token
+      set_access_token(token, refresh_token) if token || refresh_token
     end
 
     # Internal: generate a URL for authorizing the application with Cronofy
@@ -52,8 +52,15 @@ module Cronofy
     end
 
     # Internal: Refreshes the access token
-    # Returns Hash of token elements to allow client to update in local store for user
+    #
+    # Returns Hash of token elements to allow client to update in local store
+    # for user
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     def refresh!
+      raise CredentialsMissingError.new("No credentials to refresh") unless access_token
+      raise CredentialsMissingError.new("No refresh_token provided") unless access_token.refresh_token
+
       do_request do
         @access_token = access_token.refresh!
         Credentials.new(@access_token)
@@ -71,12 +78,16 @@ module Cronofy
     # Internal: Revokes the refresh token and corresponding access tokens.
     #
     # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
     def revoke!
+      raise CredentialsMissingError.new("No credentials to revoke") unless access_token
+
       do_request do
         body = {
           client_id: @api_client.id,
           client_secret: @api_client.secret,
-          token: access_token.refresh_token,
+          token: access_token.refresh_token || access_token.token,
         }
 
         @api_client.request(:post, "/oauth/token/revoke", body: body)
