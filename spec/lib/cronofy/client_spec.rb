@@ -541,6 +541,23 @@ describe Cronofy::Client do
     end
   end
 
+  describe 'Service Account impersonation' do
+    let(:calendar_id) { 'calendar_id_123'}
+    let(:request_url) { "https://api.cronofy.com/v1/service_account_authorizations" }
+    let(:method) { :post }
+    let(:request_headers) { json_request_headers }
+    let(:request_body) { { email: email, scope: scope.join(' '), callback_url: callback_url } }
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { nil }
+    let(:email) { "foo@example.com" }
+    let(:scope) { ['foo', 'bar'] }
+    let(:callback_url) { "http://example.com/not_found" }
+
+    subject { client.authorize_with_service_account(email, scope, callback_url) }
+
+    it_behaves_like 'a Cronofy request'
+  end
+
   describe 'Channels' do
     let(:request_url) { 'https://api.cronofy.com/v1/channels' }
 
@@ -666,6 +683,32 @@ describe Cronofy::Client do
       end
 
       subject { client.account }
+
+      it_behaves_like "a Cronofy request"
+      it_behaves_like "a Cronofy request with mapped return value"
+    end
+  end
+
+  describe "Userinfo" do
+    let(:request_url) { "https://api.cronofy.com/v1/userinfo" }
+
+    describe "#userinfo" do
+      let(:method) { :get }
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          "sub" => "ser_5700a00eb0ccd07000000000",
+          "cronofy.type" => "service_account",
+          "cronofy.service_account.domain" => "example.com"
+        }
+      end
+
+      let(:correct_mapped_result) do
+        Cronofy::UserInfo.new(correct_response_body)
+      end
+
+      subject { client.userinfo }
 
       it_behaves_like "a Cronofy request"
       it_behaves_like "a Cronofy request with mapped return value"

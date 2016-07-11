@@ -401,6 +401,54 @@ module Cronofy
       parse_collection(Profile, "profiles", response)
     end
 
+    # Public: Retrieves the userinfo for the account
+    #
+    # See  http://openid.net/specs/openid-connect-core-1_0.html#UserInfo for
+    # reference.
+    #
+    # Returns an UserInfo.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def userinfo
+      response = get("/v1/userinfo")
+      parse_json(UserInfo, nil, response)
+    end
+
+    # Public: Attempts to authorize the email with impersonation from a service
+    # account
+    #
+    # email - the email address to impersonate
+    # scope - Array or String of scopes describing the access to
+    #         request from the user to the users calendars (required).
+    # callback_url - the url to callback to
+    #
+    # Returns nothing
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def authorize_with_service_account(email, scope, callback_url)
+      if scope.respond_to?(:join)
+        scope = scope.join(' ')
+      end
+
+      params = {
+        email: email,
+        scope: scope,
+        callback_url: callback_url
+      }
+      post("/v1/service_account_authorizations", params)
+      nil
+    end
+
     # Public: Generates a URL to send the user to in order to perform the OAuth
     # 2.0 authorization process.
     #
