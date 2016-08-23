@@ -282,7 +282,8 @@ module Cronofy
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
-    # include the required scope.
+    # include the required scope or the client has not been granted elevated
+    # permissions to the calendar.
     # Raises Cronofy::NotFoundError if the calendar does not exist.
     # Raises Cronofy::InvalidRequestError if the request contains invalid
     # parameters.
