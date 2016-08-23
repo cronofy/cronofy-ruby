@@ -270,6 +270,30 @@ module Cronofy
       nil
     end
 
+    # Public: Deletes an external event from the specified calendar
+    #
+    # calendar_id - The String Cronofy ID for the calendar to delete the event
+    #               from.
+    # event_uid   - The unique ID of the event to delete.
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope or the client has not been granted elevated
+    # permissions to the calendar.
+    # Raises Cronofy::NotFoundError if the calendar does not exist.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def delete_external_event(calendar_id, event_uid)
+      delete("/v1/calendars/#{calendar_id}/events", event_uid: event_uid)
+      nil
+    end
+
     # Public: Deletes all events you are managing for the account.
     #
     # See http://www.cronofy.com/developers/api/alpha#bulk-delete-events for

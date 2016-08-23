@@ -527,6 +527,21 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request'
     end
 
+    describe '#delete_external_event' do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+      let(:event_uid) { 'external_event_1023' }
+      let(:method) { :delete }
+      let(:request_headers) { json_request_headers }
+      let(:request_body) { { :event_uid => event_uid } }
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { nil }
+
+      subject { client.delete_external_event(calendar_id, event_uid) }
+
+      it_behaves_like 'a Cronofy request'
+    end
+
     describe '#delete_all_events' do
       let(:request_url) { "https://api.cronofy.com/v1/events" }
       let(:method) { :delete }
