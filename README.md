@@ -23,7 +23,7 @@ bundle install
 
 In order to use the Cronofy API you will need to [create a developer account](https://app.cronofy.com/sign_up/new).
 
-From there you can [create personal access tokens](https://app.cronofy.com/oauth/applications/5447ae289bd94726da00000f/tokens)
+From there you can [use your Calendar Sandbox](https://app.cronofy.com/oauth/sandbox)
 to access your own calendars, or you can [create an OAuth application](https://app.cronofy.com/oauth/applications/new)
 to obtain an OAuth `client_id` and `client_secret` to be able to use the full
 API.
