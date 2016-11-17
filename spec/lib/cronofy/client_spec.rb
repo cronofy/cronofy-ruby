@@ -1044,7 +1044,7 @@ describe Cronofy::Client do
       end
 
       let(:correct_mapped_result) do
-        correct_response_body["resources"].map { |ch| Cronofy::Resource.new(ch) }
+        correct_response_body["resources"].map { |r| Cronofy::Resource.new(r) }
       end
 
       subject { client.resources }
