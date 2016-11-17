@@ -587,7 +587,8 @@ module Cronofy
     #
     # Returns an Array of Resources.
     #
-    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::CredentialsMissingError if no credentials available
+    # or if non-service account credentials are provided.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
     # Raises Cronofy::AuthorizationFailureError if the access token does not
