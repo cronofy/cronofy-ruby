@@ -1020,4 +1020,37 @@ describe Cronofy::Client do
       end
     end
   end
+
+  describe 'Resources' do
+    let(:request_url) { 'https://api.cronofy.com/v1/resources' }
+
+    describe '#resources' do
+      let(:method) { :get }
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+            'resources' => [
+                {
+                    'email' => 'board-room-london@example.com',
+                    'name' => 'Board room (London)',
+                },
+                {
+                    'email' => 'board-room-madrid@example.com',
+                    'name' => 'Board room (Madrid)',
+                }
+            ]
+        }
+      end
+
+      let(:correct_mapped_result) do
+        correct_response_body["resources"].map { |ch| Cronofy::Resource.new(ch) }
+      end
+
+      subject { client.resources }
+
+      it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with mapped return value'
+    end
+  end
 end
