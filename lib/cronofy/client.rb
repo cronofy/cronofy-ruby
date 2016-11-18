@@ -583,6 +583,23 @@ module Cronofy
       parse_json(PermissionsResponse, "permissions_request", response)
     end
 
+    # Public: Lists all the resources for the service account.
+    #
+    # Returns an Array of Resources.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available
+    # or if non-service account credentials are provided.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def resources
+      response = get("/v1/resources")
+      parse_collection(Resource, "resources", response)
+    end
+
     private
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze

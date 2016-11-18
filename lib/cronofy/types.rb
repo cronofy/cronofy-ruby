@@ -196,6 +196,9 @@ module Cronofy
   class Channel < Hashie::Mash
   end
 
+  class Resource < Hashie::Mash
+  end
+
   class EventTime
     attr_reader :time
     attr_reader :tzid
