@@ -545,7 +545,7 @@ describe Cronofy::Client do
     describe '#change_participation_status' do
       let(:calendar_id) { 'calendar_id_123'}
       let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events/#{event_uid}/participation_status" }
-      let(:event_uid) { 'external_event_1023' }
+      let(:event_uid) { 'evt_external_54008b1a4a41730f8d5c6037' }
       let(:method) { :post }
       let(:request_headers) { json_request_headers }
       let(:status) { 'accepted' }
