@@ -542,6 +542,22 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request'
     end
 
+    describe '#change_participation_status' do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events/#{event_uid}/participation_status" }
+      let(:event_uid) { 'evt_external_54008b1a4a41730f8d5c6037' }
+      let(:method) { :post }
+      let(:request_headers) { json_request_headers }
+      let(:status) { 'accepted' }
+      let(:request_body) { { :status => status } }
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) { nil }
+
+      subject { client.change_participation_status(calendar_id, event_uid, status) }
+
+      it_behaves_like 'a Cronofy request'
+    end
+
     describe '#delete_all_events' do
       let(:request_url) { "https://api.cronofy.com/v1/events" }
       let(:method) { :delete }
