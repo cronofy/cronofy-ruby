@@ -91,6 +91,7 @@ module Cronofy
     #                              event.
     #               :start       - The Time the event starts.
     #               :end         - The Time the event ends.
+    #               :url         - The URL associated with the event.
     #               :location    - A Hash describing the location of the event
     #                              with symbolized keys (optional):
     #                              :description - A String describing the

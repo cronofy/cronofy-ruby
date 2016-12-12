@@ -216,6 +216,7 @@ describe Cronofy::Client do
     describe '#create_or_update_event' do
       let(:calendar_id) { 'calendar_id_123'}
       let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+      let(:url) { URI("https://example.com") }
       let(:method) { :post }
       let(:request_headers) { json_request_headers }
       let(:event) do
@@ -225,6 +226,7 @@ describe Cronofy::Client do
           :description => "Discuss plans for the next quarter.",
           :start => start_datetime,
           :end => end_datetime,
+          :url => url,
           :location => {
             :description => "Board room"
           }
@@ -237,6 +239,7 @@ describe Cronofy::Client do
           :description => "Discuss plans for the next quarter.",
           :start => encoded_start_datetime,
           :end => encoded_end_datetime,
+          :url => url.to_s,
           :location => {
             :description => "Board room"
           }
