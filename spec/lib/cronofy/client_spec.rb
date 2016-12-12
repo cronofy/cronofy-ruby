@@ -259,6 +259,15 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request'
       end
 
+      context 'when start/end are Dates' do
+        let(:start_datetime) { Date.new(2014, 8, 5) }
+        let(:end_datetime) { Date.new(2014, 8, 6) }
+        let(:encoded_start_datetime) { "2014-08-05" }
+        let(:encoded_end_datetime) { "2014-08-06" }
+
+        it_behaves_like 'a Cronofy request'
+      end
+
       context 'when start/end are complex times' do
         let(:start_datetime) do
           {

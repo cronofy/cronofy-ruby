@@ -89,8 +89,8 @@ module Cronofy
     #               :description - A String to use as the description, sometimes
     #                              referred to as the notes or body, of the
     #                              event.
-    #               :start       - The Time the event starts.
-    #               :end         - The Time the event ends.
+    #               :start       - The Time or Date the event starts.
+    #               :end         - The Time or Date the event ends.
     #               :url         - The URL associated with the event.
     #               :location    - A Hash describing the location of the event
     #                              with symbolized keys (optional):
