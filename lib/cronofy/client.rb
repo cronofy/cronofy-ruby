@@ -96,6 +96,16 @@ module Cronofy
     #                              with symbolized keys (optional):
     #                              :description - A String describing the
     #                                             location.
+    #               :reminders   - An Array of Hashes describing the desired
+    #                              reminders for the event. Reminders should be
+    #                              specified in priority order as, for example,
+    #                              when the underlying provider only supports a
+    #                              single reminder then the first reminder will
+    #                              be used.
+    #                              :minutes - An Integer specifying the number
+    #                                         of minutes before the start of the
+    #                                         event that the reminder should
+    #                                         occur.
     #
     # Examples
     #

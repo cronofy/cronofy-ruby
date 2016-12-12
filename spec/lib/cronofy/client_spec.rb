@@ -229,7 +229,12 @@ describe Cronofy::Client do
           :url => url,
           :location => {
             :description => "Board room"
-          }
+          },
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
         }
       end
       let(:request_body) do
@@ -242,7 +247,12 @@ describe Cronofy::Client do
           :url => url.to_s,
           :location => {
             :description => "Board room"
-          }
+          },
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
         }
       end
       let(:correct_response_code) { 202 }
