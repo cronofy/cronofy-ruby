@@ -89,12 +89,23 @@ module Cronofy
     #               :description - A String to use as the description, sometimes
     #                              referred to as the notes or body, of the
     #                              event.
-    #               :start       - The Time the event starts.
-    #               :end         - The Time the event ends.
+    #               :start       - The Time or Date the event starts.
+    #               :end         - The Time or Date the event ends.
+    #               :url         - The URL associated with the event.
     #               :location    - A Hash describing the location of the event
     #                              with symbolized keys (optional):
     #                              :description - A String describing the
     #                                             location.
+    #               :reminders   - An Array of Hashes describing the desired
+    #                              reminders for the event. Reminders should be
+    #                              specified in priority order as, for example,
+    #                              when the underlying provider only supports a
+    #                              single reminder then the first reminder will
+    #                              be used.
+    #                              :minutes - An Integer specifying the number
+    #                                         of minutes before the start of the
+    #                                         event that the reminder should
+    #                                         occur.
     #
     # Examples
     #

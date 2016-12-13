@@ -216,6 +216,7 @@ describe Cronofy::Client do
     describe '#create_or_update_event' do
       let(:calendar_id) { 'calendar_id_123'}
       let(:request_url) { "https://api.cronofy.com/v1/calendars/#{calendar_id}/events" }
+      let(:url) { URI("https://example.com") }
       let(:method) { :post }
       let(:request_headers) { json_request_headers }
       let(:event) do
@@ -225,9 +226,15 @@ describe Cronofy::Client do
           :description => "Discuss plans for the next quarter.",
           :start => start_datetime,
           :end => end_datetime,
+          :url => url,
           :location => {
             :description => "Board room"
-          }
+          },
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
         }
       end
       let(:request_body) do
@@ -237,9 +244,15 @@ describe Cronofy::Client do
           :description => "Discuss plans for the next quarter.",
           :start => encoded_start_datetime,
           :end => encoded_end_datetime,
+          :url => url.to_s,
           :location => {
             :description => "Board room"
-          }
+          },
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
         }
       end
       let(:correct_response_code) { 202 }
@@ -252,6 +265,15 @@ describe Cronofy::Client do
         let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
         let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
         let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context 'when start/end are Dates' do
+        let(:start_datetime) { Date.new(2014, 8, 5) }
+        let(:end_datetime) { Date.new(2014, 8, 6) }
+        let(:encoded_start_datetime) { "2014-08-05" }
+        let(:encoded_end_datetime) { "2014-08-06" }
 
         it_behaves_like 'a Cronofy request'
       end
