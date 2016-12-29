@@ -278,4 +278,22 @@ module Cronofy
 
   class PermissionsResponse < Hashie::Mash
   end
+
+  class Participant < Hashie::Mash
+  end
+
+  module ParticipantEnumerable
+    def self.coerce(values)
+      values.map { |v| Participant.new(v) }
+    end
+  end
+
+  class AvailablePeriod < Hashie::Mash
+    include Hashie::Extensions::Coercion
+
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+
+    coerce_key :participants, ParticipantEnumerable
+  end
 end
