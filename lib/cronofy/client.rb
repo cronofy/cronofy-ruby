@@ -96,6 +96,8 @@ module Cronofy
     #                              with symbolized keys (optional):
     #                              :description - A String describing the
     #                                             location.
+    #                              :lat - A String of the location's latitude.
+    #                              :long - A String of the location's longitude.
     #               :reminders   - An Array of Hashes describing the desired
     #                              reminders for the event. Reminders should be
     #                              specified in priority order as, for example,
