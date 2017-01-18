@@ -119,7 +119,9 @@ module Cronofy
     #     start: Time.utc(2014, 8, 5, 15, 30),
     #     end:   Time.utc(2014, 8, 5, 17, 30),
     #     location: {
-    #       description: "Board room"
+    #       description: "Board room",
+    #       lat: "1.2345",
+    #       long: "0.1234"
     #     })
     #
     # See http://www.cronofy.com/developers/api#upsert-event for reference.
