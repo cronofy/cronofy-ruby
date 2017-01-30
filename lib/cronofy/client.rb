@@ -96,6 +96,8 @@ module Cronofy
     #                              with symbolized keys (optional):
     #                              :description - A String describing the
     #                                             location.
+    #                              :lat - A String of the location's latitude.
+    #                              :long - A String of the location's longitude.
     #               :reminders   - An Array of Hashes describing the desired
     #                              reminders for the event. Reminders should be
     #                              specified in priority order as, for example,
@@ -117,7 +119,9 @@ module Cronofy
     #     start: Time.utc(2014, 8, 5, 15, 30),
     #     end:   Time.utc(2014, 8, 5, 17, 30),
     #     location: {
-    #       description: "Board room"
+    #       description: "Board room",
+    #       lat: "1.2345",
+    #       long: "0.1234"
     #     })
     #
     # See http://www.cronofy.com/developers/api#upsert-event for reference.

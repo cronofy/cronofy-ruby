@@ -219,6 +219,13 @@ describe Cronofy::Client do
       let(:url) { URI("https://example.com") }
       let(:method) { :post }
       let(:request_headers) { json_request_headers }
+
+      let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+      let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+      let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+      let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+      let(:location) { { :description => "Board room" } }
+
       let(:event) do
         {
           :event_id => "qTtZdczOccgaPncGJaCiLg",
@@ -227,9 +234,7 @@ describe Cronofy::Client do
           :start => start_datetime,
           :end => end_datetime,
           :url => url,
-          :location => {
-            :description => "Board room"
-          },
+          :location => location,
           :reminders => [
             { :minutes => 60 },
             { :minutes => 0 },
@@ -245,9 +250,7 @@ describe Cronofy::Client do
           :start => encoded_start_datetime,
           :end => encoded_end_datetime,
           :url => url.to_s,
-          :location => {
-            :description => "Board room"
-          },
+          :location => location,
           :reminders => [
             { :minutes => 60 },
             { :minutes => 0 },
@@ -261,11 +264,6 @@ describe Cronofy::Client do
       subject { client.create_or_update_event(calendar_id, event) }
 
       context 'when start/end are Times' do
-        let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
-        let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
-        let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
-        let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
-
         it_behaves_like 'a Cronofy request'
       end
 
@@ -303,6 +301,12 @@ describe Cronofy::Client do
             :tzid => "America/Los_Angeles",
           }
         end
+
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context 'when geo location present' do
+        let(:location) { { :description => "Board meeting", :lat => "1.2345", :long => "0.1234" } }
 
         it_behaves_like 'a Cronofy request'
       end
