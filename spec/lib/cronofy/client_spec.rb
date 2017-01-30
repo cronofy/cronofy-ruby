@@ -749,14 +749,14 @@ describe Cronofy::Client do
       end
 
       let(:correct_mapped_result) do
-        Cronofy::PermissionsResponse.new(correct_response_body[:permissions_request])
+        Cronofy::PermissionsResponse.new(correct_response_body['permissions_request'])
       end
 
       describe "with uri supplied" do
         let(:correct_response_body) do
           {
-            permissions_request: {
-              url: "http://app.cronofy.com/permissions/"
+            "permissions_request" => {
+              "url" => "http://app.cronofy.com/permissions/"
             }
           }
         end
@@ -770,8 +770,8 @@ describe Cronofy::Client do
       describe "without uri supplied" do
         let(:correct_response_body) do
           {
-            permissions_request: {
-              accepted: true
+            "permissions_request" => {
+              "accepted" => true
             }
           }
         end
@@ -1072,16 +1072,16 @@ describe Cronofy::Client do
       let(:correct_response_code) { 200 }
       let(:correct_response_body) do
         {
-            'resources' => [
-                {
-                    'email' => 'board-room-london@example.com',
-                    'name' => 'Board room (London)',
-                },
-                {
-                    'email' => 'board-room-madrid@example.com',
-                    'name' => 'Board room (Madrid)',
-                }
-            ]
+          'resources' => [
+            {
+              'email' => 'board-room-london@example.com',
+              'name' => 'Board room (London)',
+            },
+            {
+              'email' => 'board-room-madrid@example.com',
+              'name' => 'Board room (Madrid)',
+            }
+          ]
         }
       end
 
@@ -1093,6 +1093,123 @@ describe Cronofy::Client do
 
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
+    end
+  end
+
+  describe 'Availability', focus: true do
+    describe '#availability' do
+      let(:method) { :post }
+      let(:request_url) { 'https://api.cronofy.com/v1/availability' }
+      let(:request_headers) { json_request_headers }
+
+      let(:request_body) do
+        {
+          "participants" => [
+            {
+              "members" => [
+                { "sub" => "acc_567236000909002" },
+                { "sub" => "acc_678347111010113" }
+              ],
+              "required" => "all"
+            }
+          ],
+          "required_duration" => { "minutes" => 60 },
+          "available_periods" => [
+            {
+              "start" => "2017-01-03T09:00:00Z",
+              "end" => "2017-01-03T18:00:00Z"
+            },
+            {
+              "start" => "2017-01-04T09:00:00Z",
+              "end" => "2017-01-04T18:00:00Z"
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          "available_periods" => [
+            {
+              "start" => "2017-01-03T09:00:00Z",
+              "end" => "2017-01-03T11:00:00Z",
+              "participants" => [
+                { "sub" => "acc_567236000909002" },
+                { "sub" => "acc_678347111010113" }
+              ]
+            },
+            {
+              "start" => "2017-01-03T14 =>00:00Z",
+              "end" => "2017-01-03T16:00:00Z",
+              "participants" => [
+                { "sub" => "acc_567236000909002" },
+                { "sub" => "acc_678347111010113" }
+              ]
+            },
+            {
+              "start" => "2017-01-04T11:00:00Z",
+              "end" => "2017-01-04T17:00:00Z",
+              "participants" => [
+                { "sub" => "acc_567236000909002" },
+                { "sub" => "acc_678347111010113" }
+              ]
+            },
+          ]
+        }
+      end
+
+      let(:correct_mapped_result) do
+        correct_response_body['available_periods'].map { |ap| Cronofy::AvailablePeriod.new(ap) }
+      end
+
+      subject { client.availability(participants: participants, required_duration: required_duration, available_periods: available_periods) }
+
+      context "fully specified" do
+        let(:participants) do
+          [
+            {
+              members: [
+                { sub: "acc_567236000909002" },
+                { sub: "acc_678347111010113" },
+              ],
+              required: :all,
+            }
+          ]
+        end
+
+        let(:required_duration) do
+          { minutes: 60 }
+        end
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "simple values to defaults" do
+        let(:participants) do
+          { members: %w{acc_567236000909002 acc_678347111010113} }
+        end
+
+        let(:required_duration) { 60 }
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
     end
   end
 end

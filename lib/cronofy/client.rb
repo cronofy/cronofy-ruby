@@ -649,7 +649,82 @@ module Cronofy
       parse_collection(Resource, "resources", response)
     end
 
+    # Public: Performs an availability query.
+    #
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :participants      - An Array of participant groups (or required
+    #                                particpants for the simple case).
+    #           :required_duration - An Integer representing the minimum number
+    #                                of minutes of availability required.
+    #           :available_periods - An Array of available time periods Hashes,
+    #                                each must specify a start and end Time.
+    #
+    # Returns an Array of AvailablePeriods.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def availability(options = {})
+      options[:participants] = map_availability_participants(options[:participants])
+      options[:required_duration] = map_availability_required_duration(options[:required_duration])
+
+      options[:available_periods].each do |params|
+        AVAILABLE_PERIODS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+          params[tp] = to_iso8601(params[tp])
+        end
+      end
+
+      response = post("/v1/availability", options)
+      parse_collection(AvailablePeriod, "available_periods", response)
+    end
+
     private
+
+    def map_availability_participants(participants)
+      case participants
+      when Hash
+        participants[:members].map! do |member|
+          map_availability_member(member)
+        end
+
+        unless participants.key?(:required)
+          participants[:required] = :all
+        end
+
+        [participants]
+      else
+        participants
+      end
+    end
+
+    def map_availability_member(member)
+      case member
+      when String
+        { sub: member }
+      else
+        member
+      end
+    end
+
+    def map_availability_required_duration(required_duration)
+      case required_duration
+      when Fixnum
+        { minutes: required_duration }
+      else
+        required_duration
+      end
+    end
+
+    AVAILABLE_PERIODS_TIME_PARAMS = %i{
+      start
+      end
+    }.freeze
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
     FREE_BUSY_TIME_PARAMS = %i{
