@@ -652,8 +652,8 @@ module Cronofy
     # Public: Performs an availability query.
     #
     # options - The Hash options used to refine the selection (default: {}):
-    #           :participants      - An Array of participant groups (or required
-    #                                particpants for the simple case).
+    #           :participants      - An Array of participant groups or a Hash
+    #                                for a single participant group.
     #           :required_duration - An Integer representing the minimum number
     #                                of minutes of availability required.
     #           :available_periods - An Array of available time periods Hashes,
@@ -674,11 +674,7 @@ module Cronofy
       options[:participants] = map_availability_participants(options[:participants])
       options[:required_duration] = map_availability_required_duration(options[:required_duration])
 
-      options[:available_periods].each do |params|
-        AVAILABLE_PERIODS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
-          params[tp] = to_iso8601(params[tp])
-        end
-      end
+      translate_available_periods(options[:available_periods])
 
       response = post("/v1/availability", options)
       parse_collection(AvailablePeriod, "available_periods", response)
@@ -686,7 +682,29 @@ module Cronofy
 
     private
 
+    def translate_available_periods(periods)
+      periods.each do |params|
+        AVAILABLE_PERIODS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+          params[tp] = to_iso8601(params[tp])
+        end
+      end
+    end
+
     def map_availability_participants(participants)
+      case participants
+      when Hash
+        # Allow one group to be specified without being nested
+        [map_availability_participants_group(participants)]
+      when Enumerable
+        participants.map do |group|
+          map_availability_participants_group(group)
+        end
+      else
+        participants
+      end
+    end
+
+    def map_availability_participants_group(participants)
       case participants
       when Hash
         participants[:members].map! do |member|
@@ -697,7 +715,11 @@ module Cronofy
           participants[:required] = :all
         end
 
-        [participants]
+        participants
+      when Array
+        participants.map do |group|
+          map_availability_participants(group)
+        end
       else
         participants
       end
@@ -707,6 +729,11 @@ module Cronofy
       case member
       when String
         { sub: member }
+      when Hash
+        if member[:available_periods]
+          translate_available_periods(member[:available_periods])
+        end
+        member
       else
         member
       end
