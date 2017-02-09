@@ -24,12 +24,12 @@
  * Support for elevating permissions [#16]
 
 
-[0.11.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.11.0
-[0.12.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.12.0
-[0.13.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.13.0
-[0.14.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.14.0
-[0.15.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.15.0
-[0.16.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/rel-0.16.0
+[0.11.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.11.0
+[0.12.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.12.0
+[0.13.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.13.0
+[0.14.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.14.0
+[0.15.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.15.0
+[0.16.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.16.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
