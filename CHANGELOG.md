@@ -1,3 +1,7 @@
+## [0.17.0]
+
+ * Support member-specific available periods for Availability API [#27]
+
 ## [0.16.0]
 
  * Support Availability API [#26]
@@ -30,6 +34,7 @@
 [0.14.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.14.0
 [0.15.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.15.0
 [0.16.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.16.0
+[0.17.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.17.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -38,3 +43,4 @@
 [#20]: https://github.com/cronofy/cronofy-ruby/pull/20
 [#24]: https://github.com/cronofy/cronofy-ruby/pull/24
 [#26]: https://github.com/cronofy/cronofy-ruby/pull/26
+[#27]: https://github.com/cronofy/cronofy-ruby/pull/27
