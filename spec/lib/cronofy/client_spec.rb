@@ -1096,7 +1096,7 @@ describe Cronofy::Client do
     end
   end
 
-  describe 'Availability', focus: true do
+  describe 'Availability' do
     describe '#availability' do
       let(:method) { :post }
       let(:request_url) { 'https://api.cronofy.com/v1/availability' }
@@ -1172,6 +1172,77 @@ describe Cronofy::Client do
               members: [
                 { sub: "acc_567236000909002" },
                 { sub: "acc_678347111010113" },
+              ],
+              required: :all,
+            }
+          ]
+        end
+
+        let(:required_duration) do
+          { minutes: 60 }
+        end
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "member-specific available periods" do
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  {
+                    "sub" => "acc_678347111010113",
+                    "available_periods" => [
+                      {
+                        "start" => "2017-01-03T09:00:00Z",
+                        "end" => "2017-01-03T12:00:00Z"
+                      },
+                      {
+                        "start" => "2017-01-04T10:00:00Z",
+                        "end" => "2017-01-04T20:00:00Z"
+                      }
+                    ]
+                  }
+                ],
+                "required" => "all"
+              }
+            ],
+            "required_duration" => { "minutes" => 60 },
+            "available_periods" => [
+              {
+                "start" => "2017-01-03T09:00:00Z",
+                "end" => "2017-01-03T18:00:00Z"
+              },
+              {
+                "start" => "2017-01-04T09:00:00Z",
+                "end" => "2017-01-04T18:00:00Z"
+              }
+            ]
+          }
+        end
+
+        let(:participants) do
+          [
+            {
+              members: [
+                { sub: "acc_567236000909002" },
+                {
+                  sub: "acc_678347111010113",
+                  available_periods: [
+                    { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T12:00:00Z") },
+                    { start: Time.parse("2017-01-04T10:00:00Z"), end: Time.parse("2017-01-04T20:00:00Z") },
+                  ],
+                },
               ],
               required: :all,
             }
