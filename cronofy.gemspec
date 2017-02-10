@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.files         = %w{Gemfile LICENSE.txt README.md Rakefile cronofy.gemspec}
+  spec.files         = %w{CHANGELOG.md Gemfile LICENSE.txt README.md Rakefile cronofy.gemspec}
   spec.files        += Dir['lib/**/*.rb']
   spec.files        += Dir['spec/**/*.rb']
   spec.test_files    = Dir['spec/**/*.rb']
