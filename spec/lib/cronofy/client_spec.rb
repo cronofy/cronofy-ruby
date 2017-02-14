@@ -1283,4 +1283,44 @@ describe Cronofy::Client do
       end
     end
   end
+
+  describe "Specified data centre" do
+    let(:data_centre) { :de }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: 'client_id_123',
+        client_secret: 'client_secret_456',
+        access_token: token,
+        refresh_token: 'refresh_token_456',
+        data_centre: data_centre,
+      )
+    end
+
+    describe "Userinfo" do
+      let(:request_url) { "https://api-#{data_centre}.cronofy.com/v1/userinfo" }
+
+      describe "#userinfo" do
+        let(:method) { :get }
+
+        let(:correct_response_code) { 200 }
+        let(:correct_response_body) do
+          {
+            "sub" => "ser_5700a00eb0ccd07000000000",
+            "cronofy.type" => "service_account",
+            "cronofy.service_account.domain" => "example.com"
+          }
+        end
+
+        let(:correct_mapped_result) do
+          Cronofy::UserInfo.new(correct_response_body)
+        end
+
+        subject { client.userinfo }
+
+        it_behaves_like "a Cronofy request"
+        it_behaves_like "a Cronofy request with mapped return value"
+      end
+    end
+  end
 end
