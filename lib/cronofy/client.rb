@@ -23,13 +23,23 @@ module Cronofy
     #                            ENV["CRONOFY_CLIENT_SECRET"]).
     #           :refresh_token - An existing refresh token String for the user's
     #                            account (optional).
+    #           :data_centre   - An identifier to override the default data
+    #                            centre (optional).
     def initialize(options = {})
       access_token  = options[:access_token]
       client_id     = options.fetch(:client_id, ENV["CRONOFY_CLIENT_ID"])
       client_secret = options.fetch(:client_secret, ENV["CRONOFY_CLIENT_SECRET"])
       refresh_token = options[:refresh_token]
 
-      @auth = Auth.new(client_id, client_secret, access_token, refresh_token)
+      @data_centre   = options[:data_centre]
+
+      @auth = Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: access_token,
+        refresh_token: refresh_token,
+        data_centre: @data_centre,
+      )
     end
 
     # Public: Creates a new calendar for the account.
@@ -207,7 +217,7 @@ module Cronofy
         params[tp] = to_iso8601(params[tp])
       end
 
-      url = ::Cronofy.api_url + "/v1/events"
+      url = api_url + "/v1/events"
       PagedResultIterator.new(PagedEventsResult, :events, access_token!, url, params)
     end
 
@@ -255,7 +265,7 @@ module Cronofy
         params[tp] = to_iso8601(params[tp])
       end
 
-      url = ::Cronofy.api_url + "/v1/free_busy"
+      url = api_url + "/v1/free_busy"
       PagedResultIterator.new(PagedFreeBusyResult, :free_busy, access_token!, url, params)
     end
 
@@ -890,6 +900,10 @@ module Cronofy
       def parse_page(response)
         ResponseParser.new(response).parse_json(@page_parser)
       end
+    end
+
+    def api_url
+      ::Cronofy.api_url(@data_centre)
     end
   end
 

@@ -22,10 +22,13 @@ describe Cronofy::Auth do
     WebMock.disable_net_connect!(allow_localhost: true)
   end
 
+  let(:api_token_url) { "https://api.cronofy.com/oauth/token" }
+  let(:app_token_url) { "https://app.cronofy.com/oauth/token" }
+
   let(:response_status) { 200 }
 
   before(:each) do
-    stub_request(:post, "https://api.cronofy.com/oauth/token")
+    stub_request(:post, api_token_url)
       .with(
         body: {
           client_id: client_id,
@@ -52,7 +55,7 @@ describe Cronofy::Auth do
         }
       )
 
-    stub_request(:post, "https://app.cronofy.com/oauth/token")
+    stub_request(:post, app_token_url)
       .with(
         body: {
           client_id: client_id,
@@ -89,6 +92,7 @@ describe Cronofy::Auth do
     let(:scheme) { 'https' }
     let(:host) { 'app.cronofy.com' }
     let(:path) { '/oauth/authorize' }
+    let(:data_centre_override) { nil }
     let(:default_params) do
       {
         'client_id' => client_id,
@@ -99,7 +103,11 @@ describe Cronofy::Auth do
     end
 
     let(:auth) do
-      Cronofy::Auth.new(client_id, client_secret)
+      Cronofy::Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        data_centre: data_centre_override,
+      )
     end
 
     subject do
@@ -147,6 +155,14 @@ describe Cronofy::Auth do
 
       it_behaves_like 'a user auth link provider'
     end
+
+    context 'when data centre overridden' do
+      let(:data_centre_override) { :de }
+      let(:host) { 'app-de.cronofy.com' }
+      let(:params) { default_params }
+
+      it_behaves_like 'a user auth link provider'
+    end
   end
 
   shared_examples 'an authorization request' do
@@ -188,7 +204,15 @@ describe Cronofy::Auth do
   end
 
   describe '#get_token_from_code' do
-    subject { Cronofy::Auth.new(client_id, client_secret).get_token_from_code(code, redirect_uri) }
+    let(:data_centre_override) { nil }
+
+    subject do
+      Cronofy::Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        data_centre: data_centre_override,
+      ).get_token_from_code(code, redirect_uri)
+    end
 
     context "with account_id" do
       let(:account_id) { "acc_0123456789abc" }
@@ -239,13 +263,26 @@ describe Cronofy::Auth do
       end
     end
 
+    context "with data centre overridden" do
+      let(:data_centre_override) { :de }
+      let(:api_token_url) { "https://api-de.cronofy.com/oauth/token" }
+      let(:app_token_url) { "https://app-de.cronofy.com/oauth/token" }
+
+      it_behaves_like 'an authorization request'
+    end
+
     it_behaves_like 'an authorization request'
   end
 
   describe '#refresh!' do
     context "access_token and refresh_token present" do
       subject do
-        Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token).refresh!
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+          refresh_token: refresh_token,
+        ).refresh!
       end
 
       it_behaves_like 'an authorization request'
@@ -253,7 +290,11 @@ describe Cronofy::Auth do
 
     context "no refresh_token" do
       subject do
-        Cronofy::Auth.new(client_id, client_secret, access_token, nil).refresh!
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+        ).refresh!
       end
 
       it "raises a credentials missing error" do
@@ -263,7 +304,10 @@ describe Cronofy::Auth do
 
     context "no access_token or refresh_token" do
       subject do
-        Cronofy::Auth.new(client_id, client_secret, nil, nil).refresh!
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+        ).refresh!
       end
 
       it "raises a credentials missing error" do
@@ -273,8 +317,29 @@ describe Cronofy::Auth do
 
     context "only refresh_token" do
       subject do
-        Cronofy::Auth.new(client_id, client_secret, nil, refresh_token).refresh!
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          refresh_token: refresh_token,
+        ).refresh!
       end
+
+      it_behaves_like 'an authorization request'
+    end
+
+    context "with data centre overridden" do
+      subject do
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+          refresh_token: refresh_token,
+          data_centre: :de,
+        ).refresh!
+      end
+
+      let(:api_token_url) { "https://api-de.cronofy.com/oauth/token" }
+      let(:app_token_url) { "https://app-de.cronofy.com/oauth/token" }
 
       it_behaves_like 'an authorization request'
     end
@@ -315,7 +380,12 @@ describe Cronofy::Auth do
 
     context "access_token and refresh_token present" do
       let(:auth) do
-        Cronofy::Auth.new(client_id, client_secret, access_token, refresh_token)
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+          refresh_token: refresh_token,
+        )
       end
 
       let(:revoke_token) { refresh_token }
@@ -325,7 +395,11 @@ describe Cronofy::Auth do
 
     context "only refresh_token" do
       let(:auth) do
-        Cronofy::Auth.new(client_id, client_secret, nil, refresh_token)
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          refresh_token: refresh_token,
+        )
       end
 
       let(:revoke_token) { refresh_token }
@@ -335,7 +409,11 @@ describe Cronofy::Auth do
 
     context "only access_token" do
       let(:auth) do
-        Cronofy::Auth.new(client_id, client_secret, access_token, nil)
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+        )
       end
 
       let(:revoke_token) { access_token }
@@ -345,7 +423,7 @@ describe Cronofy::Auth do
 
     context "no access_token or refresh_token" do
       let(:auth) do
-        Cronofy::Auth.new(client_id, client_secret, nil, nil)
+        Cronofy::Auth.new(client_id: client_id, client_secret: client_secret)
       end
 
       it "raises a credentials missing error" do
