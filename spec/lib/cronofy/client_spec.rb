@@ -225,6 +225,7 @@ describe Cronofy::Client do
       let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
       let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
       let(:location) { { :description => "Board room" } }
+      let(:transparency) { nil }
 
       let(:event) do
         {
@@ -235,6 +236,7 @@ describe Cronofy::Client do
           :end => end_datetime,
           :url => url,
           :location => location,
+          :transparency => transparency,
           :reminders => [
             { :minutes => 60 },
             { :minutes => 0 },
@@ -251,6 +253,7 @@ describe Cronofy::Client do
           :end => encoded_end_datetime,
           :url => url.to_s,
           :location => location,
+          :transparency => transparency,
           :reminders => [
             { :minutes => 60 },
             { :minutes => 0 },
@@ -307,6 +310,12 @@ describe Cronofy::Client do
 
       context 'when geo location present' do
         let(:location) { { :description => "Board meeting", :lat => "1.2345", :long => "0.1234" } }
+
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context 'when transparency present' do
+        let(:transparency) { "transparent" }
 
         it_behaves_like 'a Cronofy request'
       end
