@@ -1273,6 +1273,71 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context "member-specific calendars" do
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  {
+                    "sub" => "acc_678347111010113",
+                    "calendar_ids" => [
+                      "cal_1234_5678",
+                      "cal_9876_5432",
+                    ]
+                  }
+                ],
+                "required" => "all"
+              }
+            ],
+            "required_duration" => { "minutes" => 60 },
+            "available_periods" => [
+              {
+                "start" => "2017-01-03T09:00:00Z",
+                "end" => "2017-01-03T18:00:00Z"
+              },
+              {
+                "start" => "2017-01-04T09:00:00Z",
+                "end" => "2017-01-04T18:00:00Z"
+              }
+            ]
+          }
+        end
+
+        let(:participants) do
+          [
+            {
+              members: [
+                { sub: "acc_567236000909002" },
+                {
+                  sub: "acc_678347111010113",
+                  calendar_ids: [
+                    "cal_1234_5678",
+                    "cal_9876_5432",
+                  ],
+                },
+              ],
+              required: :all,
+            }
+          ]
+        end
+
+        let(:required_duration) do
+          { minutes: 60 }
+        end
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "simple values to defaults" do
         let(:participants) do
           { members: %w{acc_567236000909002 acc_678347111010113} }
