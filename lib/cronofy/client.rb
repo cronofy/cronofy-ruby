@@ -195,6 +195,9 @@ module Cronofy
     #                              after in order to be returned (optional).
     #           :calendar_ids    - An Array of calendar ids for restricting the
     #                              returned events (optional).
+    #           :include_geo     - A Boolean specifying whether an event
+    #                              location's latitude and longitude where
+    #                              present (optional).
     #
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.
