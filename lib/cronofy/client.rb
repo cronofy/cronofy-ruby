@@ -120,6 +120,10 @@ module Cronofy
     #                                          occur.
     #               :transparency - The transparency state for the event (optional).
     #                               Accepted values are "transparent" and "opaque".
+    #               :attendees    - A Hash of :invite and :reject, each of which is
+    #                               an array of invitees to invite to or reject from
+    #                               the event. Invitees are represented by a hash of
+    #                               :email and :display_name (optional).
     #
     # Examples
     #
