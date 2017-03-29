@@ -1358,6 +1358,102 @@ describe Cronofy::Client do
     end
   end
 
+  describe "Add to calendar" do
+    let(:request_url) { "https://api.cronofy.com/v1/add_to_calendar" }
+    let(:url) { URI("https://example.com") }
+    let(:method) { :post }
+    let(:request_headers) { json_request_headers }
+
+    let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+    let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+    let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+    let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+    let(:location) { { :description => "Board room" } }
+    let(:transparency) { nil }
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+    let(:scope) { 'read_events delete_events' }
+    let(:state) { 'example_state' }
+    let(:redirect_uri) { 'http://example.com/redirect' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: token,
+      )
+    end
+
+    let(:event) do
+      {
+        :event_id => "qTtZdczOccgaPncGJaCiLg",
+        :summary => "Board meeting",
+        :description => "Discuss plans for the next quarter.",
+        :start => start_datetime,
+        :end => end_datetime,
+        :url => url,
+        :location => location,
+        :transparency => transparency,
+        :reminders => [
+          { :minutes => 60 },
+          { :minutes => 0 },
+          { :minutes => 10 },
+        ],
+      }
+    end
+
+    let(:oauth_body) do
+      {
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+      }
+    end
+
+    let(:args) do
+      {
+        oauth: oauth_body,
+        event: event,
+      }
+    end
+
+    let(:request_body) do
+      {
+        client_id: client_id,
+        client_secret: client_secret,
+        oauth: oauth_body,
+        event: {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :start => encoded_start_datetime,
+          :end => encoded_end_datetime,
+          :url => url.to_s,
+          :location => location,
+          :transparency => transparency,
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
+        }
+      }
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) do
+      {
+        oauth_url: "http://www.example.com/oauth?token=example"
+      }
+    end
+
+    subject { client.add_to_calendar(args) }
+
+    context 'when start/end are Times' do
+      it_behaves_like 'a Cronofy request'
+    end
+
+  end
+
   describe "Specified data centre" do
     let(:data_centre) { :de }
 
