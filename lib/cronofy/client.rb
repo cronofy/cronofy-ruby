@@ -10,9 +10,6 @@ module Cronofy
       delete_event
     }.freeze
 
-    attr_reader :client_id
-    attr_reader :client_secret
-
     # Public: Initialize a new Cronofy::Client.
     #
     # options - A Hash of options used to initialize the client (default: {}):
@@ -37,8 +34,8 @@ module Cronofy
       @data_centre   = options[:data_centre]
 
       @auth = Auth.new(
-        client_id: client_id,
-        client_secret: client_secret,
+        client_id: @client_id,
+        client_secret: @client_secret,
         access_token: access_token,
         refresh_token: refresh_token,
         data_centre: @data_centre,
