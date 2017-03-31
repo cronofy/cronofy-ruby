@@ -769,7 +769,7 @@ module Cronofy
     #
     # See http://www.cronofy.com/developers/api#upsert-event for reference.
     #
-    # Returns a response containing an url.
+    # Returns a AddToCalendarResponse.
     #
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
