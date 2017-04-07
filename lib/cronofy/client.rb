@@ -786,13 +786,11 @@ module Cronofy
         client_id: @client_id,
         client_secret: @client_secret,
         oauth: args[:oauth],
+        event: args[:event],
       }
 
-      if args[:event]
-        body[:event] = args[:event]
-        body[:event][:start] = encode_event_time(body[:event][:start])
-        body[:event][:end] = encode_event_time(body[:event][:end])
-      end
+      encode_event_time(body[:event][:start]) if body[:event][:start]
+      encode_event_time(body[:event][:end]) if body[:event][:end]
 
       response = post("/v1/add_to_calendar", body)
       parse_json(AddToCalendarResponse, nil , response)
