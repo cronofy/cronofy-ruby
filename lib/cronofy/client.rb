@@ -789,8 +789,8 @@ module Cronofy
         event: args[:event],
       }
 
-      encode_event_time(body[:event][:start]) if body[:event][:start]
-      encode_event_time(body[:event][:end]) if body[:event][:end]
+      body[:event][:start] = encode_event_time(body[:event][:start]) if body[:event][:start]
+      body[:event][:end] = encode_event_time(body[:event][:end]) if body[:event][:end]
 
       response = post("/v1/add_to_calendar", body)
       parse_json(AddToCalendarResponse, nil , response)
