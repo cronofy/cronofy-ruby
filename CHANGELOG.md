@@ -1,3 +1,7 @@
+## [0.19.0]
+
+ * Support add to calendar #31]
+
 ## [0.18.0]
 
  * Support multiple data centres [#30]
@@ -40,6 +44,7 @@
 [0.16.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.16.0
 [0.17.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.17.0
 [0.18.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.18.0
+[0.19.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.19.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -50,3 +55,4 @@
 [#26]: https://github.com/cronofy/cronofy-ruby/pull/26
 [#27]: https://github.com/cronofy/cronofy-ruby/pull/27
 [#30]: https://github.com/cronofy/cronofy-ruby/pull/30
+[#31]: https://github.com/cronofy/cronofy-ruby/pull/31

@@ -282,6 +282,9 @@ module Cronofy
   class Participant < Hashie::Mash
   end
 
+  class AddToCalendarResponse < Hashie::Mash
+  end
+
   module ParticipantEnumerable
     def self.coerce(values)
       values.map { |v| Participant.new(v) }
