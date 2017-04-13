@@ -1,6 +1,12 @@
+## [0.20.0]
+
+ * Change invalid request message to include errors [#36]
+ * Pass through times as-is if already Strings [#37]
+ * Support bulk delete from specific calendars [#38]
+
 ## [0.19.0]
 
- * Support add to calendar #31]
+ * Support add to calendar [#31]
 
 ## [0.18.0]
 
@@ -45,6 +51,7 @@
 [0.17.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.17.0
 [0.18.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.18.0
 [0.19.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.19.0
+[0.20.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.20.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -56,3 +63,6 @@
 [#27]: https://github.com/cronofy/cronofy-ruby/pull/27
 [#30]: https://github.com/cronofy/cronofy-ruby/pull/30
 [#31]: https://github.com/cronofy/cronofy-ruby/pull/31
+[#36]: https://github.com/cronofy/cronofy-ruby/pull/36
+[#37]: https://github.com/cronofy/cronofy-ruby/pull/37
+[#38]: https://github.com/cronofy/cronofy-ruby/pull/38
