@@ -42,6 +42,10 @@ module Cronofy
   end
 
   class InvalidRequestError < APIError
+    def message
+      "#{super} - #{errors.inspect}"
+    end
+
     def errors
       @errors ||= begin
         json = JSON.parse(self.body)
