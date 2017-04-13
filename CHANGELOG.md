@@ -6,7 +6,8 @@
 
 ## [0.19.0]
 
- * Support add to calendar [#31]
+ * Support setting event transparency [#31]
+ * Support Add To Calendar [#35]
 
 ## [0.18.0]
 
@@ -63,6 +64,7 @@
 [#27]: https://github.com/cronofy/cronofy-ruby/pull/27
 [#30]: https://github.com/cronofy/cronofy-ruby/pull/30
 [#31]: https://github.com/cronofy/cronofy-ruby/pull/31
+[#35]: https://github.com/cronofy/cronofy-ruby/pull/35
 [#36]: https://github.com/cronofy/cronofy-ruby/pull/36
 [#37]: https://github.com/cronofy/cronofy-ruby/pull/37
 [#38]: https://github.com/cronofy/cronofy-ruby/pull/38
