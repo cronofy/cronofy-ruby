@@ -330,8 +330,15 @@ module Cronofy
 
     # Public: Deletes all events you are managing for the account.
     #
-    # See http://www.cronofy.com/developers/api/alpha#bulk-delete-events for
+    # See https://www.cronofy.com/developers/api/#bulk-delete-events for
     # reference.
+    #
+    # options - The Hash options used to refine the selection (optional):
+    #           :calendar_ids - An Array of calendar ids to delete managed
+    #                           events from returned events.
+    #
+    # If no options are specified it defaults to deleting all the events you are
+    # managing.
     #
     # Returns nothing.
     #
@@ -345,8 +352,9 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def delete_all_events
-      delete("/v1/events", delete_all: true)
+    def delete_all_events(options = nil)
+      options ||= { delete_all: true }
+      delete("/v1/events", options)
       nil
     end
 

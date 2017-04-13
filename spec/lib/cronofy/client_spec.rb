@@ -594,16 +594,32 @@ describe Cronofy::Client do
     end
 
     describe '#delete_all_events' do
-      let(:request_url) { "https://api.cronofy.com/v1/events" }
-      let(:method) { :delete }
-      let(:request_headers) { json_request_headers }
-      let(:request_body) { { :delete_all => true } }
-      let(:correct_response_code) { 202 }
-      let(:correct_response_body) { nil }
+      context "default" do
+        let(:request_url) { "https://api.cronofy.com/v1/events" }
+        let(:method) { :delete }
+        let(:request_headers) { json_request_headers }
+        let(:request_body) { { :delete_all => true } }
+        let(:correct_response_code) { 202 }
+        let(:correct_response_body) { nil }
 
-      subject { client.delete_all_events }
+        subject { client.delete_all_events }
 
-      it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context "specific calendars" do
+        let(:calendar_ids) { %w{cal_1234_5678 cal_abcd_efgh} }
+        let(:request_url) { "https://api.cronofy.com/v1/events" }
+        let(:method) { :delete }
+        let(:request_headers) { json_request_headers }
+        let(:request_body) { { :calendar_ids => calendar_ids } }
+        let(:correct_response_code) { 202 }
+        let(:correct_response_body) { nil }
+
+        subject { client.delete_all_events(calendar_ids: calendar_ids) }
+
+        it_behaves_like 'a Cronofy request'
+      end
     end
   end
 
