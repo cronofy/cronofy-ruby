@@ -789,6 +789,14 @@ module Cronofy
         event: args[:event],
       }
 
+      if availability = args[:availability]
+        availability[:participants] = map_availability_participants(availability[:participants])
+        availability[:required_duration] = map_availability_required_duration(availability[:required_duration])
+
+        translate_available_periods(availability[:available_periods])
+        body[:availability] = availability
+      end
+
       body[:event][:start] = encode_event_time(body[:event][:start]) if body[:event][:start]
       body[:event][:end] = encode_event_time(body[:event][:end]) if body[:event][:end]
 
