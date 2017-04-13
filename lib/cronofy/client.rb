@@ -842,6 +842,8 @@ module Cronofy
       result = time
 
       case time
+      when String
+        time
       when Hash
         if time[:time]
           encoded_time = encode_event_time(time[:time])

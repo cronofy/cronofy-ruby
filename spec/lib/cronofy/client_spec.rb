@@ -319,6 +319,13 @@ describe Cronofy::Client do
 
         it_behaves_like 'a Cronofy request'
       end
+
+      context 'when start and end already encoded' do
+        let(:start_datetime) { encoded_start_datetime }
+        let(:end_datetime) { encoded_end_datetime }
+
+        it_behaves_like 'a Cronofy request'
+      end
     end
 
     describe '#read_events' do
