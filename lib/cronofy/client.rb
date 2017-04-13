@@ -782,22 +782,15 @@ module Cronofy
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def add_to_calendar(args = {})
-      body = {
-        client_id: @client_id,
-        client_secret: @client_secret,
-        oauth: args[:oauth],
-        event: args[:event],
-      }
+      body = args.merge(client_id: @client_id, client_secret: @client_secret)
 
-      if availability = args[:availability]
+      if availability = body[:availability]
         availability[:participants] = map_availability_participants(availability[:participants])
         availability[:required_duration] = map_availability_required_duration(availability[:required_duration])
 
         translate_available_periods(availability[:available_periods])
         body[:availability] = availability
       end
-
-      body[:target_calendars] = args[:target_calendars] if args[:target_calendars]
 
       body[:event][:start] = encode_event_time(body[:event][:start]) if body[:event][:start]
       body[:event][:end] = encode_event_time(body[:event][:end]) if body[:event][:end]
