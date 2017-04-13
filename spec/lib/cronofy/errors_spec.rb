@@ -50,6 +50,10 @@ describe Cronofy::Errors do
 
         expect(subject.errors).to eq(deserialized_errors)
       end
+
+      it "includes the errors in the message" do
+        expect(subject.message).to eq('message - {"event_id"=>[{"key"=>"errors.required", "description"=>"required"}]}')
+      end
     end
 
     context "errors field missing" do
