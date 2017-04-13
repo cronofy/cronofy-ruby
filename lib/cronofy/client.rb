@@ -797,6 +797,8 @@ module Cronofy
         body[:availability] = availability
       end
 
+      body[:target_calendars] = args[:target_calendars] if args[:target_calendars]
+
       body[:event][:start] = encode_event_time(body[:event][:start]) if body[:event][:start]
       body[:event][:end] = encode_event_time(body[:event][:end]) if body[:event][:end]
 
