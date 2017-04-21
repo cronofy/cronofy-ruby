@@ -1437,7 +1437,17 @@ describe Cronofy::Client do
       {
         oauth: oauth_body,
         event: event,
+        target_calendars: target_calendars,
       }
+    end
+
+    let(:target_calendars) do
+      [
+        {
+          sub: "acc_567236000909002",
+          calendar_id: "cal_n23kjnwrw2_jsdfjksn234",
+        }
+      ]
     end
 
     let(:request_body) do
@@ -1459,7 +1469,151 @@ describe Cronofy::Client do
             { :minutes => 0 },
             { :minutes => 10 },
           ],
+        },
+        target_calendars: target_calendars,
+      }
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) do
+      {
+        oauth_url: "http://www.example.com/oauth?token=example"
+      }
+    end
+
+    subject { client.add_to_calendar(args) }
+
+    context 'when start/end are Times' do
+      it_behaves_like 'a Cronofy request'
+    end
+
+  end
+
+  describe "Add to calendar availability" do
+    let(:request_url) { "https://api.cronofy.com/v1/add_to_calendar" }
+    let(:url) { URI("https://example.com") }
+    let(:method) { :post }
+    let(:request_headers) { json_request_headers }
+
+    let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+    let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+    let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+    let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+    let(:location) { { :description => "Board room" } }
+    let(:transparency) { nil }
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+    let(:scope) { 'read_events delete_events' }
+    let(:state) { 'example_state' }
+    let(:redirect_uri) { 'http://example.com/redirect' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: token,
+      )
+    end
+
+    let(:event) do
+      {
+        :event_id => "qTtZdczOccgaPncGJaCiLg",
+        :summary => "Board meeting",
+        :description => "Discuss plans for the next quarter.",
+        :url => url,
+        :location => location,
+        :transparency => transparency,
+        :reminders => [
+          { :minutes => 60 },
+          { :minutes => 0 },
+          { :minutes => 10 },
+        ],
+      }
+    end
+
+    let(:oauth_body) do
+      {
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+      }
+    end
+
+    let(:target_calendars) do
+      [
+        {
+          sub: "acc_567236000909002",
+          calendar_id: "cal_n23kjnwrw2_jsdfjksn234",
         }
+      ]
+    end
+
+    let(:availability) do
+      {
+        participants: [
+          {
+            members: [{
+              sub: "acc_567236000909002",
+              calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+            }],
+            required: 'all'
+          }
+        ],
+        required_duration: { minutes: 60 },
+        available_periods: [{
+          start: Time.utc(2017, 1, 1, 9, 00),
+          end:   Time.utc(2017, 1, 1, 17, 00),
+        }]
+      }
+    end
+
+    let(:mapped_availability) do
+      {
+        participants: [
+          {
+            members: [{
+              sub: "acc_567236000909002",
+              calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+            }],
+            required: 'all'
+          }
+        ],
+        required_duration: { minutes: 60 },
+        available_periods: [{
+          start: "2017-01-01T09:00:00Z",
+          end:   "2017-01-01T17:00:00Z",
+        }]
+      }
+    end
+
+    let(:args) do
+      {
+        oauth: oauth_body,
+        event: event,
+        target_calendars: target_calendars,
+        availability: availability,
+      }
+    end
+
+    let(:request_body) do
+      {
+        client_id: client_id,
+        client_secret: client_secret,
+        oauth: oauth_body,
+        event: {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :url => url.to_s,
+          :location => location,
+          :transparency => transparency,
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
+        },
+        target_calendars: target_calendars,
+        availability: mapped_availability,
       }
     end
     let(:correct_response_code) { 202 }
