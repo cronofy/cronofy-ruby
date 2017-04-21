@@ -800,14 +800,19 @@ module Cronofy
     #     }
     #    },
     #    availability: {
-    #     participants: [{
-    #      sub: "acc_567236000909002",
-    #      calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
-    #     }],
+    #      participants: [
+    #       {
+    #         members: [{
+    #           sub: "acc_567236000909002",
+    #           calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+    #         }],
+    #         required: 'all'
+    #       }
+    #     ],
     #     required_duration: { minutes: 60 },
     #     available_periods: [{
-    #      start: "2017-01-01T09:00:00Z",
-    #      end: "2017-01-01T17:00:00Z"
+    #       start: Time.utc(2017, 1, 1, 9, 00),
+    #       end:   Time.utc(2017, 1, 1, 17, 00),
     #     }]
     #    },
     #    target_calendars: [{
@@ -843,8 +848,6 @@ module Cronofy
 
       body[:event][:start] = encode_event_time(body[:event][:start]) if body[:event][:start]
       body[:event][:end] = encode_event_time(body[:event][:end]) if body[:event][:end]
-      body[:availability] = args[:availability] if args[:availability]
-      body[:target_calendars] = args[:target_calendars] if args[:target_calendars]
 
       response = post("/v1/add_to_calendar", body)
       parse_json(AddToCalendarResponse, nil , response)
