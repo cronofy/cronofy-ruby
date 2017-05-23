@@ -853,6 +853,25 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    # Public: Creates a link_token to allow explicity linking of an account
+    #
+    # no args
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#auth-explicit-linking for
+    # reference.
+    #
+    # Returns a link)token
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def link_token
+      response = post("/v1/link_tokens", nil)
+      parse_json(String, 'link_token', response)
+    end
+
     private
 
     def translate_available_periods(periods)
