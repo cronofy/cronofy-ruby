@@ -1488,16 +1488,12 @@ describe Cronofy::Client do
 
   end
 
-  describe "Add to calendar availability" do
-    let(:request_url) { "https://api.cronofy.com/v1/add_to_calendar" }
+  describe "Real time scheduling" do
+    let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling" }
     let(:url) { URI("https://example.com") }
     let(:method) { :post }
     let(:request_headers) { json_request_headers }
 
-    let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
-    let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
-    let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
-    let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
     let(:location) { { :description => "Board room" } }
     let(:transparency) { nil }
     let(:client_id) { 'example_id' }
@@ -1623,7 +1619,7 @@ describe Cronofy::Client do
       }
     end
 
-    subject { client.add_to_calendar(args) }
+    subject { client.real_time_scheduling(args) }
 
     context 'when start/end are Times' do
       it_behaves_like 'a Cronofy request'
