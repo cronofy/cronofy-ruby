@@ -1128,6 +1128,28 @@ describe Cronofy::Client do
     end
   end
 
+  describe '#link_token' do
+    let(:request_url) { 'https://api.cronofy.com/v1/link_tokens' }
+    let(:method) { :post }
+    let(:request_body) { nil }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "link_token" => "abcd1234"
+      }
+    end
+
+    let(:correct_mapped_result) do
+      "abcd1234"
+    end
+
+    subject { client.link_token }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
   describe 'Availability' do
     describe '#availability' do
       let(:method) { :post }
