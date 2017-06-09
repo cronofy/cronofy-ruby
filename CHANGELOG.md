@@ -1,3 +1,8 @@
+## [0.22.0]
+
+ * Splitting of Add to Calendar and Real time scheduling [#44]
+ * Support for explicit linking of accounts [#43]
+
 ## [0.21.0]
 
  * Support Add To Calendar with availability [#40]
@@ -57,7 +62,8 @@
 [0.18.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.18.0
 [0.19.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.19.0
 [0.20.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.20.0
-[0.21.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.20.0
+[0.21.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.21.0
+[0.22.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.22.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -74,3 +80,5 @@
 [#37]: https://github.com/cronofy/cronofy-ruby/pull/37
 [#38]: https://github.com/cronofy/cronofy-ruby/pull/38
 [#40]: https://github.com/cronofy/cronofy-ruby/pull/40
+[#43]: https://github.com/cronofy/cronofy-ruby/pull/43
+[#44]: https://github.com/cronofy/cronofy-ruby/pull/44
