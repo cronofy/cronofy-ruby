@@ -4,7 +4,10 @@ require "cronofy/types"
 require "cronofy/auth"
 require "cronofy/client"
 require "cronofy/response_parser"
+
+require 'base64'
 require 'json'
+require 'openssl'
 
 module Cronofy
   def self.default_data_centre

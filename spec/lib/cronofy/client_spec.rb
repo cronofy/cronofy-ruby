@@ -1688,4 +1688,24 @@ describe Cronofy::Client do
       end
     end
   end
+
+  describe "HMAC verification" do
+    let(:client) do
+      Cronofy::Client.new(
+        client_secret: 'pDY0Oi7TJSP2hfNmZNkm5',
+        access_token: token,
+        refresh_token: 'refresh_token_456',
+      )
+    end
+
+    let(:body) { "{\"example\":\"well-known\"}" }
+
+    it "verifies the correct HMAC" do
+      expect(client.hmac_match?(body: body, hmac: "6r2/HjBkqymGegX0wOfifieeUXbbHwtV/LohHS+jv6c=")).to be true
+    end
+
+    it "rejects an incorrect HMAC" do
+      expect(client.hmac_match?(body: body, hmac: "something-else")).to be false
+    end
+  end
 end
