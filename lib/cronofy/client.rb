@@ -42,13 +42,15 @@ module Cronofy
       )
     end
 
-    # Public: Creates a new calendar for the account.
+    # Public: Creates a new calendar for the profile.
     #
     # profile_id - The String ID of the profile to create the calendar within.
-    # name       - A String to use as the name of the calendar.
+    # name       - The String to use as the name of the calendar.
+    # options    - The Hash options used to customize the calendar
+    #              (default: {}):
+    #              :color - The color to make the calendar (optional).
     #
-    # See http://www.cronofy.com/developers/api/alpah#create-calendar for
-    # reference.
+    # See https://www.cronofy.com/developers/api/#create-calendar for reference.
     #
     # Returns the created Calendar
     #
@@ -63,8 +65,9 @@ module Cronofy
     # state and so a calendar cannot be created.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def create_calendar(profile_id, name)
-      response = post("/v1/calendars", profile_id: profile_id, name: name)
+    def create_calendar(profile_id, name, options = {})
+      request = options.merge(profile_id: profile_id, name: name)
+      response = post("/v1/calendars", request)
       parse_json(Calendar, "calendar", response)
     end
 
