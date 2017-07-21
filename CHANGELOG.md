@@ -1,3 +1,8 @@
+## [0.23.0]
+
+ * Support for color with calendar creation and event upsert [#46]
+ * Helper to verify push notification HMACs [#45]
+
 ## [0.22.0]
 
  * Splitting of Add to Calendar and Real time scheduling [#44]
@@ -64,6 +69,7 @@
 [0.20.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.20.0
 [0.21.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.21.0
 [0.22.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.22.0
+[0.23.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.23.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -82,3 +88,5 @@
 [#40]: https://github.com/cronofy/cronofy-ruby/pull/40
 [#43]: https://github.com/cronofy/cronofy-ruby/pull/43
 [#44]: https://github.com/cronofy/cronofy-ruby/pull/44
+[#45]: https://github.com/cronofy/cronofy-ruby/pull/45
+[#46]: https://github.com/cronofy/cronofy-ruby/pull/46
