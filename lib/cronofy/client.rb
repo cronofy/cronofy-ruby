@@ -258,7 +258,7 @@ module Cronofy
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.
     #
-    # See http://www.cronofy.com/developers/api/alpha#free-busy for reference.
+    # See http://www.cronofy.com/developers/api/#free-busy for reference.
     #
     # Returns a lazily-evaluated Enumerable of FreeBusy
     #
@@ -457,7 +457,7 @@ module Cronofy
 
     # Public: Lists all the profiles for the account.
     #
-    # See https://www.cronofy.com/developers/api/alpha/#profiles for reference.
+    # See https://www.cronofy.com/developers/api/#profiles for reference.
     #
     # Returns an Array of Profiles
     #
