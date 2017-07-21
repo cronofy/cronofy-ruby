@@ -42,13 +42,15 @@ module Cronofy
       )
     end
 
-    # Public: Creates a new calendar for the account.
+    # Public: Creates a new calendar for the profile.
     #
     # profile_id - The String ID of the profile to create the calendar within.
-    # name       - A String to use as the name of the calendar.
+    # name       - The String to use as the name of the calendar.
+    # options    - The Hash options used to customize the calendar
+    #              (default: {}):
+    #              :color - The color to make the calendar (optional).
     #
-    # See http://www.cronofy.com/developers/api/alpah#create-calendar for
-    # reference.
+    # See https://www.cronofy.com/developers/api/#create-calendar for reference.
     #
     # Returns the created Calendar
     #
@@ -63,8 +65,9 @@ module Cronofy
     # state and so a calendar cannot be created.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def create_calendar(profile_id, name)
-      response = post("/v1/calendars", profile_id: profile_id, name: name)
+    def create_calendar(profile_id, name, options = {})
+      request = options.merge(profile_id: profile_id, name: name)
+      response = post("/v1/calendars", request)
       parse_json(Calendar, "calendar", response)
     end
 
@@ -120,6 +123,7 @@ module Cronofy
     #                                          occur.
     #               :transparency - The transparency state for the event (optional).
     #                               Accepted values are "transparent" and "opaque".
+    #               :color        - The color of the event (optional).
     #               :attendees    - A Hash of :invite and :reject, each of which is
     #                               an array of invitees to invite to or reject from
     #                               the event. Invitees are represented by a hash of
@@ -254,7 +258,7 @@ module Cronofy
     # The first page will be retrieved eagerly so that common errors will happen
     # inline. However, subsequent pages (if any) will be requested lazily.
     #
-    # See http://www.cronofy.com/developers/api/alpha#free-busy for reference.
+    # See http://www.cronofy.com/developers/api/#free-busy for reference.
     #
     # Returns a lazily-evaluated Enumerable of FreeBusy
     #
@@ -473,7 +477,7 @@ module Cronofy
 
     # Public: Lists all the profiles for the account.
     #
-    # See https://www.cronofy.com/developers/api/alpha/#profiles for reference.
+    # See https://www.cronofy.com/developers/api/#profiles for reference.
     #
     # Returns an Array of Profiles
     #

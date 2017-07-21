@@ -136,12 +136,10 @@ describe Cronofy::Client do
   describe '#create_calendar' do
     let(:request_url) { 'https://api.cronofy.com/v1/calendars' }
     let(:method) { :post }
-    let(:request_body) do
-      {
-        :profile_id => "pro_1234",
-        :name => "Home",
-      }
-    end
+
+    let(:profile_id) { "pro_1234" }
+    let(:calendar_name) { "Home" }
+    let(:color) { "#49BED8" }
 
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
@@ -161,10 +159,34 @@ describe Cronofy::Client do
       Cronofy::Calendar.new(correct_response_body["calendar"])
     end
 
-    subject { client.create_calendar("pro_1234", "Home") }
+    context "with mandatory arguments" do
+      let(:request_body) do
+        {
+          profile_id: profile_id,
+          name: calendar_name,
+        }
+      end
 
-    it_behaves_like 'a Cronofy request'
-    it_behaves_like 'a Cronofy request with mapped return value'
+      subject { client.create_calendar(profile_id, calendar_name) }
+
+      it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with mapped return value'
+    end
+
+    context "with color" do
+      let(:request_body) do
+        {
+          profile_id: profile_id,
+          name: calendar_name,
+          color: color,
+        }
+      end
+
+      subject { client.create_calendar(profile_id, calendar_name, color: color) }
+
+      it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with mapped return value'
+    end
   end
 
   describe '#list_calendars' do
