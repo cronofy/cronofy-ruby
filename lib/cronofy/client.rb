@@ -394,6 +394,26 @@ module Cronofy
       parse_json(Channel, "channel", response)
     end
 
+    # Public: Verifies a HMAC from a push notification using the client secret.
+    #
+    # args - A Hash containing the details of the push notification:
+    #        :body - A String of the body of the notification.
+    #        :hmac - A String of the HMAC of the notification taken from the
+    #                Cronofy-HMAC-SHA256 header.
+    #
+    # Returns true if the HMAC provided matches the one calculated using the
+    # client secret, otherwise false.
+    def hmac_match?(args)
+      body = args[:body]
+      hmac = args[:hmac]
+
+      sha256 = OpenSSL::Digest.new('sha256')
+      digest = OpenSSL::HMAC.digest(sha256, @client_secret, body)
+      calculated = Base64.encode64(digest).strip
+
+      calculated == hmac
+    end
+
     # Public: Lists all the notification channels for the account.
     #
     # See http://www.cronofy.com/developers/api#list-channels for reference.
