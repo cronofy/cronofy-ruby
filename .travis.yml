@@ -1,6 +1,7 @@
 language: ruby
 script: 'script/ci'
 sudo: false
+
 rvm:
   - 2.1
   - 2.2
@@ -9,11 +10,20 @@ rvm:
   - jruby-head
   - rbx-2
   - ruby-head
+
+cache:
+  - bundler
+
 matrix:
   allow_failures:
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
+
+before_install:
+  - rvm get latest
+  - gem install bundler
+
 notifications:
   webhooks:
     urls:
