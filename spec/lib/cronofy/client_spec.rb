@@ -1172,6 +1172,20 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
+  describe '#revoke_profile_authorization' do
+    let(:request_url) { "https://api.cronofy.com/v1/profiles/#{profile_id}/revoke" }
+    let(:method) { :post }
+    let(:request_body) { nil }
+    let(:profile_id) { "pro_1234abc" }
+
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { nil }
+
+    subject { client.revoke_profile_authorization(profile_id) }
+
+    it_behaves_like 'a Cronofy request'
+  end
+
   describe 'Availability' do
     describe '#availability' do
       let(:method) { :post }

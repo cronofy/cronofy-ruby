@@ -961,6 +961,19 @@ module Cronofy
       parse_json(String, 'link_token', response)
     end
 
+    # Public: Revokes the authorization to the given profile.
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#revoke-profile for
+    # reference.
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    def revoke_profile_authorization(profile_id)
+      post("/v1/profiles/#{profile_id}/revoke", nil)
+      nil
+    end
+
     private
 
     def translate_available_periods(periods)
