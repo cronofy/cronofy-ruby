@@ -1,3 +1,7 @@
+## [0.24.0]
+
+ * Support for revoking profile authorization [#48]
+
 ## [0.23.0]
 
  * Support for color with calendar creation and event upsert [#46]
@@ -70,6 +74,7 @@
 [0.21.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.21.0
 [0.22.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.22.0
 [0.23.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.23.0
+[0.24.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.24.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -90,3 +95,4 @@
 [#44]: https://github.com/cronofy/cronofy-ruby/pull/44
 [#45]: https://github.com/cronofy/cronofy-ruby/pull/45
 [#46]: https://github.com/cronofy/cronofy-ruby/pull/46
+[#48]: https://github.com/cronofy/cronofy-ruby/pull/48
