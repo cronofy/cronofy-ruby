@@ -1744,4 +1744,86 @@ describe Cronofy::Client do
       expect(client.hmac_match?(body: body, hmac: "something-else")).to be false
     end
   end
+
+  describe "Smart Invite" do
+    let(:request_url) { "https://api.cronofy.com/v1/smart_invites" }
+    let(:url) { URI("https://example.com") }
+    let(:method) { :post }
+
+    let(:request_headers) do
+      {
+        "Authorization" => "Bearer #{client_secret}",
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Content-Type" => "application/json; charset=utf-8",
+      }
+    end
+
+    let(:location) { { :description => "Board room" } }
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+      )
+    end
+
+    let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+    let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+    let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+    let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+
+    let(:args) do
+      {
+        smart_event_id: "qTtZdczOccgaPncGJaCiLg",
+        callback_url: url.to_s,
+        event: {
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :url => url.to_s,
+          :start => start_datetime,
+          :end => encoded_end_datetime,
+          :location => location,
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
+        },
+      }
+    end
+
+    let(:request_body) do
+      {
+        smart_event_id: "qTtZdczOccgaPncGJaCiLg",
+        callback_url: url.to_s,
+        event: {
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :url => url.to_s,
+          :start => encoded_start_datetime,
+          :end => encoded_end_datetime,
+          :location => location,
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
+        },
+      }
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) do
+      request_body.merge({
+        attachments: []
+      })
+    end
+
+    subject { client.upsert_smart_invite(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+
+  end
+
 end
