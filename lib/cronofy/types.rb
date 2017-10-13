@@ -184,19 +184,25 @@ module Cronofy
     end
   end
 
-  class Account < Hashie::Mash
+  class CronofyMash < Hashie::Mash
+    include Hashie::Extensions::Coercion
+
+    disable_warnings
   end
 
-  class UserInfo < Hashie::Mash
+  class Account < CronofyMash
   end
 
-  class Calendar < Hashie::Mash
+  class UserInfo < CronofyMash
   end
 
-  class Channel < Hashie::Mash
+  class Calendar < CronofyMash
   end
 
-  class Resource < Hashie::Mash
+  class Channel < CronofyMash
+  end
+
+  class Resource < CronofyMash
   end
 
   class EventTime
@@ -232,9 +238,7 @@ module Cronofy
     end
   end
 
-  class Event < Hashie::Mash
-    include Hashie::Extensions::Coercion
-
+  class Event < CronofyMash
     coerce_key :start, EventTime
     coerce_key :end, EventTime
 
@@ -248,15 +252,11 @@ module Cronofy
     end
   end
 
-  class PagedEventsResult < Hashie::Mash
-    include Hashie::Extensions::Coercion
-
+  class PagedEventsResult < CronofyMash
     coerce_key :events, Events
   end
 
-  class FreeBusy < Hashie::Mash
-    include Hashie::Extensions::Coercion
-
+  class FreeBusy < CronofyMash
     coerce_key :start, EventTime
     coerce_key :end, EventTime
   end
@@ -267,22 +267,20 @@ module Cronofy
     end
   end
 
-  class PagedFreeBusyResult < Hashie::Mash
-    include Hashie::Extensions::Coercion
-
+  class PagedFreeBusyResult < CronofyMash
     coerce_key :free_busy, FreeBusyEnumerable
   end
 
-  class Profile < Hashie::Mash
+  class Profile < CronofyMash
   end
 
-  class PermissionsResponse < Hashie::Mash
+  class PermissionsResponse < CronofyMash
   end
 
-  class Participant < Hashie::Mash
+  class Participant < CronofyMash
   end
 
-  class AddToCalendarResponse < Hashie::Mash
+  class AddToCalendarResponse < CronofyMash
   end
 
   module ParticipantEnumerable
@@ -291,9 +289,7 @@ module Cronofy
     end
   end
 
-  class AvailablePeriod < Hashie::Mash
-    include Hashie::Extensions::Coercion
-
+  class AvailablePeriod < CronofyMash
     coerce_key :start, EventTime
     coerce_key :end, EventTime
 
