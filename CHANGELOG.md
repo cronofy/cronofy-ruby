@@ -1,3 +1,7 @@
+## [0.24.1]
+
+ * Disable Hashie warnings [#52]
+
 ## [0.24.0]
 
  * Support for revoking profile authorization [#48]
@@ -75,6 +79,7 @@
 [0.22.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.22.0
 [0.23.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.23.0
 [0.24.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.24.0
+[0.24.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.24.1
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -96,3 +101,4 @@
 [#45]: https://github.com/cronofy/cronofy-ruby/pull/45
 [#46]: https://github.com/cronofy/cronofy-ruby/pull/46
 [#48]: https://github.com/cronofy/cronofy-ruby/pull/48
+[#52]: https://github.com/cronofy/cronofy-ruby/pull/52
