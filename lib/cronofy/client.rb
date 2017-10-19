@@ -1069,7 +1069,7 @@ module Cronofy
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def get_smart_invite(smart_invite_id, recipient_email)
-      response = wrapped_request { api_key!.get("/v1/smart_invites", json_request_args(body)) }
+      response = wrapped_request { api_key!.get("/v1/smart_invites?recipient_email=#{recipient_email}&smart_invite_id=#{smart_invite_id}") }
       parse_json(SmartInviteResponse, nil, response)
     end
 
