@@ -976,7 +976,7 @@ module Cronofy
 
     # Public: Creates or updates smart invite.
     #
-    # smart_event_id - A String uniquely identifying the event for your
+    # smart_invite_id - A String uniquely identifying the event for your
     #                  application (note: this is NOT an ID generated
     #                  by Cronofy).
     # callback_url  - The URL within your application you want Cronofy to
@@ -1018,7 +1018,7 @@ module Cronofy
     # Examples
     #
     #   client.upsert_smart_invite(
-    #     smart_event_id: "qTtZdczOccgaPncGJaCiLg",
+    #     smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
     #     callback_url: "http://www.example.com",
     #     attendee: {
     #       email: "example@example.com"
@@ -1054,7 +1054,7 @@ module Cronofy
 
     # Public: Gets the details for a smart invite.
     #
-    # smart_event_id  - A String uniquely identifying the event for your
+    # smart_invite_id  - A String uniquely identifying the event for your
     #                   application (note: this is NOT an ID generated
     #                   by Cronofy).
     # recipient_email - The email address for the recipient to get details for.
@@ -1068,7 +1068,7 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def get_smart_invite(smart_event_id, recipient_email)
+    def get_smart_invite(smart_invite_id, recipient_email)
       response = wrapped_request { api_key!.get("/v1/smart_invites", json_request_args(body)) }
       parse_json(SmartInviteResponse, nil, response)
     end

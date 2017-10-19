@@ -1776,7 +1776,7 @@ describe Cronofy::Client do
 
     let(:args) do
       {
-        smart_event_id: "qTtZdczOccgaPncGJaCiLg",
+        smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
         callback_url: url.to_s,
         event: {
           :summary => "Board meeting",
@@ -1796,7 +1796,7 @@ describe Cronofy::Client do
 
     let(:request_body) do
       {
-        smart_event_id: "qTtZdczOccgaPncGJaCiLg",
+        smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
         callback_url: url.to_s,
         event: {
           :summary => "Board meeting",
