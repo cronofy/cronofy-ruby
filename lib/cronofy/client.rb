@@ -1035,7 +1035,7 @@ module Cronofy
 
     def map_availability_required_duration(required_duration)
       case required_duration
-      when Fixnum
+      when Integer
         { minutes: required_duration }
       else
         required_duration
