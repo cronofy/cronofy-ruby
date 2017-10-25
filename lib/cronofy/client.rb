@@ -974,6 +974,105 @@ module Cronofy
       nil
     end
 
+    # Public: Creates or updates smart invite.
+    #
+    # smart_invite_id - A String uniquely identifying the event for your
+    #                  application (note: this is NOT an ID generated
+    #                  by Cronofy).
+    # callback_url  - The URL within your application you want Cronofy to
+    #                 send notifications to about user interactions with
+    #                 the Smart Invite.
+    # recipient     - A Hash containing the intended recipient of the invite
+    #                 :email      - A String for thee email address you are
+    #                               going to send the Smart Invite to.
+    # event         - A Hash describing the event with symbolized keys:
+    #                 :summary      - A String to use as the summary, sometimes
+    #                                 referred to as the name or title, of the
+    #                                 event.
+    #                 :description  - A String to use as the description, sometimes
+    #                                 referred to as the notes or body, of the
+    #                                 event.
+    #                 :start        - The Time or Date the event starts.
+    #                 :end          - The Time or Date the event ends.
+    #                 :url          - The URL associated with the event.
+    #                 :location     - A Hash describing the location of the event
+    #                                 with symbolized keys (optional):
+    #                                 :description - A String describing the
+    #                                                location.
+    #                                 :lat - A String of the location's latitude.
+    #                                 :long - A String of the location's longitude.
+    #                 :reminders    - An Array of Hashes describing the desired
+    #                                 reminders for the event. Reminders should be
+    #                                 specified in priority order as, for example,
+    #                                 when the underlying provider only supports a
+    #                                 single reminder then the first reminder will
+    #                                 be used.
+    #                                 :minutes - An Integer specifying the number
+    #                                            of minutes before the start of the
+    #                                            event that the reminder should
+    #                                            occur.
+    #                 :transparency - The transparency state for the event (optional).
+    #                                 Accepted values are "transparent" and "opaque".
+    #                 :color        - The color of the event (optional).
+    #
+    # Examples
+    #
+    #   client.upsert_smart_invite(
+    #     smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
+    #     callback_url: "http://www.example.com",
+    #     attendee: {
+    #       email: "example@example.com"
+    #     },
+    #     event: {
+    #       summary: "Board meeting",
+    #       description: "Discuss plans for the next quarter.",
+    #       start: Time.utc(2014, 8, 5, 15, 30),
+    #       end:   Time.utc(2014, 8, 5, 17, 30),
+    #       location: {
+    #         description: "Board room",
+    #         lat: "1.2345",
+    #         long: "0.1234"
+    #     }
+    #   )
+    #
+    # See http://www.cronofy.com/developers/alpha/api#smart-invite for reference.
+    #
+    # Returns a SmartInviteResponse.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def upsert_smart_invite(body={})
+      body[:event][:start] = encode_event_time(body[:event][:start])
+      body[:event][:end] = encode_event_time(body[:event][:end])
+
+      response = wrapped_request { api_key!.post("/v1/smart_invites", json_request_args(body)) }
+      parse_json(SmartInviteResponse, nil, response)
+    end
+
+    # Public: Gets the details for a smart invite.
+    #
+    # smart_invite_id  - A String uniquely identifying the event for your
+    #                   application (note: this is NOT an ID generated
+    #                   by Cronofy).
+    # recipient_email - The email address for the recipient to get details for.
+    #
+    # See http://www.cronofy.com/developers/alpha/api#smart-invite for reference.
+    #
+    # Returns a SmartInviteResponse.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def get_smart_invite(smart_invite_id, recipient_email)
+      response = wrapped_request { api_key!.get("/v1/smart_invites?recipient_email=#{recipient_email}&smart_invite_id=#{smart_invite_id}") }
+      parse_json(SmartInviteResponse, nil, response)
+    end
+
     private
 
     def translate_available_periods(periods)
@@ -1063,6 +1162,11 @@ module Cronofy
     def access_token!
       raise CredentialsMissingError.new unless @auth.access_token
       @auth.access_token
+    end
+
+    def api_key!
+      raise CredentialsMissingError.new unless @auth.api_key
+      @auth.api_key
     end
 
     def get(url, opts = {})

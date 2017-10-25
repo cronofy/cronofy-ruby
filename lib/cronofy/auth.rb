@@ -4,6 +4,7 @@ module Cronofy
   # Internal: Class for dealing with authentication and authorization issues.
   class Auth
     attr_reader :access_token
+    attr_reader :api_key
 
     def initialize(options = {})
       access_token = options[:access_token]
@@ -18,6 +19,7 @@ module Cronofy
       @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url(data_centre), connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
       set_access_token(access_token, refresh_token) if access_token || refresh_token
+      set_api_key(client_secret) if client_secret
     end
 
     # Internal: generate a URL for authorizing the application with Cronofy
@@ -79,6 +81,10 @@ module Cronofy
 
     def set_access_token(token, refresh_token)
       @access_token = OAuth2::AccessToken.new(@api_client, token, refresh_token: refresh_token)
+    end
+
+    def set_api_key(client_secret)
+      @api_key = ApiKey.new(@api_client, client_secret)
     end
 
     # Internal: Revokes the refresh token and corresponding access tokens.
