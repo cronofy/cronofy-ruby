@@ -976,6 +976,8 @@ module Cronofy
 
     # Public: Creates or updates smart invite.
     #
+    # method        - A String defining the method to call on the invite, this
+    #                 is either 'request' or 'cancel' (Optional)
     # smart_invite_id - A String uniquely identifying the event for your
     #                  application (note: this is NOT an ID generated
     #                  by Cronofy).

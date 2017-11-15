@@ -1776,6 +1776,7 @@ describe Cronofy::Client do
 
     let(:args) do
       {
+        method: 'request',
         smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
         callback_url: url.to_s,
         event: {
@@ -1796,6 +1797,7 @@ describe Cronofy::Client do
 
     let(:request_body) do
       {
+        method: 'request',
         smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
         callback_url: url.to_s,
         event: {
