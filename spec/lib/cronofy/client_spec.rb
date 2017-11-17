@@ -1835,7 +1835,6 @@ describe Cronofy::Client do
 
   describe "Cancel Smart Invite" do
     let(:request_url) { "https://api.cronofy.com/v1/smart_invites" }
-    let(:url) { URI("https://example.com") }
     let(:method) { :post }
 
     let(:request_headers) do
@@ -1859,7 +1858,6 @@ describe Cronofy::Client do
     let(:args) do
       {
         smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
-        callback_url: url.to_s,
         recipient: {
           email: "example@example.com"
         }
@@ -1870,7 +1868,6 @@ describe Cronofy::Client do
       {
         method: 'cancel',
         smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
-        callback_url: url.to_s,
         recipient: {
           email: "example@example.com"
         }

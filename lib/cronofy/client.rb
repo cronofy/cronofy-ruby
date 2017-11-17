@@ -1058,9 +1058,6 @@ module Cronofy
     # smart_invite_id - A String uniquely identifying the event for your
     #                  application (note: this is NOT an ID generated
     #                  by Cronofy).
-    # callback_url  - The URL within your application you want Cronofy to
-    #                 send notifications to about user interactions with
-    #                 the Smart Invite.
     # recipient     - A Hash containing the intended recipient of the invite
     #                 :email      - A String for thee email address you are
     #                               going to send the Smart Invite to.
