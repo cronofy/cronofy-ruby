@@ -976,8 +976,6 @@ module Cronofy
 
     # Public: Creates or updates smart invite.
     #
-    # method        - A String defining the method to call on the invite, this
-    #                 is either 'request' or 'cancel' (Optional)
     # smart_invite_id - A String uniquely identifying the event for your
     #                  application (note: this is NOT an ID generated
     #                  by Cronofy).
@@ -1050,6 +1048,34 @@ module Cronofy
       body[:event][:start] = encode_event_time(body[:event][:start])
       body[:event][:end] = encode_event_time(body[:event][:end])
 
+      response = wrapped_request { api_key!.post("/v1/smart_invites", json_request_args(body)) }
+      parse_json(SmartInviteResponse, nil, response)
+    end
+
+
+    # Public: Cancels a smart invite
+    #
+    # smart_invite_id - A String uniquely identifying the event for your
+    #                  application (note: this is NOT an ID generated
+    #                  by Cronofy).
+    # callback_url  - The URL within your application you want Cronofy to
+    #                 send notifications to about user interactions with
+    #                 the Smart Invite.
+    # recipient     - A Hash containing the intended recipient of the invite
+    #                 :email      - A String for thee email address you are
+    #                               going to send the Smart Invite to.
+    #
+    # See http://www.cronofy.com/developers/alpha/api#smart-invite for reference.
+    #
+    # Returns a SmartInviteResponse.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def cancel_smart_invite(body={})
+      body[:method] = 'cancel'
       response = wrapped_request { api_key!.post("/v1/smart_invites", json_request_args(body)) }
       parse_json(SmartInviteResponse, nil, response)
     end
