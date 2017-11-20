@@ -1791,6 +1791,9 @@ describe Cronofy::Client do
             { :minutes => 10 },
           ],
         },
+        recipient: {
+          email: "example@example.com"
+        }
       }
     end
 
@@ -1811,6 +1814,9 @@ describe Cronofy::Client do
             { :minutes => 10 },
           ],
         },
+        recipient: {
+          email: "example@example.com"
+        }
       }
     end
     let(:correct_response_code) { 202 }
@@ -1826,4 +1832,57 @@ describe Cronofy::Client do
 
   end
 
+
+  describe "Cancel Smart Invite" do
+    let(:request_url) { "https://api.cronofy.com/v1/smart_invites" }
+    let(:method) { :post }
+
+    let(:request_headers) do
+      {
+        "Authorization" => "Bearer #{client_secret}",
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Content-Type" => "application/json; charset=utf-8",
+      }
+    end
+
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+      )
+    end
+
+    let(:args) do
+      {
+        smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
+        recipient: {
+          email: "example@example.com"
+        }
+      }
+    end
+
+    let(:request_body) do
+      {
+        method: 'cancel',
+        smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
+        recipient: {
+          email: "example@example.com"
+        }
+      }
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) do
+      request_body.merge({
+        attachments: []
+      })
+    end
+
+    subject { client.cancel_smart_invite(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+
+  end
 end

@@ -1052,6 +1052,31 @@ module Cronofy
       parse_json(SmartInviteResponse, nil, response)
     end
 
+
+    # Public: Cancels a smart invite
+    #
+    # smart_invite_id - A String uniquely identifying the event for your
+    #                  application (note: this is NOT an ID generated
+    #                  by Cronofy).
+    # recipient     - A Hash containing the intended recipient of the invite
+    #                 :email      - A String for thee email address you are
+    #                               going to send the Smart Invite to.
+    #
+    # See http://www.cronofy.com/developers/alpha/api#smart-invite for reference.
+    #
+    # Returns a SmartInviteResponse.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def cancel_smart_invite(body={})
+      body[:method] = 'cancel'
+      response = wrapped_request { api_key!.post("/v1/smart_invites", json_request_args(body)) }
+      parse_json(SmartInviteResponse, nil, response)
+    end
+
     # Public: Gets the details for a smart invite.
     #
     # smart_invite_id  - A String uniquely identifying the event for your

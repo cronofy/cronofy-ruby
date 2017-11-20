@@ -283,7 +283,7 @@ module Cronofy
   class AddToCalendarResponse < CronofyMash
   end
 
-  class SmartInviteResponse < Hashie::Mash
+  class SmartInviteResponse < CronofyMash
   end
 
   module ParticipantEnumerable
