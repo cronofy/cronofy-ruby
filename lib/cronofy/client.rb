@@ -1,6 +1,8 @@
 module Cronofy
   # Public: Primary class for interacting with the Cronofy API.
   class Client
+    include TimeEncoding
+
     # Public: The scope to request if none is explicitly specified by the
     # caller.
     DEFAULT_OAUTH_SCOPE = %w{
@@ -306,6 +308,75 @@ module Cronofy
     def delete_event(calendar_id, event_id)
       delete("/v1/calendars/#{calendar_id}/events", event_id: event_id)
       nil
+    end
+
+    class BatchBuilder
+      include TimeEncoding
+
+      def initialize
+        @entries = []
+      end
+
+      def upsert_event(calendar_id, event)
+        data = event.dup
+
+        data[:start] = encode_event_time(data[:start])
+        data[:end] = encode_event_time(data[:end])
+
+        post "/v1/calendars/#{calendar_id}/events", data
+      end
+
+      alias_method :create_or_update_event, :upsert_event
+
+      def delete_event(calendar_id, event_id)
+        delete "/v1/calendars/#{calendar_id}/events", event_id: event_id
+      end
+
+      def delete_external_event(calendar_id, event_uid)
+        delete "/v1/calendars/#{calendar_id}/events", event_uid: event_uid
+      end
+
+      def add_entry(args)
+        @entries << BatchEntryRequest.new(args)
+        nil
+      end
+
+      def build
+        @entries.dup
+      end
+
+      private
+
+      def delete(relative_url, data)
+        add_entry(method: "DELETE", relative_url: relative_url, data: data)
+      end
+
+      def post(relative_url, data)
+        add_entry(method: "POST", relative_url: relative_url, data: data)
+      end
+    end
+
+    def batch
+      yield builder = BatchBuilder.new
+
+      requests = builder.build
+
+      response = post("/v1/batch", batch: requests)
+      responses = parse_collection(BatchEntryResponse, "batch", response)
+
+      entries = requests.zip(responses).map do |request, response|
+        response.request = request
+        response
+      end
+
+      result = BatchResponse.new(entries)
+
+      if result.errors?
+        msg = "Batch contains #{result.errors.count} errors"
+        raise BatchResponse::PartialSuccessError.new(msg, result)
+      end
+
+      result
     end
 
     # Public: Deletes an external event from the specified calendar
@@ -1228,35 +1299,6 @@ module Cronofy
         }
       else
         {}
-      end
-    end
-
-    def to_iso8601(value)
-      case value
-      when NilClass
-        nil
-      when Time
-        value.getutc.iso8601
-      else
-        value.iso8601
-      end
-    end
-
-    def encode_event_time(time)
-      result = time
-
-      case time
-      when String
-        time
-      when Hash
-        if time[:time]
-          encoded_time = encode_event_time(time[:time])
-          time.merge(time: encoded_time)
-        else
-          time
-        end
-      else
-        to_iso8601(time)
       end
     end
 

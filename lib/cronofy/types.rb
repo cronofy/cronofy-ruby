@@ -193,6 +193,39 @@ module Cronofy
   class Account < CronofyMash
   end
 
+  BatchEntry = Struct.new(:request, :response)
+
+  class BatchEntryRequest < CronofyMash
+  end
+
+  class BatchEntryResponse < CronofyMash
+  end
+
+  class BatchResponse
+    class PartialSuccessError < CronofyError
+      attr_reader :batch_response
+
+      def initialize(message, batch_response)
+        super(message)
+        @batch_response = batch_response
+      end
+    end
+
+    attr_reader :entries
+
+    def initialize(entries)
+      @entries = entries
+    end
+
+    def errors
+      entries.select { |entry| (entry.status % 100) != 2 }
+    end
+
+    def errors?
+      errors.any?
+    end
+  end
+
   class UserInfo < CronofyMash
   end
 

@@ -3,6 +3,7 @@ require "cronofy/errors"
 require "cronofy/types"
 require "cronofy/api_key"
 require "cronofy/auth"
+require "cronofy/time_encoding"
 require "cronofy/client"
 require "cronofy/response_parser"
 
