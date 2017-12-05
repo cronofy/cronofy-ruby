@@ -1,3 +1,7 @@
+## [0.26.0]
+
+ * Support for batch endpoint [#53]
+
 ## [0.25.1]
 
  * Support for Cancelling Smart Invites [#55]
@@ -91,6 +95,7 @@
 [0.24.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.24.1
 [0.25.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.25.0
 [0.25.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.25.1
+[0.26.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.26.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -115,4 +120,5 @@
 [#49]: https://github.com/cronofy/cronofy-ruby/pull/49
 [#50]: https://github.com/cronofy/cronofy-ruby/pull/50
 [#52]: https://github.com/cronofy/cronofy-ruby/pull/52
+[#53]: https://github.com/cronofy/cronofy-ruby/pull/53
 [#55]: https://github.com/cronofy/cronofy-ruby/pull/55
