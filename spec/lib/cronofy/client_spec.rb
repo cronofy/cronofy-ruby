@@ -1885,4 +1885,216 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request'
 
   end
+
+  describe "Batch requests" do
+    context "upserting an event" do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:request_url) { "https://api.cronofy.com/v1/batch" }
+      let(:url) { URI("https://example.com") }
+      let(:method) { :post }
+      let(:request_headers) { json_request_headers }
+
+      let(:start_datetime) { Time.utc(2014, 8, 5, 15, 30, 0) }
+      let(:end_datetime) { Time.utc(2014, 8, 5, 17, 0, 0) }
+      let(:encoded_start_datetime) { "2014-08-05T15:30:00Z" }
+      let(:encoded_end_datetime) { "2014-08-05T17:00:00Z" }
+      let(:location) { { :description => "Board room" } }
+
+      let(:event) do
+        {
+          :event_id => "qTtZdczOccgaPncGJaCiLg",
+          :summary => "Board meeting",
+          :description => "Discuss plans for the next quarter.",
+          :start => start_datetime,
+          :end => end_datetime,
+          :url => url,
+          :location => location,
+          :reminders => [
+            { :minutes => 60 },
+            { :minutes => 0 },
+            { :minutes => 10 },
+          ],
+        }
+      end
+
+      let(:request_body) do
+        {
+          :batch => [
+            {
+              :method => "POST",
+              :relative_url => "/v1/calendars/#{calendar_id}/events",
+              :data => {
+                :event_id => "qTtZdczOccgaPncGJaCiLg",
+                :summary => "Board meeting",
+                :description => "Discuss plans for the next quarter.",
+                :start => encoded_start_datetime,
+                :end => encoded_end_datetime,
+                :url => url.to_s,
+                :location => location,
+                :reminders => [
+                  { :minutes => 60 },
+                  { :minutes => 0 },
+                  { :minutes => 10 },
+                ],
+              }
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 207 }
+      let(:correct_response_body) do
+        {
+          "batch" => [
+            { "status" => 202 }
+          ]
+        }
+      end
+
+      subject do
+        client.batch do |batch|
+          batch.upsert_event(calendar_id, event)
+        end
+      end
+
+      it_behaves_like "a Cronofy request"
+    end
+
+    context "deleting an event" do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:method) { :post }
+      let(:request_url) { "https://api.cronofy.com/v1/batch" }
+      let(:request_headers) { json_request_headers }
+
+      let(:event_id) { "asd1knkjsndk123123" }
+
+      let(:request_body) do
+        {
+          :batch => [
+            {
+              :method => "DELETE",
+              :relative_url => "/v1/calendars/#{calendar_id}/events",
+              :data => {
+                :event_id => event_id,
+              }
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 207 }
+      let(:correct_response_body) do
+        {
+          "batch" => [
+            { "status" => 202 }
+          ]
+        }
+      end
+
+      subject do
+        client.batch do |batch|
+          batch.delete_event(calendar_id, event_id)
+        end
+      end
+
+      it_behaves_like "a Cronofy request"
+    end
+
+    context "deleting an external event" do
+      let(:calendar_id) { 'calendar_id_123'}
+      let(:method) { :post }
+      let(:request_url) { "https://api.cronofy.com/v1/batch" }
+      let(:request_headers) { json_request_headers }
+
+      let(:event_uid) { "evt_external_12345abcde" }
+
+      let(:request_body) do
+        {
+          :batch => [
+            {
+              :method => "DELETE",
+              :relative_url => "/v1/calendars/#{calendar_id}/events",
+              :data => {
+                :event_uid => event_uid,
+              }
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 207 }
+      let(:correct_response_body) do
+        {
+          "batch" => [
+            { "status" => 202 }
+          ]
+        }
+      end
+
+      subject do
+        client.batch do |batch|
+          batch.delete_external_event(calendar_id, event_uid)
+        end
+      end
+
+      it_behaves_like "a Cronofy request"
+    end
+
+    context "partial success" do
+      let(:method) { :post }
+      let(:request_url) { "https://api.cronofy.com/v1/batch" }
+      let(:request_headers) { json_request_headers }
+
+      let(:request_body) do
+        {
+          :batch => [
+            {
+              :method => "DELETE",
+              :relative_url => "/v1/calendars/cal_123_abc/events",
+              :data => {
+                :event_id => "123",
+              }
+            },
+            {
+              :method => "DELETE",
+              :relative_url => "/v1/calendars/cal_123_def/events",
+              :data => {
+                :event_id => "456",
+              }
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 207 }
+      let(:correct_response_body) do
+        {
+          "batch" => [
+            { "status" => 202 },
+            { "status" => 404 },
+          ]
+        }
+      end
+
+      subject do
+        client.batch do |batch|
+          batch.delete_event("cal_123_abc", "123")
+          batch.delete_event("cal_123_def", "456")
+        end
+      end
+
+      it "raises an error" do
+        stub_request(method, request_url)
+          .with(headers: request_headers,
+                body: request_body)
+          .to_return(status: correct_response_code,
+                     headers: correct_response_headers,
+                     body: correct_response_body.to_json)
+
+        expect { subject }.to raise_error(Cronofy::BatchResponse::PartialSuccessError) do |error|
+          expect(error.batch_response.errors?).to be true
+        end
+      end
+    end
+  end
 end
