@@ -187,7 +187,7 @@ module Cronofy
   class CronofyMash < Hashie::Mash
     include Hashie::Extensions::Coercion
 
-    disable_warnings
+    disable_warnings if respond_to?(:disable_warnings)
   end
 
   class Account < CronofyMash
