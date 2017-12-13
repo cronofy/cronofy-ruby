@@ -3,18 +3,66 @@
 # Fail fast
 set -o errexit
 
-echo
-echo "Installing bundler"
-echo
-gem install bundler
-echo
+source $(dirname "$0")/helpers
 
-gemfiles="Gemfile Gemfile-downgraded-hashie"
+line_echo() {
+  pretty_echo "-----------------------------------------"
+}
 
-for gemfile in $gemfiles; do
+timed_run() {
   echo
-  echo "Testing with $gemfile"
+  pretty_echo "$@ ($(date))"
   echo
-  bundle install --gemfile $gemfile
-  bundle exec rake spec
-done
+  time "$@"
+  echo
+  line_echo
+}
+
+pretty_run() {
+  echo
+  pretty_echo "$@ ($(date))"
+  echo
+  eval "$@"
+  echo
+  line_echo
+}
+
+pretty_echo() {
+  if [ -t 1 ] ; then
+    echo -e "\x1B[1;36m$@\x1B[22;39m"
+  else
+    echo -e "$@"
+  fi
+}
+
+
+run_all() {
+  echo
+  pretty_run gem install bundler
+
+  echo
+  pretty_echo "Setting bundler paths"
+  echo
+  bundle_path=$(pwd)/vendor/bundle
+  bin_path=$bundle_path/bin
+  echo "Path: $bundle_path"
+  echo "Bin stubs: $bin_path"
+  echo
+  line_echo
+
+  gemfiles=`find spec/gemfiles -name Gemfile`
+
+  for gemfile in $gemfiles; do
+    echo
+    pretty_echo "Testing with $gemfile"
+    pretty_run bundle install --gemfile $gemfile --path $bundle_path --binstubs $bin_path
+    pretty_run bundle exec rake spec
+  done
+
+  echo
+  pretty_echo "Testing with default Gemfile"
+  pretty_run bundle install --gemfile Gemfile --path $bundle_path --binstubs $bin_path
+  pretty_run bundle exec rake spec
+}
+
+time run_all

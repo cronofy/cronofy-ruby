@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# Fail fast
+set -o errexit
+
+dir=`dirname $0`
+source $dir/helpers
+
+echo
+pretty_echo "Removing Gemfile.locks"
+echo
+
+lockfiles=`find . -name Gemfile.lock`
+
+for lockfile in $lockfiles; do
+  echo "Removing $lockfile"
+  rm $lockfile
+done
+
+echo
+pretty_echo "Running CI"
+
+./$dir/ci

@@ -1,0 +1,35 @@
+#! /bin/bash
+
+# Fail fast
+set -o errexit
+
+line_echo() {
+  pretty_echo "-----------------------------------------"
+}
+
+timed_run() {
+  echo
+  pretty_echo "$@ ($(date))"
+  echo
+  time "$@"
+  echo
+  line_echo
+}
+
+pretty_run() {
+  echo
+  pretty_echo "$@ ($(date))"
+  echo
+  eval "$@"
+  echo
+  line_echo
+}
+
+pretty_echo() {
+  if [ -t 1 ] ; then
+    echo -e "\x1B[1;36m$@\x1B[22;39m"
+  else
+    echo -e "$@"
+  fi
+}
+
