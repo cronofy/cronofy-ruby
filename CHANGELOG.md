@@ -1,3 +1,7 @@
+## [0.27.1]
+
+ * Prevent error when disable\_warnings not available [#56]
+
 ## [0.26.0]
 
  * Support for batch endpoint [#53]
@@ -96,6 +100,7 @@
 [0.25.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.25.0
 [0.25.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.25.1
 [0.26.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.26.0
+[0.26.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.26.1
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -122,3 +127,4 @@
 [#52]: https://github.com/cronofy/cronofy-ruby/pull/52
 [#53]: https://github.com/cronofy/cronofy-ruby/pull/53
 [#55]: https://github.com/cronofy/cronofy-ruby/pull/55
+[#56]: https://github.com/cronofy/cronofy-ruby/pull/56
