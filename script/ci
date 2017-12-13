@@ -3,6 +3,8 @@
 # Fail fast
 set -o errexit
 
+source $(dirname "$0")/helpers
+
 line_echo() {
   pretty_echo "-----------------------------------------"
 }
