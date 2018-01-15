@@ -235,6 +235,49 @@ describe Cronofy::Auth do
       end
     end
 
+    describe '#application_calendar' do
+      let(:data_centre_override) { nil }
+
+      let(:application_calendar_id) { "apc_54475485743" }
+
+      let(:application_calendar_url) { "https://api.cronofy.com/v1/application_calendars" }
+
+      before do
+        stub_request(:post, application_calendar_url)
+          .with(
+            body: {
+              client_id: client_id,
+              client_secret: client_secret,
+              application_calendar_id: application_calendar_id,
+            },
+        )
+          .to_return(
+            status: response_status,
+            body: {
+              access_token: new_access_token,
+              token_type: 'bearer',
+              expires_in: expires_in,
+              refresh_token: new_refresh_token,
+              scope: scope,
+              application_calendar_id: application_calendar_id,
+            }.to_json,
+            headers: {
+              "Content-Type" => "application/json; charset=utf-8"
+            }
+        )
+      end
+
+      subject do
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          data_centre: data_centre_override,
+        ).application_calendar(application_calendar_id)
+      end
+
+      it_behaves_like 'an authorization request'
+    end
+
     context "with linking profile" do
       let(:linking_profile_hash) do
         {

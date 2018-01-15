@@ -703,6 +703,21 @@ module Cronofy
       @auth.refresh!
     end
 
+    # Public: Obtains access to an application calendar
+    #
+    # See http://www.cronofy.com/developers/alpha/api#application-calendar for reference.
+    #
+    # Returns a set of Cronofy::Credentials for the account.
+    #
+    # Raises Cronofy::BadRequestError if refresh token code is unknown or has
+    # been revoked.
+    # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
+    # not valid.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    def application_calendar(application_calendar_id)
+      @auth.application_calendar(application_calendar_id)
+    end
+
     # Public: Revokes the account's refresh token and access token.
     #
     # After making this call the Client will become unusable. You should also
