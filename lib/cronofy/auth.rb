@@ -75,6 +75,28 @@ module Cronofy
       end
     end
 
+    # Internal: Obtains access to an application calendar
+    #
+    # application_calendar_id - A String to identify the application calendar
+    #                           which is to be accessed.
+    #
+    # Returns Hash of token elements to allow client to update in local store
+    # for user
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    def application_calendar(application_calendar_id)
+      do_request do
+        body = {
+          client_id: @api_client.id,
+          client_secret: @api_client.secret,
+          application_calendar_id: application_calendar_id,
+        }
+
+        @response = @api_client.request(:post, "/v1/application_calendars", body: body)
+        Credentials.new(OAuth2::AccessToken.from_hash(@api_client, @response.parsed))
+      end
+    end
+
     def set_access_token_from_auth_token(auth_token)
       set_access_token(auth_token.token, auth_token.refresh_token)
     end
