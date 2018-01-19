@@ -238,7 +238,8 @@ describe Cronofy::Auth do
     describe '#application_calendar' do
       let(:data_centre_override) { nil }
 
-      let(:application_calendar_id) { "apc_54475485743" }
+      let(:application_calendar_id) { "my-application-calendar" }
+      let(:cronofy_application_calendar_id) { "apc_54475485743" }
 
       let(:application_calendar_url) { "https://api.cronofy.com/v1/application_calendars" }
 
@@ -260,6 +261,7 @@ describe Cronofy::Auth do
               refresh_token: new_refresh_token,
               scope: scope,
               application_calendar_id: application_calendar_id,
+              sub: cronofy_application_calendar_id,
             }.to_json,
             headers: {
               "Content-Type" => "application/json; charset=utf-8"
