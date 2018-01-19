@@ -1,3 +1,7 @@
+## [0.28.0]
+
+ * Added support for handling subs from Token responses [#58]
+
 ## [0.27.0]
 
  * Added support for Application Calendars [#57]
@@ -106,6 +110,7 @@
 [0.26.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.26.0
 [0.26.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.26.1
 [0.27.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.27.0
+[0.28.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.28.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -134,3 +139,4 @@
 [#55]: https://github.com/cronofy/cronofy-ruby/pull/55
 [#56]: https://github.com/cronofy/cronofy-ruby/pull/56
 [#57]: https://github.com/cronofy/cronofy-ruby/pull/57
+[#58]: https://github.com/cronofy/cronofy-ruby/pull/58
