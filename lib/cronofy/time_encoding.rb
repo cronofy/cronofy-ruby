@@ -18,8 +18,8 @@ module Cronofy
 
     def to_iso8601(value)
       case value
-      when NilClass
-        nil
+      when NilClass, String
+        value
       when Time
         value.getutc.iso8601
       else
