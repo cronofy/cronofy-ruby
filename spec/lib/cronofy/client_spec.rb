@@ -1902,6 +1902,110 @@ describe Cronofy::Client do
 
   end
 
+  describe 'Read smart invite' do
+    before do
+      stub_request(method, request_url)
+        .with(headers: request_headers)
+        .to_return(status: correct_response_code,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+    end
+
+    let(:request_headers) do
+      {
+        "Authorization" => "Bearer #{client_secret}",
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Accept" => "*/*",
+        "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+      }
+    end
+
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+      )
+    end
+
+    let(:request_url_prefix) { 'https://api.cronofy.com/v1/smart_invites' }
+    let(:method) { :get }
+    let(:correct_response_code) { 200 }
+    let(:smart_invite_id) { "smart_invite_id_1234" }
+    let(:recipient_email) { "example@example.com" }
+    let(:request_url) { request_url_prefix + "?recipient_email=#{recipient_email}&smart_invite_id=#{smart_invite_id}" }
+
+    let(:correct_response_body) do
+      {
+        "recipient" => {
+          "email" => recipient_email,
+          "status" => "declined",
+          "comment" => "example comment",
+          "proposal" => {
+            "start" => {
+              "time" => "2014-09-13T23:00:00+02:00",
+              "tzid" => "Europe/Paris"
+            },
+            "end" => {
+              "time" => "2014-09-13T23:00:00+02:00",
+              "tzid" => "Europe/Paris"
+            }
+          }
+        },
+        "replies" => [
+          {
+            "email" => "person1@example.com",
+            "status" => "accepted"
+          },
+          {
+            "email" => "person2@example.com",
+            "status" => "declined",
+            "comment" => "example comment",
+            "proposal" => {
+              "start" => {
+                "time" => "2014-09-13T23:00:00+02:00",
+                "tzid" => "Europe/Paris"
+              },
+              "end" => {
+                "time" => "2014-09-13T23:00:00+02:00",
+                "tzid" => "Europe/Paris"
+              }
+            }
+          }
+        ],
+        "smart_invite_id" => smart_invite_id,
+        "callback_url" => "https =>//example.yourapp.com/cronofy/smart_invite/notifications",
+        "event" => {
+          "summary" => "Board meeting",
+          "description" => "Discuss plans for the next quarter.",
+          "start" => {
+            "time" => "2017-10-05T09:30:00Z",
+            "tzid" => "Europe/London"
+          },
+          "end" => {
+            "time" => "2017-10-05T10:00:00Z",
+            "tzid" => "Europe/London"
+          },
+          "location" => {
+            "description" => "Board room"
+          }
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::SmartInviteResponse.new(correct_response_body)
+    end
+
+    subject do
+      client.get_smart_invite(smart_invite_id, recipient_email)
+    end
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
 
   describe "Cancel Smart Invite" do
     let(:request_url) { "https://api.cronofy.com/v1/smart_invites" }
