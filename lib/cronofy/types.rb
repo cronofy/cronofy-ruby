@@ -328,7 +328,24 @@ module Cronofy
   class AddToCalendarResponse < CronofyMash
   end
 
+  class Proposal < CronofyMash
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+  end
+
+  class SmartInviteReply < CronofyMash
+    coerce_key :proposal, Proposal
+  end
+
+  module SmartInviteReplyEnumerable
+    def self.coerce(values)
+      values.map { |v| SmartInviteReply.new(v) }
+    end
+  end
+
   class SmartInviteResponse < CronofyMash
+    coerce_key :recipient, SmartInviteReply
+    coerce_key :replies, SmartInviteReplyEnumerable
   end
 
   module ParticipantEnumerable
