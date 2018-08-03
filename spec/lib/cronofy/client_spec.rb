@@ -1517,10 +1517,10 @@ describe Cronofy::Client do
 
       let(:request_body) do
         {
-          "sequence": [
+          "sequence" => [
             {
-              "sequence_id": 1234,
-              "ordinal": 1,
+              "sequence_id" => 1234,
+              "ordinal" => 1,
               "participants" => [
                 {
                   "members" => [
@@ -1533,8 +1533,8 @@ describe Cronofy::Client do
               "required_duration" => { "minutes" => 60 },
             },
             {
-              "sequence_id": 4567,
-              "ordinal": 2,
+              "sequence_id" => 4567,
+              "ordinal" => 2,
               "participants" => [
                 {
                   "members" => [
