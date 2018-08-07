@@ -1030,6 +1030,23 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    # Public: Creates a embed_token to allow embedding of account related UI components
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#embed-tokens for
+    # reference.
+    #
+    # Returns an embed token
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def embed_token
+      response = post("/v1/embed_tokens", nil)
+      parse_json(String, 'embed_token', response)
+    end
+
     # Public: Creates a link_token to allow explicitly linking of an account
     #
     # See https://www.cronofy.com/developers/api/alpha/#auth-explicit-linking for
