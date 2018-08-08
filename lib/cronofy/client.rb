@@ -1372,6 +1372,8 @@ module Cronofy
 
     # Public: Creates a scheduling conversation
     #
+    # pre release end-point documentation to follow
+    #
     def create_scheduling_conversation(body)
       response = wrapped_request { post("/v1/scheduling_conversations", body) }
       parse_json(SchedulingConversation, nil, response)
@@ -1379,12 +1381,17 @@ module Cronofy
 
     # Public: List available slots for a scheduling conversation
     #
+    # pre release end-point documentation to follow
+    #
     def list_scheduling_conversation_participant_slots(url)
       response = wrapped_request { get(url) }
       parse_collection(SchedulingConversationSlot, "available_slots", response )
     end
 
     # Public: Choose one or more slots for a scheduling conversation
+    #
+    # pre release end-point documentation to follow
+    #
     def select_scheduling_conversation_participant_slots(url, args)
       response = wrapped_request { post(url, args)}
       parse_json(SchedulingConversation, nil, response)
