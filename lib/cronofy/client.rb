@@ -1193,13 +1193,22 @@ module Cronofy
       parse_json(SchedulingConversation, nil, response)
     end
 
+    # Public: Creates a scheduling conversation
+    #
+    # pre release end-point documentation to follow
+    #
+    def get_scheduling_conversation(id)
+      response = wrapped_request { get("/v1/scheduling_conversations/#{id}") }
+      parse_json(SchedulingConversation, nil, response)
+    end
+
     # Public: List available slots for a scheduling conversation
     #
     # pre release end-point documentation to follow
     #
     def list_scheduling_conversation_participant_slots(url)
       response = wrapped_request { get(url) }
-      parse_collection(SchedulingConversationSlot, "available_slots", response )
+      parse_collection(SchedulingConversationSlot, "slots", response )
     end
 
     # Public: Choose one or more slots for a scheduling conversation
