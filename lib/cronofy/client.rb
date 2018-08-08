@@ -1030,6 +1030,23 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    # Public: Creates a embed_token to allow embedding of account related UI components
+    #
+    # See https://www.cronofy.com/developers/api/alpha/#embed-tokens for
+    # reference.
+    #
+    # Returns an embed token
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def embed_token
+      response = post("/v1/embed_tokens", nil)
+      parse_json(String, 'embed_token', response)
+    end
+
     # Public: Creates a link_token to allow explicitly linking of an account
     #
     # See https://www.cronofy.com/developers/api/alpha/#auth-explicit-linking for
@@ -1069,7 +1086,7 @@ module Cronofy
     #                 send notifications to about user interactions with
     #                 the Smart Invite.
     # recipient     - A Hash containing the intended recipient of the invite
-    #                 :email      - A String for thee email address you are
+    #                 :email      - A String for the email address you are
     #                               going to send the Smart Invite to.
     # event         - A Hash describing the event with symbolized keys:
     #                 :summary      - A String to use as the summary, sometimes
@@ -1101,6 +1118,9 @@ module Cronofy
     #                                 Accepted values are "transparent" and "opaque".
     #                 :color        - The color of the event (optional).
     #
+    # organizer     - A Hash containing the details of the organizer.
+    #                 :name - A String value for the display name of the
+    #                         event organizer
     # Examples
     #
     #   client.upsert_smart_invite(
@@ -1118,6 +1138,9 @@ module Cronofy
     #         description: "Board room",
     #         lat: "1.2345",
     #         long: "0.1234"
+    #     },
+    #     organizer: {
+    #       name: "Smart invite application"
     #     }
     #   )
     #
