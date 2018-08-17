@@ -1283,6 +1283,77 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context "buffer and start_interval" do
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  { "sub" => "acc_678347111010113" }
+                ],
+                "required" => "all"
+              }
+            ],
+            "required_duration" => { "minutes" => 60 },
+            "buffer" => {
+              "before": { "minutes": 30 },
+              "after": { "minutes": 60 },
+            },
+            "start_interval" => { "minutes" => 60 },
+            "available_periods" => [
+              {
+                "start" => "2017-01-03T09:00:00Z",
+                "end" => "2017-01-03T18:00:00Z"
+              },
+              {
+                "start" => "2017-01-04T09:00:00Z",
+                "end" => "2017-01-04T18:00:00Z"
+              },
+            ]
+          }
+        end
+
+        let(:participants) do
+          [
+            {
+              members: [
+                { sub: "acc_567236000909002" },
+                { sub: "acc_678347111010113" },
+              ],
+              required: :all,
+            }
+          ]
+        end
+
+        let(:buffer) do
+          {
+            before: { minutes: 30 },
+            after: { minutes: 60 },
+          }
+        end
+
+        let(:start_interval) do
+          { minutes: 60 }
+        end
+
+        let(:required_duration) do
+          { minutes: 60 }
+        end
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        subject { client.availability(participants: participants, required_duration: required_duration, available_periods: available_periods, buffer: buffer, start_interval: start_interval) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "member-specific available periods" do
         let(:request_body) do
           {
@@ -1531,6 +1602,17 @@ describe Cronofy::Client do
                 }
               ],
               "required_duration" => { "minutes" => 60 },
+              "start_interval" => { "minutes" => 60 },
+              "buffer" => {
+                "before": {
+                  "minimum": { "minutes" => 30 },
+                  "maximum": { "minutes" => 45 },
+                },
+                "after": {
+                  "minimum": { "minutes" => 45 },
+                  "maximum": { "minutes" => 60 },
+                },
+              }
             },
             {
               "sequence_id" => 4567,
@@ -1601,6 +1683,17 @@ describe Cronofy::Client do
             ordinal: 1,
             participants: participants,
             required_duration: required_duration,
+            start_interval: { minutes: 60 },
+            buffer: {
+              before: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 45 },
+              },
+              after: {
+                minimum: { minutes: 45 },
+                maximum: { minutes: 60 },
+              },
+            },
           },
           {
             sequence_id: 4567,
@@ -1819,7 +1912,12 @@ describe Cronofy::Client do
         available_periods: [{
           start: Time.utc(2017, 1, 1, 9, 00),
           end:   Time.utc(2017, 1, 1, 17, 00),
-        }]
+        }],
+        start_interval: { minutes: 60 },
+        buffer: {
+          before: { minutes: 30 },
+          after: { minutes: 45 },
+        }
       }
     end
 
@@ -1835,6 +1933,11 @@ describe Cronofy::Client do
           }
         ],
         required_duration: { minutes: 60 },
+        start_interval: { minutes: 60 },
+        buffer: {
+          before: { minutes: 30 },
+          after: { minutes: 45 },
+        },
         available_periods: [{
           start: "2017-01-01T09:00:00Z",
           end:   "2017-01-01T17:00:00Z",

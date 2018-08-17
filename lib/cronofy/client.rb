@@ -795,6 +795,10 @@ module Cronofy
     #                                of minutes of availability required.
     #           :available_periods - An Array of available time periods Hashes,
     #                                each must specify a start and end Time.
+    #           :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #           :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
     #
     # Returns an Array of AvailablePeriods.
     #
@@ -810,6 +814,14 @@ module Cronofy
     def availability(options = {})
       options[:participants] = map_availability_participants(options[:participants])
       options[:required_duration] = map_availability_required_duration(options[:required_duration])
+
+      if options[:start_interval]
+        options[:start_interval] = map_availability_required_duration(options[:start_interval])
+      end
+
+      if buffer = options[:buffer]
+        options[:buffer] = map_availability_buffer(buffer)
+      end
 
       translate_available_periods(options[:available_periods])
 
@@ -830,6 +842,10 @@ module Cronofy
     #                                for a single participant group.
     #             :required_duration - An Integer representing the minimum
     #                                number of minutes of availability required.
+    #             :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #             :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
     #           :available_periods - An Array of available time periods Hashes,
     #                                each must specify a start and end Time.
     #
@@ -994,6 +1010,10 @@ module Cronofy
     #                    :required_duration - A hash stating the length of time the event will
     #                                         last for
     #                    :available_periods - A hash stating the available periods for the event
+    #                    :start_interval    - An Integer representing the start interval
+    #                                         of minutes for the availability query.
+    #                    :buffer            - An Hash containing the buffer to apply to
+    #                                         the availability query.
     # target_calendars - An array of hashes stating into which calendars to insert the created
     #                    event
     #
@@ -1056,6 +1076,14 @@ module Cronofy
       if availability = args[:availability]
         availability[:participants] = map_availability_participants(availability[:participants])
         availability[:required_duration] = map_availability_required_duration(availability[:required_duration])
+
+        if value = availability[:start_interval]
+          availability[:start_interval] = map_availability_required_duration(value)
+        end
+
+        if buffer = availability[:buffer]
+          availability[:buffer] = map_availability_buffer(buffer)
+        end
       end
 
       translate_available_periods(availability[:available_periods])
@@ -1087,6 +1115,10 @@ module Cronofy
     #                                for a single participant group.
     #             :required_duration - An Integer representing the minimum
     #                                number of minutes of availability required.
+    #             :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #             :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
     #             :event            - A Hash describing the event:
     #                    :event_id          - A String uniquely identifying the event for
     #                                         your application (note: this is NOT an ID
@@ -1123,7 +1155,6 @@ module Cronofy
     #          :available_periods - A hash stating the available periods for the event
     # target_calendars - An array of hashes stating into which calendars to insert the created
     #                    event
-
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::AuthenticationFailureError if the access token is no
     # longer valid.
@@ -1376,6 +1407,38 @@ module Cronofy
       end
     end
 
+    def map_availability_buffer(buffer)
+      result = {}
+
+      unless buffer.is_a?(Hash)
+        return result
+      end
+
+      if before_buffer = buffer[:before]
+        result[:before] = map_buffer_details(before_buffer)
+      end
+
+      if after_buffer = buffer[:after]
+        result[:after] = map_buffer_details(after_buffer)
+      end
+
+      result
+    end
+
+    def map_buffer_details(buffer)
+      result = map_availability_required_duration(buffer)
+
+      if minimum_buffer = buffer[:minimum]
+        result[:minimum] = map_availability_required_duration(minimum_buffer)
+      end
+
+      if maximum_buffer = buffer[:maximum]
+        result[:maximum] = map_availability_required_duration(maximum_buffer)
+      end
+
+      result
+    end
+
     def map_availability_sequence(sequence)
       case sequence
       when Enumerable
@@ -1394,8 +1457,12 @@ module Cronofy
             translate_available_periods(sequence_item[:available_periods])
           end
 
-          if value = sequence_item[:start_inverval]
-            hash[:start_inverval] = map_availability_required_duration(value)
+          if value = sequence_item[:start_interval]
+            hash[:start_interval] = map_availability_required_duration(value)
+          end
+
+          if buffer = sequence_item[:buffer]
+            hash[:buffer] = map_availability_buffer(buffer)
           end
 
           sequence_item.merge(hash)
