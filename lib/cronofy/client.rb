@@ -795,6 +795,10 @@ module Cronofy
     #                                of minutes of availability required.
     #           :available_periods - An Array of available time periods Hashes,
     #                                each must specify a start and end Time.
+    #           :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #           :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
     #
     # Returns an Array of AvailablePeriods.
     #
@@ -811,12 +815,59 @@ module Cronofy
       options[:participants] = map_availability_participants(options[:participants])
       options[:required_duration] = map_availability_required_duration(options[:required_duration])
 
+      if options[:start_interval]
+        options[:start_interval] = map_availability_required_duration(options[:start_interval])
+      end
+
+      if buffer = options[:buffer]
+        options[:buffer] = map_availability_buffer(buffer)
+      end
+
       translate_available_periods(options[:available_periods])
 
       response = post("/v1/availability", options)
       parse_collection(AvailablePeriod, "available_periods", response)
     end
 
+    # Public: Performs an sequenced availability query.
+    #
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :sequence          - An Array of sequence defintions containing
+    #                                a Hash of:
+    #             :sequence_id       - A String to uniquely identify this part
+    #                                of the proposed sequence.
+    #             :ordinal           - An integer to define the ordering of the
+    #                                proposed sequence. (Optional)
+    #             :participants      - An Array of participant groups or a Hash
+    #                                for a single participant group.
+    #             :required_duration - An Integer representing the minimum
+    #                                number of minutes of availability required.
+    #             :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #             :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
+    #           :available_periods - An Array of available time periods Hashes,
+    #                                each must specify a start and end Time.
+    #
+    # Returns an Array of Sequences.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def sequenced_availability(options = {})
+      options[:sequence] = map_availability_sequence(options[:sequence])
+
+      translate_available_periods(options[:available_periods])
+
+      response = post("/v1/sequenced_availability", options)
+      parse_collection(Sequence, "sequences", response)
+    end
 
     # Public: Generates an add to calendar link to start the OAuth process with
     # an event to be automatically upserted
@@ -959,6 +1010,10 @@ module Cronofy
     #                    :required_duration - A hash stating the length of time the event will
     #                                         last for
     #                    :available_periods - A hash stating the available periods for the event
+    #                    :start_interval    - An Integer representing the start interval
+    #                                         of minutes for the availability query.
+    #                    :buffer            - An Hash containing the buffer to apply to
+    #                                         the availability query.
     # target_calendars - An array of hashes stating into which calendars to insert the created
     #                    event
     #
@@ -1001,7 +1056,7 @@ module Cronofy
     #    }]
     #   )
     #
-    # See http://www.cronofy.com/developers/api#upsert-event for reference.
+    # See http://www.cronofy.com/developers/api#real-time-scheduling for reference.
     #
     # Returns a AddToCalendarResponse.
     #
@@ -1021,12 +1076,106 @@ module Cronofy
       if availability = args[:availability]
         availability[:participants] = map_availability_participants(availability[:participants])
         availability[:required_duration] = map_availability_required_duration(availability[:required_duration])
+
+        if value = availability[:start_interval]
+          availability[:start_interval] = map_availability_required_duration(value)
+        end
+
+        if buffer = availability[:buffer]
+          availability[:buffer] = map_availability_buffer(buffer)
+        end
       end
 
       translate_available_periods(availability[:available_periods])
       body[:availability] = availability
 
       response = post("/v1/real_time_scheduling", body)
+      parse_json(AddToCalendarResponse, nil , response)
+    end
+
+    # Public: Generates an real time sequencing link to start the OAuth process with
+    # an event to be automatically upserted
+    #
+    # oauth            - A Hash describing the OAuth flow required:
+    #                    :scope             - A String representing the scopes to ask for
+    #                                         within the OAuth flow
+    #                    :redirect_uri      - A String containing a url to redirect the
+    #                                         user to after completing the OAuth flow.
+    #                    :scope             - A String representing additional state to
+    #                                         be passed within the OAuth flow.
+    #
+    # availability     - A Hash describing the availability details for the event:
+    #           :sequence          - An Array of sequence defintions containing
+    #                                a Hash of:
+    #             :sequence_id       - A String to uniquely identify this part
+    #                                of the proposed sequence.
+    #             :ordinal           - An integer to define the ordering of the
+    #                                proposed sequence. (Optional)
+    #             :participants      - An Array of participant groups or a Hash
+    #                                for a single participant group.
+    #             :required_duration - An Integer representing the minimum
+    #                                number of minutes of availability required.
+    #             :start_interval    - An Integer representing the start interval
+    #                                of minutes for the availability query.
+    #             :buffer            - An Hash containing the buffer to apply to
+    #                                the availability query.
+    #             :event            - A Hash describing the event:
+    #                    :event_id          - A String uniquely identifying the event for
+    #                                         your application (note: this is NOT an ID
+    #                                         generated by Cronofy).
+    #                    :summary           - A String to use as the summary, sometimes
+    #                                         referred to as the name or title, of the
+    #                                         event.
+    #                    :description       - A String to use as the description, sometimes
+    #                                         referred to as the notes or body, of the
+    #                                         event.
+    #                    :url               - The URL associated with the event.
+    #                    :location          - A Hash describing the location of the event
+    #                                         with symbolized keys (optional):
+    #                                         :description - A String describing the
+    #                                                        location.
+    #                                         :lat - A String of the location's latitude.
+    #                                         :long - A String of the location's longitude.
+    #                    :reminders         - An Array of Hashes describing the desired
+    #                                         reminders for the event. Reminders should be
+    #                                         specified in priority order as, for example,
+    #                                         when the underlying provider only supports a
+    #                                         single reminder then the first reminder will
+    #                                         be used.
+    #                                         :minutes - An Integer specifying the number
+    #                                                    of minutes before the start of the
+    #                                                    event that the reminder should
+    #                                                    occur.
+    #                    :transparency      - The transparency state for the event (optional).
+    #                                         Accepted values are "transparent" and "opaque".
+    #                    :attendees         - A Hash of :invite and :reject, each of which is
+    #                                         an array of invitees to invite to or reject from
+    #                                         the event. Invitees are represented by a hash of
+    #                                         :email and :display_name (optional).
+    #          :available_periods - A hash stating the available periods for the event
+    # target_calendars - An array of hashes stating into which calendars to insert the created
+    #                    event
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::AuthorizationFailureError if the access token does not
+    # include the required scope.
+    # Raises Cronofy::NotFoundError if the calendar does not exist.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def real_time_sequencing(args)
+      body = args.merge(client_id: @client_id, client_secret: @client_secret)
+
+      if availability = args[:availability]
+        availability[:sequence] = map_availability_sequence(availability[:sequence])
+        translate_available_periods(availability[:available_periods]) if availability[:available_periods]
+      end
+
+      body[:availability] = availability
+
+      response = post("/v1/real_time_sequencing", body)
       parse_json(AddToCalendarResponse, nil , response)
     end
 
@@ -1255,6 +1404,71 @@ module Cronofy
         { minutes: required_duration }
       else
         required_duration
+      end
+    end
+
+    def map_availability_buffer(buffer)
+      result = {}
+
+      unless buffer.is_a?(Hash)
+        return result
+      end
+
+      if before_buffer = buffer[:before]
+        result[:before] = map_buffer_details(before_buffer)
+      end
+
+      if after_buffer = buffer[:after]
+        result[:after] = map_buffer_details(after_buffer)
+      end
+
+      result
+    end
+
+    def map_buffer_details(buffer)
+      result = map_availability_required_duration(buffer)
+
+      if minimum_buffer = buffer[:minimum]
+        result[:minimum] = map_availability_required_duration(minimum_buffer)
+      end
+
+      if maximum_buffer = buffer[:maximum]
+        result[:maximum] = map_availability_required_duration(maximum_buffer)
+      end
+
+      result
+    end
+
+    def map_availability_sequence(sequence)
+      case sequence
+      when Enumerable
+        sequence.map do |sequence_item|
+          hash = {}
+
+          if value = sequence_item[:participants]
+            hash[:participants] = map_availability_participants(value)
+          end
+
+          if value = sequence_item[:required_duration]
+            hash[:required_duration] = map_availability_required_duration(value)
+          end
+
+          if sequence_item[:available_periods]
+            translate_available_periods(sequence_item[:available_periods])
+          end
+
+          if value = sequence_item[:start_interval]
+            hash[:start_interval] = map_availability_required_duration(value)
+          end
+
+          if buffer = sequence_item[:buffer]
+            hash[:buffer] = map_availability_buffer(buffer)
+          end
+
+          sequence_item.merge(hash)
+        end
+      else
+        sequence
       end
     end
 

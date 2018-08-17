@@ -1283,6 +1283,77 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context "buffer and start_interval" do
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  { "sub" => "acc_678347111010113" }
+                ],
+                "required" => "all"
+              }
+            ],
+            "required_duration" => { "minutes" => 60 },
+            "buffer" => {
+              "before": { "minutes": 30 },
+              "after": { "minutes": 60 },
+            },
+            "start_interval" => { "minutes" => 60 },
+            "available_periods" => [
+              {
+                "start" => "2017-01-03T09:00:00Z",
+                "end" => "2017-01-03T18:00:00Z"
+              },
+              {
+                "start" => "2017-01-04T09:00:00Z",
+                "end" => "2017-01-04T18:00:00Z"
+              },
+            ]
+          }
+        end
+
+        let(:participants) do
+          [
+            {
+              members: [
+                { sub: "acc_567236000909002" },
+                { sub: "acc_678347111010113" },
+              ],
+              required: :all,
+            }
+          ]
+        end
+
+        let(:buffer) do
+          {
+            before: { minutes: 30 },
+            after: { minutes: 60 },
+          }
+        end
+
+        let(:start_interval) do
+          { minutes: 60 }
+        end
+
+        let(:required_duration) do
+          { minutes: 60 }
+        end
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        subject { client.availability(participants: participants, required_duration: required_duration, available_periods: available_periods, buffer: buffer, start_interval: start_interval) }
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "member-specific available periods" do
         let(:request_body) do
           {
@@ -1509,6 +1580,161 @@ describe Cronofy::Client do
     end
   end
 
+  describe 'Sequenced Availability' do
+    describe '#sequenced_availability' do
+      let(:method) { :post }
+      let(:request_url) { 'https://api.cronofy.com/v1/sequenced_availability' }
+      let(:request_headers) { json_request_headers }
+
+      let(:request_body) do
+        {
+          "sequence" => [
+            {
+              "sequence_id" => 1234,
+              "ordinal" => 1,
+              "participants" => [
+                {
+                  "members" => [
+                    { "sub" => "acc_567236000909002" },
+                    { "sub" => "acc_678347111010113" }
+                  ],
+                  "required" => "all"
+                }
+              ],
+              "required_duration" => { "minutes" => 60 },
+              "start_interval" => { "minutes" => 60 },
+              "buffer" => {
+                "before": {
+                  "minimum": { "minutes" => 30 },
+                  "maximum": { "minutes" => 45 },
+                },
+                "after": {
+                  "minimum": { "minutes" => 45 },
+                  "maximum": { "minutes" => 60 },
+                },
+              }
+            },
+            {
+              "sequence_id" => 4567,
+              "ordinal" => 2,
+              "participants" => [
+                {
+                  "members" => [
+                    { "sub" => "acc_567236000909002" },
+                    { "sub" => "acc_678347111010113" }
+                  ],
+                  "required" => "all"
+                }
+              ],
+              "required_duration" => { "minutes" => 60 },
+            }
+          ],
+          "available_periods" => [
+            {
+              "start" => "2017-01-03T09:00:00Z",
+              "end" => "2017-01-03T18:00:00Z"
+            },
+            {
+              "start" => "2017-01-04T09:00:00Z",
+              "end" => "2017-01-04T18:00:00Z"
+            }
+          ]
+        }
+      end
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          "sequences" => [
+            {
+              "sequence" => [
+                {
+                  "sequence_id" => 1234,
+                  "start" => "2017-01-03T09:00:00Z",
+                  "end" => "2017-01-03T11:00:00Z",
+                  "participants" => [
+                    { "sub" => "acc_567236000909002" },
+                    { "sub" => "acc_678347111010113" }
+                  ]
+                },
+                {
+                  "sequence_id" => 4567,
+                  "start" => "2017-01-03T14:00:00Z",
+                  "end" => "2017-01-03T16:00:00Z",
+                  "participants" => [
+                    { "sub" => "acc_567236000909002" },
+                    { "sub" => "acc_678347111010113" }
+                  ]
+                },
+              ]
+            }
+          ]
+        }
+      end
+
+      let(:correct_mapped_result) do
+        correct_response_body['sequences'].map { |sequence| Cronofy::Sequence.new(sequence) }
+      end
+
+      let(:args) do
+        {
+          sequence: [{
+            sequence_id: 1234,
+            ordinal: 1,
+            participants: participants,
+            required_duration: required_duration,
+            start_interval: { minutes: 60 },
+            buffer: {
+              before: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 45 },
+              },
+              after: {
+                minimum: { minutes: 45 },
+                maximum: { minutes: 60 },
+              },
+            },
+          },
+          {
+            sequence_id: 4567,
+            ordinal: 2,
+            participants: participants,
+            required_duration: required_duration,
+          }],
+          available_periods: available_periods
+        }
+      end
+
+      subject { client.sequenced_availability(args) }
+
+      let(:participants) do
+        [
+          {
+            members: [
+              { sub: "acc_567236000909002" },
+              { sub: "acc_678347111010113" },
+            ],
+            required: :all,
+          }
+        ]
+      end
+
+      let(:required_duration) do
+        { minutes: 60 }
+      end
+
+      let(:available_periods) do
+        [
+          { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+          { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+        ]
+      end
+
+      it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with mapped return value'
+    end
+  end
+
   describe "Add to calendar" do
     let(:request_url) { "https://api.cronofy.com/v1/add_to_calendar" }
     let(:url) { URI("https://example.com") }
@@ -1686,7 +1912,12 @@ describe Cronofy::Client do
         available_periods: [{
           start: Time.utc(2017, 1, 1, 9, 00),
           end:   Time.utc(2017, 1, 1, 17, 00),
-        }]
+        }],
+        start_interval: { minutes: 60 },
+        buffer: {
+          before: { minutes: 30 },
+          after: { minutes: 45 },
+        }
       }
     end
 
@@ -1702,6 +1933,11 @@ describe Cronofy::Client do
           }
         ],
         required_duration: { minutes: 60 },
+        start_interval: { minutes: 60 },
+        buffer: {
+          before: { minutes: 30 },
+          after: { minutes: 45 },
+        },
         available_periods: [{
           start: "2017-01-01T09:00:00Z",
           end:   "2017-01-01T17:00:00Z",
@@ -1748,6 +1984,189 @@ describe Cronofy::Client do
     end
 
     subject { client.real_time_scheduling(args) }
+
+    context 'when start/end are Times' do
+      it_behaves_like 'a Cronofy request'
+    end
+
+  end
+
+  describe "Real time sequencing" do
+    let(:request_url) { "https://api.cronofy.com/v1/real_time_sequencing" }
+    let(:url) { URI("https://example.com") }
+    let(:method) { :post }
+    let(:request_headers) { json_request_headers }
+
+    let(:location) { { :description => "Board room" } }
+    let(:transparency) { nil }
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+    let(:scope) { 'read_events delete_events' }
+    let(:state) { 'example_state' }
+    let(:redirect_uri) { 'http://example.com/redirect' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: token,
+      )
+    end
+
+    let(:event) do
+      {
+        :event_id => "qTtZdczOccgaPncGJaCiLg",
+        :summary => "Board meeting",
+        :description => "Discuss plans for the next quarter.",
+        :url => url,
+        :location => location,
+        :transparency => transparency,
+        :reminders => [
+          { :minutes => 60 },
+          { :minutes => 0 },
+          { :minutes => 10 },
+        ],
+      }
+    end
+
+    let(:oauth_body) do
+      {
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+      }
+    end
+
+    let(:target_calendars) do
+      [
+        {
+          sub: "acc_567236000909002",
+          calendar_id: "cal_n23kjnwrw2_jsdfjksn234",
+        }
+      ]
+    end
+
+    let(:availability) do
+      {
+        sequence: [
+          {
+            participants: [
+              {
+                members: [{
+                  sub: "acc_567236000909002",
+                  calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+                }],
+                required: 'all'
+              }
+            ],
+            required_duration: { minutes: 60 },
+            start_interval: { minutes: 60 },
+            available_periods: [{
+              start: Time.utc(2017, 1, 1, 9, 00),
+              end:   Time.utc(2017, 1, 1, 17, 00),
+            }],
+            event: event,
+            buffer: {
+              before: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 30 },
+              },
+              after: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 30 },
+              }
+            }
+          }
+        ],
+        available_periods: [{
+          start: Time.utc(2017, 1, 1, 9, 00),
+          end:   Time.utc(2017, 1, 1, 17, 00),
+        }],
+      }
+    end
+
+    let(:mapped_availability) do
+      {
+        sequence: [
+          {
+            participants: [
+              {
+                members: [{
+                  sub: "acc_567236000909002",
+                  calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+                }],
+                required: 'all'
+              }
+            ],
+            required_duration: { minutes: 60 },
+            start_interval: { minutes: 60 },
+            available_periods: [{
+              start: "2017-01-01T09:00:00Z",
+              end:   "2017-01-01T17:00:00Z",
+            }],
+            event: mapped_event,
+            buffer: {
+              before: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 30 },
+              },
+              after: {
+                minimum: { minutes: 30 },
+                maximum: { minutes: 30 },
+              }
+            }
+          }
+        ],
+        available_periods: [{
+          start: "2017-01-01T09:00:00Z",
+          end:   "2017-01-01T17:00:00Z",
+        }]
+      }
+    end
+
+    let(:mapped_event) do
+      {
+        :event_id => "qTtZdczOccgaPncGJaCiLg",
+        :summary => "Board meeting",
+        :description => "Discuss plans for the next quarter.",
+        :url => url.to_s,
+        :location => location,
+        :transparency => transparency,
+        :reminders => [
+          { :minutes => 60 },
+          { :minutes => 0 },
+          { :minutes => 10 },
+        ],
+      }
+    end
+
+    let(:args) do
+      {
+        oauth: oauth_body,
+        event: event,
+        target_calendars: target_calendars,
+        availability: availability,
+      }
+    end
+
+    let(:request_body) do
+      {
+        client_id: client_id,
+        client_secret: client_secret,
+        oauth: oauth_body,
+        event: mapped_event,
+        target_calendars: target_calendars,
+        availability: mapped_availability,
+      }
+    end
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) do
+      {
+        oauth_url: "http://www.example.com/oauth?token=example"
+      }
+    end
+
+    subject { client.real_time_sequencing(args) }
 
     context 'when start/end are Times' do
       it_behaves_like 'a Cronofy request'

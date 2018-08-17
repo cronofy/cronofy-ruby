@@ -1,3 +1,8 @@
+## [0.30.0]
+
+ * Added support for sequencing, buffers and intervals [#62]
+ * Dropped support for Ruby 2.1
+
 ## [0.29.0]
 
  * Added types for propose new time replies [#60]
@@ -121,6 +126,7 @@
 [0.28.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.28.0
 [0.28.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.28.1
 [0.29.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.29.0
+[0.30.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.30.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -152,3 +158,4 @@
 [#58]: https://github.com/cronofy/cronofy-ruby/pull/58
 [#59]: https://github.com/cronofy/cronofy-ruby/pull/59
 [#60]: https://github.com/cronofy/cronofy-ruby/pull/60
+[#62]: https://github.com/cronofy/cronofy-ruby/pull/62

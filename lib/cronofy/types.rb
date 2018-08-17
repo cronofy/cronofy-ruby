@@ -354,6 +354,23 @@ module Cronofy
     end
   end
 
+  class SequenceItem < CronofyMash
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+
+    coerce_key :participants, ParticipantEnumerable
+  end
+
+  module SequenceItemEnumerable
+    def self.coerce(values)
+      values.map { |v| SequenceItem.new(v) }
+    end
+  end
+
+  class Sequence < CronofyMash
+    coerce_key :sequence, SequenceItemEnumerable
+  end
+
   class AvailablePeriod < CronofyMash
     coerce_key :start, EventTime
     coerce_key :end, EventTime

@@ -65,6 +65,9 @@ module Cronofy
   class ServerError < APIError
   end
 
+  class PaymentRequiredError < APIError
+  end
+
   class UnknownError < APIError
   end
 
@@ -73,6 +76,7 @@ module Cronofy
     ERROR_MAP = {
       400 => BadRequestError,
       401 => AuthenticationFailureError,
+      402 => PaymentRequiredError,
       403 => AuthorizationFailureError,
       404 => NotFoundError,
       422 => InvalidRequestError,
