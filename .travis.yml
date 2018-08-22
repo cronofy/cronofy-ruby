@@ -6,18 +6,15 @@ rvm:
   - 2.2
   - 2.3
   - 2.4
-  - jruby-head
-  - rbx-2
-  - ruby-head
-
-cache:
-  - bundler
+  - 2.5
+  - jruby
 
 matrix:
   allow_failures:
-    - rvm: jruby-head
-    - rvm: rbx-2
-    - rvm: ruby-head
+    - rvm: jruby
+
+cache:
+  - bundler
 
 before_install:
   - rvm get latest
