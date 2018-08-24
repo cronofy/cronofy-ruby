@@ -1415,7 +1415,7 @@ module Cronofy
     # limits for the application.
     def upsert_availability_rule(body)
       response = wrapped_request { post("/v1/availability_rules", body) }
-      parse_json(AvailabilityRule, nil, response)
+      parse_json(AvailabilityRule, 'availability_rule', response)
     end
 
     # Public: Gets an AvailabilityRule.
@@ -1432,7 +1432,7 @@ module Cronofy
     # limits for the application.
     def get_availablity_rule(availability_rule_id)
       response = wrapped_request { get("/v1/availability_rules/#{availability_rule_id}") }
-      parse_json(AvailabilityRule, nil, response)
+      parse_json(AvailabilityRule, 'availability_rule', response)
     end
 
     # Public: Deletes an AvailabilityRule.
