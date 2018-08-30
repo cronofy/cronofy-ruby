@@ -2721,7 +2721,9 @@ describe Cronofy::Client do
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
-        "scheduling_conversation_id" => "abcd1234"
+        "scheduling_conversation" => {
+          "scheduling_conversation_id" => "abcd1234"
+        }
       }
     end
 
@@ -2764,23 +2766,25 @@ describe Cronofy::Client do
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
-        "availability_rule_id" => "default",
-        "tzid" => "America/Chicago",
-        "calendar_ids" => [
-          "cal_n23kjnwrw2_jsdfjksn234"
-        ],
-        "weekly_periods" => [
-          {
-            "day" => "monday",
-            "start_time" => "09:30",
-            "end_time" => "16:30"
-          },
-          {
-            "day" => "wednesday",
-            "start_time" => "09:30",
-            "end_time" => "16:30"
-          }
-        ]
+        "availability_rule" => {
+          "availability_rule_id" => "default",
+          "tzid" => "America/Chicago",
+          "calendar_ids" => [
+            "cal_n23kjnwrw2_jsdfjksn234"
+          ],
+          "weekly_periods" => [
+            {
+              "day" => "monday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            },
+            {
+              "day" => "wednesday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            }
+          ]
+        }
       }
     end
 
