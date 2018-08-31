@@ -2888,6 +2888,35 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
+  describe '#lookup_scheduling_conversation' do
+    let(:token) { "hagsdau7g3d" }
+    let(:request_url) { "https://api.cronofy.com/v1/scheduling_conversations?token=#{token}" }
+    let(:method) { :get }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "participant" => {
+          "participant_id" => "83o38hoa"
+        },
+        "scheduling_conversation" => {
+          "scheduling_conversation_id" => "abcd1234"
+        },
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::SchedulingConversationResponse.new(
+        participant: Cronofy::Participant.new(participant_id: "83o38hoa"),
+        scheduling_conversation: Cronofy::SchedulingConversation.new(scheduling_conversation_id: "abcd1234"),
+        )
+    end
+
+    subject { client.lookup_scheduling_conversation(token) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
 
   describe '#upsert_availability_rule' do
     let(:request_url) { 'https://api.cronofy.com/v1/availability_rules' }

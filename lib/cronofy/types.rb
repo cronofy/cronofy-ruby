@@ -391,6 +391,11 @@ module Cronofy
   class SchedulingConversation < CronofyMash
   end
 
+  class SchedulingConversationResponse < CronofyMash
+    coerce_key :participant, Participant
+    coerce_key :scheduling_conversation, SchedulingConversation
+  end
+
   class SchedulingConversationSlot < CronofyMash
     coerce_key :start, EventTime
     coerce_key :end, EventTime

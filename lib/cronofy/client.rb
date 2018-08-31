@@ -1470,6 +1470,15 @@ module Cronofy
       parse_json(SchedulingConversation, 'scheduling_conversation', response)
     end
 
+    # Public: Looks up a scheduling conversation with a token returned by a redirect
+    #
+    # pre release end-point documentation to follow
+    #
+    def lookup_scheduling_conversation(token)
+      response = wrapped_request { get("/v1/scheduling_conversations?token=#{token}") }
+      parse_json(SchedulingConversationResponse, nil, response)
+    end
+
     # Public: List available slots for a scheduling conversation
     #
     # pre release end-point documentation to follow
