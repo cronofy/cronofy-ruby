@@ -1258,7 +1258,7 @@ module Cronofy
     #   client.upsert_smart_invite(
     #     smart_invite_id: "qTtZdczOccgaPncGJaCiLg",
     #     callback_url: "http://www.example.com",
-    #     attendee: {
+    #     recipient: {
     #       email: "example@example.com"
     #     },
     #     event: {
