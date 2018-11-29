@@ -1417,7 +1417,7 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def get_availablity_rule(availability_rule_id)
+    def get_availability_rule(availability_rule_id)
       response = wrapped_request { get("/v1/availability_rules/#{availability_rule_id}") }
       parse_json(AvailabilityRule, 'availability_rule', response)
     end
@@ -1434,7 +1434,7 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def delete_availablity_rule(availability_rule_id)
+    def delete_availability_rule(availability_rule_id)
       wrapped_request { delete("/v1/availability_rules/#{availability_rule_id}") }
       nil
     end
