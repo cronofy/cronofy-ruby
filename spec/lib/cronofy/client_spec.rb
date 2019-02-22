@@ -2832,11 +2832,56 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
+  describe "#get_availability_rule" do
+    let(:availability_rule_id) { 'default'}
+    let(:request_url) { "https://api.cronofy.com/v1/availability_rules/#{availability_rule_id}" }
+    let(:method) { :get }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "availability_rule" => {
+          "availability_rule_id" => "default",
+          "tzid" => "America/Chicago",
+          "calendar_ids" => [
+            "cal_n23kjnwrw2_jsdfjksn234"
+          ],
+          "weekly_periods" => [
+            {
+              "day" => "monday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            },
+            {
+              "day" => "wednesday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            }
+          ]
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      rule = correct_response_body['availability_rule']
+      Cronofy::AvailabilityRule.new(
+        availability_rule_id: rule['availability_rule_id'],
+        tzid: rule['tzid'],
+        calendar_ids: rule['calendar_ids'],
+        weekly_periods: rule['weekly_periods'].map { |wp| Cronofy::WeeklyPeriod.new(wp) },
+        )
+    end
+
+    subject { client.get_availability_rule(availability_rule_id) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
   describe '#delete_availability_rule' do
     let(:availability_rule_id) { 'default'}
     let(:request_url) { "https://api.cronofy.com/v1/availability_rules/#{availability_rule_id}" }
     let(:method) { :delete }
-    let(:request_headers) { json_request_headers }
     let(:request_body) { nil }
     let(:correct_response_code) { 202 }
     let(:correct_response_body) { nil }
