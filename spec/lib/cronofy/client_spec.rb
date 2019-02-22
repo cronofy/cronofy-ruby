@@ -2982,4 +2982,18 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request'
     it_behaves_like 'a Cronofy request with mapped return value'
   end
+
+  describe '#delete_availability_rule' do
+    let(:availability_rule_id) { 'default'}
+    let(:request_url) { "https://api.cronofy.com/v1/availability_rules/#{availability_rule_id}" }
+    let(:method) { :delete }
+    let(:request_headers) { json_request_headers }
+    let(:request_body) { nil }
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { nil }
+
+    subject { client.delete_availability_rule(availability_rule_id) }
+
+    it_behaves_like 'a Cronofy request'
+  end
 end
