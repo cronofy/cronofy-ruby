@@ -1172,7 +1172,7 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
-  describe '#component_token' do
+  describe '#element_token' do
     let(:permissions) { ["agenda", "availability"] }
     let(:subs) { ["acc_567236000909002", "acc_678347111010113"] }
     let(:origin) { "https://local.test/page" }
@@ -1196,20 +1196,22 @@ describe Cronofy::Client do
       }
     end
 
+    let(:expected_token) { "ELEMENT_TOKEN_1276534" }
+
     let(:correct_response_code) { 200 }
     let(:correct_response_body) do
       {
         "element_token" => {
           "permissions" => permissions,
           "origin" => origin,
-          "token" => "ELEMENT_TOKEN_1276534",
+          "token" => expected_token,
           "expires_in" => 64800
         }
       }
     end
 
     let(:correct_mapped_result) do
-      Cronofy::ElementToken.new(correct_response_body)
+      Cronofy::ElementToken.new(correct_response_body['element_token'])
     end
 
     let(:client_id) { 'example_id' }
@@ -1222,7 +1224,13 @@ describe Cronofy::Client do
       )
     end
 
-    subject { client.get_element_token(permissions, subs, origin) }
+    subject do
+      client.element_token({
+        permissions: permissions,
+        subs: subs,
+        origin: origin
+      })
+    end
 
     it_behaves_like 'a Cronofy request'
     it_behaves_like 'a Cronofy request with mapped return value'

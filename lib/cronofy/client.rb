@@ -1340,12 +1340,16 @@ module Cronofy
     end
 
 
-    # Public: Creates a link_token to allow explicitly linking of an account
+    # Public: Creates an element_token to pass to a UI Element
     #
-    # permissions - An Array of strings describing the permissions required for the token
-    # subs        - An Array of sub values for the account(s) the element will
-    #               be accessing
-    # origin      - The full url of the app page where the component will be used
+    # options     - A Hash of options for the token
+    #             :permissions -  An Array of strings describing the
+    #                             permissions required for the token
+    #             :subs        -  An Array of sub values for the account(s)
+    #                             the element will be accessing
+    #             :origin      -  The scheme://hostname where the token will
+    #                             be used.
+    #                             https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin
     #
     # See https://docs.cronofy.com/developers/ui-elements/authentication for
     # reference.
@@ -1357,14 +1361,9 @@ module Cronofy
     # longer valid.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def get_element_token(permissions, subs, origin)
-      args = {
-        permissions: permissions,
-        subs: subs,
-        origin: origin
-      }
-      response = wrapped_request { api_key!.post("/v1/element_tokens", json_request_args(args)) }
-      parse_json(ElementToken, nil, response)
+    def element_token(options)
+      response = wrapped_request { api_key!.post("/v1/element_tokens", json_request_args(options)) }
+      parse_json(ElementToken, "element_token", response)
     end
 
     private
