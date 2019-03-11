@@ -1339,6 +1339,34 @@ module Cronofy
       parse_json(SmartInviteResponse, nil, response)
     end
 
+
+    # Public: Creates a link_token to allow explicitly linking of an account
+    #
+    # permissions - An Array of strings describing the permissions required for the token
+    # subs        - An Array of sub values for the account(s) the element will
+    #               be accessing
+    # origin      - The full url of the app page where the component will be used
+    #
+    # See https://docs.cronofy.com/developers/ui-elements/authentication for
+    # reference.
+    #
+    # Returns an element token
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def get_element_token(permissions, subs, origin)
+      args = {
+        permissions: permissions,
+        subs: subs,
+        origin: origin
+      }
+      response = wrapped_request { api_key!.post("/v1/element_tokens", json_request_args(args)) }
+      parse_json(ElementToken, nil, response)
+    end
+
     private
 
     def translate_available_periods(periods)
