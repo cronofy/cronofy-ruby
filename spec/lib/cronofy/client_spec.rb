@@ -59,7 +59,7 @@ describe Cronofy::Client do
                    headers: correct_response_headers,
                    body: correct_response_body.to_json)
 
-      expect{ subject }.not_to raise_error
+      subject
     end
 
     it 'raises AuthenticationFailureError on 401s' do
@@ -1910,7 +1910,13 @@ describe Cronofy::Client do
     let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling" }
     let(:url) { URI("https://example.com") }
     let(:method) { :post }
-    let(:request_headers) { json_request_headers }
+
+    let(:request_headers) do
+      {
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Content-Type" => "application/json; charset=utf-8",
+      }
+    end
 
     let(:location) { { :description => "Board room" } }
     let(:transparency) { nil }
@@ -1924,7 +1930,6 @@ describe Cronofy::Client do
       Cronofy::Client.new(
         client_id: client_id,
         client_secret: client_secret,
-        access_token: token,
       )
     end
 
@@ -2059,7 +2064,13 @@ describe Cronofy::Client do
     let(:request_url) { "https://api.cronofy.com/v1/real_time_sequencing" }
     let(:url) { URI("https://example.com") }
     let(:method) { :post }
-    let(:request_headers) { json_request_headers }
+
+    let(:request_headers) do
+      {
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Content-Type" => "application/json; charset=utf-8",
+      }
+    end
 
     let(:location) { { :description => "Board room" } }
     let(:transparency) { nil }
@@ -2073,7 +2084,6 @@ describe Cronofy::Client do
       Cronofy::Client.new(
         client_id: client_id,
         client_secret: client_secret,
-        access_token: token,
       )
     end
 
