@@ -5,6 +5,7 @@ module Cronofy
   class Auth
     attr_reader :access_token
     attr_reader :api_key
+    attr_reader :api_client
 
     def initialize(options = {})
       access_token = options[:access_token]

@@ -1089,7 +1089,7 @@ module Cronofy
       translate_available_periods(availability[:available_periods])
       body[:availability] = availability
 
-      response = post("/v1/real_time_scheduling", body)
+      response = raw_post("/v1/real_time_scheduling", body)
       parse_json(AddToCalendarResponse, nil , response)
     end
 
@@ -1175,7 +1175,7 @@ module Cronofy
 
       body[:availability] = availability
 
-      response = post("/v1/real_time_sequencing", body)
+      response = raw_post("/v1/real_time_sequencing", body)
       parse_json(AddToCalendarResponse, nil , response)
     end
 
@@ -1537,6 +1537,10 @@ module Cronofy
 
     def delete(url, body = nil)
       wrapped_request { access_token!.delete(url, json_request_args(body)) }
+    end
+
+    def raw_post(url, body)
+      wrapped_request { @auth.api_client.request(:post, url, json_request_args(body)) }
     end
 
     def wrapped_request
