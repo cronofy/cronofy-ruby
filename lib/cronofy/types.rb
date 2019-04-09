@@ -377,4 +377,7 @@ module Cronofy
 
     coerce_key :participants, ParticipantEnumerable
   end
+
+  class ElementToken < CronofyMash
+  end
 end

@@ -1339,6 +1339,33 @@ module Cronofy
       parse_json(SmartInviteResponse, nil, response)
     end
 
+
+    # Public: Creates an element_token to pass to a UI Element
+    #
+    # options     - A Hash of options for the token
+    #             :permissions -  An Array of strings describing the
+    #                             permissions required for the token
+    #             :subs        -  An Array of sub values for the account(s)
+    #                             the element will be accessing
+    #             :origin      -  The scheme://hostname where the token will
+    #                             be used.
+    #                             https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin
+    #
+    # See https://docs.cronofy.com/developers/ui-elements/authentication for
+    # reference.
+    #
+    # Returns an element token
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def element_token(options)
+      response = wrapped_request { api_key!.post("/v1/element_tokens", json_request_args(options)) }
+      parse_json(ElementToken, "element_token", response)
+    end
+
     private
 
     def translate_available_periods(periods)

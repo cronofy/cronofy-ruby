@@ -1172,6 +1172,70 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request with mapped return value'
   end
 
+  describe '#element_token' do
+    let(:permissions) { ["agenda", "availability"] }
+    let(:subs) { ["acc_567236000909002", "acc_678347111010113"] }
+    let(:origin) { "https://local.test/page" }
+
+    let(:request_url) { 'https://api.cronofy.com/v1/element_tokens' }
+    let(:method) { :post }
+
+    let(:request_headers) do
+      {
+        "Authorization" => "Bearer #{client_secret}",
+        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+        "Content-Type" => "application/json; charset=utf-8",
+      }
+    end
+
+    let(:request_body) do
+      {
+        permissions: permissions,
+        subs: subs,
+        origin: origin
+      }
+    end
+
+    let(:expected_token) { "ELEMENT_TOKEN_1276534" }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "element_token" => {
+          "permissions" => permissions,
+          "origin" => origin,
+          "token" => expected_token,
+          "expires_in" => 64800
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::ElementToken.new(correct_response_body['element_token'])
+    end
+
+    let(:client_id) { 'example_id' }
+    let(:client_secret) { 'example_secret' }
+
+    let(:client) do
+      Cronofy::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+      )
+    end
+
+    subject do
+      client.element_token({
+        permissions: permissions,
+        subs: subs,
+        origin: origin
+      })
+    end
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
   describe '#revoke_profile_authorization' do
     let(:request_url) { "https://api.cronofy.com/v1/profiles/#{profile_id}/revoke" }
     let(:method) { :post }
