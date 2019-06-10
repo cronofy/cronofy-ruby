@@ -1,3 +1,7 @@
+## [0.31.2]
+
+ * Support parsing new Availability response formats [#73]
+
 ## [0.31.1]
 
  * No Authorization header for Real-Time Scheduling and Real-Time Sequencing [#72]
@@ -137,6 +141,7 @@
 [0.30.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.30.0
 [0.31.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.31.0
 [0.31.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.31.1
+[0.31.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.31.2
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -171,3 +176,4 @@
 [#62]: https://github.com/cronofy/cronofy-ruby/pull/62
 [#69]: https://github.com/cronofy/cronofy-ruby/pull/69
 [#72]: https://github.com/cronofy/cronofy-ruby/pull/72
+[#73]: https://github.com/cronofy/cronofy-ruby/pull/73
