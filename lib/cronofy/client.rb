@@ -826,7 +826,12 @@ module Cronofy
       translate_available_periods(options[:available_periods])
 
       response = post("/v1/availability", options)
-      parse_collection(AvailablePeriod, "available_periods", response)
+
+      parse_collections(
+        response,
+        available_periods: AvailablePeriod,
+        available_slots: AvailableSlot,
+      )
     end
 
     # Public: Performs an sequenced availability query.
@@ -1551,6 +1556,10 @@ module Cronofy
 
     def parse_collection(type, attr, response)
       ResponseParser.new(response).parse_collection(type, attr)
+    end
+
+    def parse_collections(response, mappings)
+      ResponseParser.new(response).parse_collections(mappings)
     end
 
     def parse_json(type, attr = nil, response)

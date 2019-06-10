@@ -1281,10 +1281,13 @@ describe Cronofy::Client do
         }
       end
 
+      let(:availability_response_attribute) { "available_periods" }
+      let(:availability_response_class) { Cronofy::AvailablePeriod }
+
       let(:correct_response_code) { 200 }
       let(:correct_response_body) do
         {
-          "available_periods" => [
+          availability_response_attribute => [
             {
               "start" => "2017-01-03T09:00:00Z",
               "end" => "2017-01-03T11:00:00Z",
@@ -1314,10 +1317,84 @@ describe Cronofy::Client do
       end
 
       let(:correct_mapped_result) do
-        correct_response_body['available_periods'].map { |ap| Cronofy::AvailablePeriod.new(ap) }
+        correct_response_body[availability_response_attribute].map { |ap| availability_response_class.new(ap) }
       end
 
       subject { client.availability(participants: participants, required_duration: required_duration, available_periods: available_periods) }
+
+      context "response_format" do
+        %i{
+          slots
+          overlapping_slots
+        }.each do |slot_format|
+          context slot_format do
+            let(:response_format) { slot_format.to_s }
+            let(:availability_response_attribute) { "available_slots" }
+            let(:availability_response_class) { Cronofy::AvailableSlot }
+
+            let(:required_duration) do
+              { minutes: 60 }
+            end
+
+            let(:available_periods) do
+              [
+                { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+                { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+              ]
+            end
+
+            let(:participants) do
+              [
+                {
+                  members: [
+                    { sub: "acc_567236000909002" },
+                    { sub: "acc_678347111010113" },
+                  ],
+                  required: :all,
+                }
+              ]
+            end
+
+            let(:request_body) do
+              {
+                "participants" => [
+                  {
+                    "members" => [
+                      { "sub" => "acc_567236000909002" },
+                      { "sub" => "acc_678347111010113" }
+                    ],
+                    "required" => "all"
+                  }
+                ],
+                "required_duration" => { "minutes" => 60 },
+                "available_periods" => [
+                  {
+                    "start" => "2017-01-03T09:00:00Z",
+                    "end" => "2017-01-03T18:00:00Z"
+                  },
+                  {
+                    "start" => "2017-01-04T09:00:00Z",
+                    "end" => "2017-01-04T18:00:00Z"
+                  }
+                ],
+                "response_format" => response_format,
+              }
+            end
+
+            subject do
+              client.availability(
+                participants: participants,
+                required_duration: required_duration,
+                available_periods: available_periods,
+                response_format: slot_format,
+              )
+            end
+
+            it_behaves_like 'a Cronofy request'
+            it_behaves_like 'a Cronofy request with mapped return value'
+          end
+        end
+      end
 
       context "fully specified" do
         let(:participants) do

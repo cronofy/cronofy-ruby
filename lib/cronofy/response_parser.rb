@@ -7,6 +7,14 @@ module Cronofy
       @response = response
     end
 
+    def parse_collections(attribute_collection_types)
+      attribute_collection_types.each do |attribute, type|
+        return parse_collection(type, attribute.to_s) if json_hash[attribute.to_s]
+      end
+
+      raise "No mapped attributes for response - #{json_hash.keys}"
+    end
+
     def parse_collection(type, attribute = nil)
       target = parsing_target(attribute)
       target.map { |item| type.new(item) }
