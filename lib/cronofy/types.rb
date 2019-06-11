@@ -378,6 +378,13 @@ module Cronofy
     coerce_key :participants, ParticipantEnumerable
   end
 
+  class AvailableSlot < CronofyMash
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+
+    coerce_key :participants, ParticipantEnumerable
+  end
+
   class ElementToken < CronofyMash
   end
 end
