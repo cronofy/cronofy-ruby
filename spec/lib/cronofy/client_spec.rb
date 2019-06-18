@@ -2847,14 +2847,16 @@ describe Cronofy::Client do
     let(:method) { :post }
     let(:request_body) do
       {
-        "actors" => [
+        "participants" => [
           {
-            "actor_id" => "@grace",
+            "participant_id" => "@grace",
             "sub" => "acc_567236000909002",
-            "slot_choice_method" => "auto"
+            "slots" => {
+              "choice_method" => "auto"
+            }
           },
           {
-            "actor_id" => "@karl"
+            "participant_id" => "@karl"
           }
         ],
         "required_duration" => { "minutes" => 60 },
@@ -2885,4 +2887,66 @@ describe Cronofy::Client do
   end
 
 
+  describe '#upsert_availability_rule' do
+    let(:request_url) { 'https://api.cronofy.com/v1/availability_rules' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        "availability_rule_id" => "default",
+        "tzid" => "America/Chicago",
+        "calendar_ids" => [
+          "cal_n23kjnwrw2_jsdfjksn234"
+        ],
+        "weekly_periods" => [
+          {
+            "day" => "monday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          },
+          {
+            "day" => "wednesday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          }
+        ]
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "availability_rule_id" => "default",
+        "tzid" => "America/Chicago",
+        "calendar_ids" => [
+          "cal_n23kjnwrw2_jsdfjksn234"
+        ],
+        "weekly_periods" => [
+          {
+            "day" => "monday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          },
+          {
+            "day" => "wednesday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          }
+        ]
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::AvailabilityRule.new(
+        availability_rule_id: request_body['availability_rule_id'],
+        tzid: request_body['tzid'],
+        calendar_ids: request_body['calendar_ids'],
+        weekly_periods: request_body['weekly_periods'].map { |wp| Cronofy::WeeklyPeriod.new(wp) },
+        )
+    end
+
+    subject { client.upsert_availability_rule(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
 end

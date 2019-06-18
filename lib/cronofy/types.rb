@@ -395,4 +395,17 @@ module Cronofy
     coerce_key :start, EventTime
     coerce_key :end, EventTime
   end
+
+  class WeeklyPeriod < CronofyMash
+  end
+
+  module WeeklyPeriodEnumerable
+    def self.coerce(values)
+      values.map { |v| WeeklyPeriod.new(v) }
+    end
+  end
+
+  class AvailabilityRule < CronofyMash
+    coerce_key :weekly_periods, WeeklyPeriodEnumerable
+  end
 end
