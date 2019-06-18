@@ -1344,7 +1344,6 @@ module Cronofy
       parse_json(SmartInviteResponse, nil, response)
     end
 
-
     # Public: Creates an element_token to pass to a UI Element
     #
     # options     - A Hash of options for the token
@@ -1369,6 +1368,26 @@ module Cronofy
     def element_token(options)
       response = wrapped_request { api_key!.post("/v1/element_tokens", json_request_args(options)) }
       parse_json(ElementToken, "element_token", response)
+    end
+
+    # Public: Creates a scheduling conversation
+    #
+    def create_scheduling_conversation(body)
+      response = wrapped_request { post("/v1/scheduling_conversations", body) }
+      parse_json(SchedulingConversation, nil, response)
+    end
+
+    # Public: List available slots for a scheduling conversation
+    #
+    def list_scheduling_conversation_participant_slots(url)
+      response = wrapped_request { get(url) }
+      parse_collection(SchedulingConversationSlot, "available_slots", response )
+    end
+
+    # Public: Choose one or more slots for a scheduling conversation
+    def select_scheduling_conversation_participant_slots(url, args)
+      response = wrapped_request { post(url, args)}
+      parse_json(SchedulingConversation, nil, response)
     end
 
     private

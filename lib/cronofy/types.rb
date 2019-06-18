@@ -387,4 +387,12 @@ module Cronofy
 
   class ElementToken < CronofyMash
   end
+
+  class SchedulingConversation < CronofyMash
+  end
+
+  class SchedulingConversationSlot < CronofyMash
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+  end
 end

@@ -2841,4 +2841,48 @@ describe Cronofy::Client do
       end
     end
   end
+
+  describe '#create_scheduling_conversation' do
+    let(:request_url) { 'https://api.cronofy.com/v1/scheduling_conversations' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        "actors" => [
+          {
+            "actor_id" => "@grace",
+            "sub" => "acc_567236000909002",
+            "slot_choice_method" => "auto"
+          },
+          {
+            "actor_id" => "@karl"
+          }
+        ],
+        "required_duration" => { "minutes" => 60 },
+        "available_periods" => [
+          {
+            "start" => "2018-05-01T00:00:00Z",
+            "end" => "2018-05-08T23:59:59Z"
+          }
+        ]
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "scheduling_conversation_id" => "abcd1234"
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::SchedulingConversation.new(scheduling_conversation_id: "abcd1234")
+    end
+
+    subject { client.create_scheduling_conversation(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+
 end
