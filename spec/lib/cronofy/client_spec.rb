@@ -2841,4 +2841,204 @@ describe Cronofy::Client do
       end
     end
   end
+
+  describe '#create_scheduling_conversation' do
+    let(:request_url) { 'https://api.cronofy.com/v1/scheduling_conversations' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        "participants" => [
+          {
+            "participant_id" => "@grace",
+            "sub" => "acc_567236000909002",
+            "slots" => {
+              "choice_method" => "auto"
+            }
+          },
+          {
+            "participant_id" => "@karl"
+          }
+        ],
+        "required_duration" => { "minutes" => 60 },
+        "available_periods" => [
+          {
+            "start" => "2018-05-01T00:00:00Z",
+            "end" => "2018-05-08T23:59:59Z"
+          }
+        ]
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "scheduling_conversation" => {
+          "scheduling_conversation_id" => "abcd1234"
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::SchedulingConversation.new(scheduling_conversation_id: "abcd1234")
+    end
+
+    subject { client.create_scheduling_conversation(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe '#lookup_scheduling_conversation' do
+    let(:token) { "hagsdau7g3d" }
+    let(:request_url) { "https://api.cronofy.com/v1/scheduling_conversations?token=#{token}" }
+    let(:method) { :get }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "participant" => {
+          "participant_id" => "83o38hoa"
+        },
+        "scheduling_conversation" => {
+          "scheduling_conversation_id" => "abcd1234"
+        },
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::SchedulingConversationResponse.new(
+        participant: Cronofy::Participant.new(participant_id: "83o38hoa"),
+        scheduling_conversation: Cronofy::SchedulingConversation.new(scheduling_conversation_id: "abcd1234"),
+        )
+    end
+
+    subject { client.lookup_scheduling_conversation(token) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe '#upsert_availability_rule' do
+    let(:request_url) { 'https://api.cronofy.com/v1/availability_rules' }
+    let(:method) { :post }
+    let(:request_body) do
+      {
+        "availability_rule_id" => "default",
+        "tzid" => "America/Chicago",
+        "calendar_ids" => [
+          "cal_n23kjnwrw2_jsdfjksn234"
+        ],
+        "weekly_periods" => [
+          {
+            "day" => "monday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          },
+          {
+            "day" => "wednesday",
+            "start_time" => "09:30",
+            "end_time" => "16:30"
+          }
+        ]
+      }
+    end
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "availability_rule" => {
+          "availability_rule_id" => "default",
+          "tzid" => "America/Chicago",
+          "calendar_ids" => [
+            "cal_n23kjnwrw2_jsdfjksn234"
+          ],
+          "weekly_periods" => [
+            {
+              "day" => "monday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            },
+            {
+              "day" => "wednesday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            }
+          ]
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      Cronofy::AvailabilityRule.new(
+        availability_rule_id: request_body['availability_rule_id'],
+        tzid: request_body['tzid'],
+        calendar_ids: request_body['calendar_ids'],
+        weekly_periods: request_body['weekly_periods'].map { |wp| Cronofy::WeeklyPeriod.new(wp) },
+        )
+    end
+
+    subject { client.upsert_availability_rule(request_body) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe "#get_availability_rule" do
+    let(:availability_rule_id) { 'default'}
+    let(:request_url) { "https://api.cronofy.com/v1/availability_rules/#{availability_rule_id}" }
+    let(:method) { :get }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "availability_rule" => {
+          "availability_rule_id" => "default",
+          "tzid" => "America/Chicago",
+          "calendar_ids" => [
+            "cal_n23kjnwrw2_jsdfjksn234"
+          ],
+          "weekly_periods" => [
+            {
+              "day" => "monday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            },
+            {
+              "day" => "wednesday",
+              "start_time" => "09:30",
+              "end_time" => "16:30"
+            }
+          ]
+        }
+      }
+    end
+
+    let(:correct_mapped_result) do
+      rule = correct_response_body['availability_rule']
+      Cronofy::AvailabilityRule.new(
+        availability_rule_id: rule['availability_rule_id'],
+        tzid: rule['tzid'],
+        calendar_ids: rule['calendar_ids'],
+        weekly_periods: rule['weekly_periods'].map { |wp| Cronofy::WeeklyPeriod.new(wp) },
+        )
+    end
+
+    subject { client.get_availability_rule(availability_rule_id) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe '#delete_availability_rule' do
+    let(:availability_rule_id) { 'default'}
+    let(:request_url) { "https://api.cronofy.com/v1/availability_rules/#{availability_rule_id}" }
+    let(:method) { :delete }
+    let(:request_body) { nil }
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { nil }
+
+    subject { client.delete_availability_rule(availability_rule_id) }
+
+    it_behaves_like 'a Cronofy request'
+  end
 end

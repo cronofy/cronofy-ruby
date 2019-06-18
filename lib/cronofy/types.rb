@@ -387,4 +387,30 @@ module Cronofy
 
   class ElementToken < CronofyMash
   end
+
+  class SchedulingConversation < CronofyMash
+  end
+
+  class SchedulingConversationResponse < CronofyMash
+    coerce_key :participant, Participant
+    coerce_key :scheduling_conversation, SchedulingConversation
+  end
+
+  class SchedulingConversationSlot < CronofyMash
+    coerce_key :start, EventTime
+    coerce_key :end, EventTime
+  end
+
+  class WeeklyPeriod < CronofyMash
+  end
+
+  module WeeklyPeriodEnumerable
+    def self.coerce(values)
+      values.map { |v| WeeklyPeriod.new(v) }
+    end
+  end
+
+  class AvailabilityRule < CronofyMash
+    coerce_key :weekly_periods, WeeklyPeriodEnumerable
+  end
 end
