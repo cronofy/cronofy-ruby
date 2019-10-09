@@ -1,3 +1,7 @@
+## [0.33.0]
+
+ * Support listing Availability Rules [#74]
+
 ## [0.32.0]
 
  * Support Availability Rules and Scheduling Conversations [#64]
@@ -147,6 +151,7 @@
 [0.31.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.31.1
 [0.31.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.31.2
 [0.32.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.32.0
+[0.33.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.33.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -183,3 +188,4 @@
 [#69]: https://github.com/cronofy/cronofy-ruby/pull/69
 [#72]: https://github.com/cronofy/cronofy-ruby/pull/72
 [#73]: https://github.com/cronofy/cronofy-ruby/pull/73
+[#74]: https://github.com/cronofy/cronofy-ruby/pull/74
