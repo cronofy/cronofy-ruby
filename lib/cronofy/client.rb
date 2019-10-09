@@ -1435,6 +1435,20 @@ module Cronofy
       parse_json(AvailabilityRule, 'availability_rule', response)
     end
 
+    # Public: Gets all AvailabilityRules for an account.
+    #
+    # Returns an array of AvailabilityRules.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def get_availability_rules
+      response = wrapped_request { get("/v1/availability_rules") }
+      parse_collection(AvailabilityRule, 'availability_rules', response)
+    end
+
     # Public: Deletes an AvailabilityRule.
     #
     # availability_rule_id - A String uniquely identifying the availability rule
