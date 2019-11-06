@@ -1323,6 +1323,32 @@ module Cronofy
       parse_json(SmartInviteResponse, nil, response)
     end
 
+    # Public: Removes an individual recipient from a multiple recipient smart invite
+    #
+    # smart_invite_id - A String uniquely identifying the event for your
+    #                  application (note: this is NOT an ID generated
+    #                  by Cronofy).
+    #
+    # recipient       - A Hash containing the recipient to be removed
+    #                   :email      - A String for the email address of
+    #                                 the recipient to remove.
+    #
+    # See https://docs.cronofy.com/developers/api-alpha/smart-invites/multiple-recipients/#remove-invite-recipient
+    # for reference.
+    #
+    # Returns a SmartInviteResponse
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def remove_recipient_smart_invite(body={})
+      body[:method] = 'remove'
+      response = wrapped_request { api_key!.post("/v1/smart_invites", json_request_args(body)) }
+      parse_json(SmartInviteResponse, nil, response)
+    end
+
     # Public: Gets the details for a smart invite.
     #
     # smart_invite_id  - A String uniquely identifying the event for your
