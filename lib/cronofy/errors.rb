@@ -68,6 +68,9 @@ module Cronofy
   class PaymentRequiredError < APIError
   end
 
+  class ServiceUnreachableError < APIError
+  end
+
   class UnknownError < APIError
   end
 
@@ -83,6 +86,9 @@ module Cronofy
       423 => AccountLockedError,
       429 => TooManyRequestsError,
       500 => ServerError,
+      502 => ServiceUnreachableError,
+      503 => ServiceUnreachableError,
+      504 => ServiceUnreachableError,
     }.freeze
 
     def self.map_error(error)
