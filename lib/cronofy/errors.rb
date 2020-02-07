@@ -71,6 +71,15 @@ module Cronofy
   class ServiceUnreachableError < APIError
   end
 
+  class BadGatewayError < ServiceUnreachableError
+  end
+
+  class ServiceUnavailableError < ServiceUnreachableError
+  end
+
+  class GatewayTimeoutError < ServiceUnreachableError
+  end
+
   class UnknownError < APIError
   end
 
@@ -86,9 +95,9 @@ module Cronofy
       423 => AccountLockedError,
       429 => TooManyRequestsError,
       500 => ServerError,
-      502 => ServiceUnreachableError,
-      503 => ServiceUnreachableError,
-      504 => ServiceUnreachableError,
+      502 => BadGatewayError,
+      503 => ServiceUnavailableError,
+      504 => GatewayTimeoutError,
     }.freeze
 
     def self.map_error(error)
