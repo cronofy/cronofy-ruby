@@ -3152,4 +3152,83 @@ describe Cronofy::Client do
 
     it_behaves_like 'a Cronofy request'
   end
+
+  describe "#upsert_available_period" do
+    let(:request_url) { 'https://api.cronofy.com/v1/available_periods' }
+    let(:method) { :post }
+    let(:available_period_id) { "test" }
+    let(:request_body) do
+      {
+        available_period_id: available_period_id,
+        start: "2020-07-26T15:30:00Z",
+        end: "2020-07-26T17:00:00Z"
+      }
+    end
+
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { "" }
+    let(:correct_mapped_result) { nil }
+
+    subject {
+      client.upsert_available_period(available_period_id,
+        start: request_body[:start],
+        end: request_body[:end]
+      )
+    }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe "#get_available_periods" do
+    let(:request_url) { "https://api.cronofy.com/v1/available_periods" }
+    let(:method) { :get }
+
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        "available_periods" => [
+          {
+            "available_period_id" => "qTtZdczOccgaPncGJaCiLg",
+            "start" => "2020-07-26T15:30:00Z",
+            "end" => "2020-07-26T17:00:00Z"
+          }
+        ]
+      }
+    end
+
+    let(:correct_mapped_result) do
+      period = correct_response_body['available_periods'][0]
+
+      [
+        Cronofy::AvailablePeriod.new(
+          available_period_id: period['available_period_id'],
+          start: period['start'],
+          end: period['end']
+        )
+      ]
+    end
+
+    subject { client.get_available_periods }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe '#delete_available_period' do
+    let(:available_period_id) { 'default'}
+    let(:request_url) { "https://api.cronofy.com/v1/available_periods" }
+    let(:method) { :delete }
+    let(:request_body) {
+      { available_period_id: available_period_id}
+    }
+    let(:correct_response_code) { 202 }
+    let(:correct_response_body) { "" }
+    let(:correct_mapped_result) { nil }
+
+    subject { client.delete_available_period(available_period_id) }
+
+    it_behaves_like 'a Cronofy request'
+    it_behaves_like 'a Cronofy request with mapped return value'
+  end
 end
