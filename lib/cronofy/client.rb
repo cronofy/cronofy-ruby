@@ -1527,8 +1527,14 @@ module Cronofy
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def get_available_periods
-      response = wrapped_request { get("/v1/available_periods") }
+    def get_available_periods(options={})
+      query = [
+        "from=#{to_iso8601(options[:from])}",
+        "to=#{to_iso8601(options[:to])}",
+        "tzid=#{options[:tzid]}"
+      ].join("&")
+
+      response = wrapped_request { get("/v1/available_periods?#{query}") }
       parse_collection(AvailablePeriod, 'available_periods', response)
     end
 
