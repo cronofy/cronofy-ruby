@@ -1,3 +1,5 @@
+require 'uri'
+
 module Cronofy
   # Public: Primary class for interacting with the Cronofy API.
   class Client
@@ -1520,6 +1522,18 @@ module Cronofy
 
     # Public: Gets all AvailablePeriods for an account.
     #
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :from            - The minimum Date from which to return periods
+    #                              (optional).
+    #           :to              - The Date to return periods up until (optional).
+    #           :tzid            - A String representing a known time zone
+    #                              identifier from the IANA Time Zone Database
+    #                              (default: Etc/UTC).
+    #           :localized_times - A Boolean specifying whether the start and
+    #                              end times should be returned with any
+    #                              available localization information
+    #                              (optional).
+    #
     # Returns an array of AvailablePeriods.
     #
     # Raises Cronofy::CredentialsMissingError if no credentials available.
@@ -1528,13 +1542,17 @@ module Cronofy
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def get_available_periods(options={})
-      query = [
-        "from=#{to_iso8601(options[:from])}",
-        "to=#{to_iso8601(options[:to])}",
-        "tzid=#{options[:tzid]}"
-      ].join("&")
+      query = {}
+      query[:from] = to_iso8601(options[:from]) if options[:from]
+      query[:to] = to_iso8601(options[:to]) if options[:to]
+      query[:tzid] = options[:tzid] if options[:tzid]
+      query[:localized_times] = options[:localized_times] if options[:localized_times]
+      if query.any?
+        query_string = "?#{URI.encode_www_form(query)}"
+      end
 
-      response = wrapped_request { get("/v1/available_periods?#{query}") }
+      puts "/v1/available_periods#{query_string}"
+      response = wrapped_request { get("/v1/available_periods#{query_string}") }
       parse_collection(AvailablePeriod, 'available_periods', response)
     end
 
