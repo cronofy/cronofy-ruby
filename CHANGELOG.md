@@ -1,3 +1,7 @@
+## [0.36.0]
+
+ * Add support for Available Periods [#81]
+
 ## [0.35.0]
 
  * Add specific errors for network issues [#77]
@@ -162,6 +166,7 @@
 [0.33.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.33.0
 [0.34.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.34.0
 [0.35.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.35.0
+[0.36.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -201,3 +206,4 @@
 [#74]: https://github.com/cronofy/cronofy-ruby/pull/74
 [#75]: https://github.com/cronofy/cronofy-ruby/pull/75
 [#77]: https://github.com/cronofy/cronofy-ruby/pull/77
+[#81]: https://github.com/cronofy/cronofy-ruby/pull/81
