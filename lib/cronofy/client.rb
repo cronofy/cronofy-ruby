@@ -1551,7 +1551,6 @@ module Cronofy
         query_string = "?#{URI.encode_www_form(query)}"
       end
 
-      puts "/v1/available_periods#{query_string}"
       response = wrapped_request { get("/v1/available_periods#{query_string}") }
       parse_collection(AvailablePeriod, 'available_periods', response)
     end
