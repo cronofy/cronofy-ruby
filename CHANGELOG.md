@@ -1,3 +1,7 @@
+## [0.36.1]
+
+* Loosen the version requirement on Hashie to allow 4.X
+
 ## [0.36.0]
 
  * Add support for Available Periods [#81]
@@ -167,6 +171,7 @@
 [0.34.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.34.0
 [0.35.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.35.0
 [0.36.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.0
+[0.36.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.1
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -207,3 +212,4 @@
 [#75]: https://github.com/cronofy/cronofy-ruby/pull/75
 [#77]: https://github.com/cronofy/cronofy-ruby/pull/77
 [#81]: https://github.com/cronofy/cronofy-ruby/pull/81
+[#85]: https://github.com/cronofy/cronofy-ruby/pull/85
