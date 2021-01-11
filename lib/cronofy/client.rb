@@ -733,8 +733,16 @@ module Cronofy
     # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
     # not valid.
     # Raises Cronofy::CredentialsMissingError if no credentials available.
-    def revoke_authorization(sub: nil)
-      @auth.revoke!(sub: sub)
+    def revoke_authorization
+      @auth.revoke!
+    end
+
+    def revoke_by_sub(sub)
+      @auth.revoke_by_sub(sub)
+    end
+
+    def revoke_by_token(token)
+      @auth.revoke_by_token(token)
     end
 
     # Public: Requests elevated permissions for a set of calendars.

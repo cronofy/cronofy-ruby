@@ -115,8 +115,36 @@ module Cronofy
     # Returns nothing.
     #
     # Raises Cronofy::CredentialsMissingError if no credentials available.
-    def revoke!(sub: nil)
-      raise CredentialsMissingError.new("No credentials to revoke") unless access_token || sub
+    def revoke!
+      raise CredentialsMissingError.new("No credentials to revoke") unless access_token
+
+      token = access_token.refresh_token || access_token.token
+      revoke_by_token(token)
+      @access_token = nil
+    end
+
+    # Internal: Revokes an authorization by the sub
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    def revoke_by_sub(sub)
+      do_revoke(sub: sub)
+    end
+
+    # Internal: Revokes an authorization via the token
+    #
+    # Returns nothing.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    def revoke_by_token(token)
+      do_revoke(token: token)
+    end
+
+    private
+
+    def do_revoke(token: nil, sub: nil)
+      raise CredentialsMissingError.new("No credentials to revoke") unless token || sub
 
       do_request do
         body = {
@@ -124,18 +152,15 @@ module Cronofy
           client_secret: @api_client.secret,
         }
 
-        if sub
-          body.merge!(sub: sub)
+        if token
+          body.merge!(token: token)
         else
-          body.merge!(token: access_token.refresh_token || access_token.token)
+          body.merge!(sub: sub)
         end
 
         @api_client.request(:post, "/oauth/token/revoke", body: body)
-        @access_token = nil
       end
     end
-
-    private
 
     def do_request(&block)
       if @client_credentials_missing
