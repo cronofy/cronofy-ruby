@@ -12,6 +12,7 @@ Gemfile*.lock
 *.o
 *.a
 mkmf.log
+*.gem
 
 # emacs
 *~
