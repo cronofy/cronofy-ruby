@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.version       = Cronofy::VERSION
   spec.authors       = ["Sergii Paryzhskyi", "Garry Shutler"]
   spec.email         = ["parizhskiy@gmail.com", "garry@cronofy.com"]
-  spec.summary       = %q{Cronofy - one API for all the calendars}
+  spec.summary       = %q{Cronofy - the scheduling platform for business}
   spec.description   = %q{Ruby wrapper for Cronofy's unified calendar API}
   spec.homepage      = "https://github.com/cronofy/cronofy-ruby"
   spec.license       = "MIT"
