@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/cronofy/cronofy-ruby.svg?branch=master)](https://travis-ci.org/cronofy/cronofy-ruby)
 [![Gem Version](https://badge.fury.io/rb/cronofy.svg)](http://badge.fury.io/rb/cronofy)
 
-[Cronofy](https://www.cronofy.com) - one API for all the calendars (Google, iCloud, Exchange, Office 365, Outlook.com)
+[Cronofy](https://www.cronofy.com) - the scheduling platform for business
 
 ## Installation
 
