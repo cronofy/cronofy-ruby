@@ -476,4 +476,84 @@ describe Cronofy::Auth do
       end
     end
   end
+
+  describe "#revoke_by_sub" do
+    let(:auth) do
+      Cronofy::Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: access_token,
+        refresh_token: refresh_token,
+      )
+    end
+
+    let!(:revocation_request) do
+      stub_request(:post, "https://api.cronofy.com/oauth/token/revoke")
+        .with(
+          body: {
+            client_id: client_id,
+            client_secret: client_secret,
+            sub: sub,
+          },
+          headers: {
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+          }
+        ).to_return(status: response_status)
+    end
+
+    let(:sub) { "random_sub_value" }
+
+    before do
+      auth.revoke_by_sub(sub)
+    end
+
+    it "does not unset the access token for the current auth" do
+      expect(auth.access_token).not_to be_nil
+    end
+
+    it "makes the revocation request" do
+      expect(revocation_request).to have_been_requested
+    end
+  end
+
+  describe "#revoke_by_token" do
+    let(:auth) do
+      Cronofy::Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        access_token: access_token,
+        refresh_token: refresh_token,
+      )
+    end
+
+    let!(:revocation_request) do
+      stub_request(:post, "https://api.cronofy.com/oauth/token/revoke")
+        .with(
+          body: {
+            client_id: client_id,
+            client_secret: client_secret,
+            token: token,
+          },
+          headers: {
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'User-Agent' => "Cronofy Ruby #{Cronofy::VERSION}",
+          }
+        ).to_return(status: response_status)
+    end
+
+    let(:token) { "random_token_value" }
+
+    before do
+      auth.revoke_by_token(token)
+    end
+
+    it "does not unset the access token for the current auth" do
+      expect(auth.access_token).not_to be_nil
+    end
+
+    it "makes the revocation request" do
+      expect(revocation_request).to have_been_requested
+    end
+  end
 end

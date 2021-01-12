@@ -1,6 +1,10 @@
+## [0.37.0]
+
+ * Add `revoke_by_token` and `revoke_by_sub` to the Client [#86] 
+
 ## [0.36.1]
 
-* Loosen the version requirement on Hashie to allow 4.X
+ * Loosen the version requirement on Hashie to allow 4.X
 
 ## [0.36.0]
 
@@ -172,6 +176,7 @@
 [0.35.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.35.0
 [0.36.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.0
 [0.36.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.1
+[0.37.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -213,3 +218,4 @@
 [#77]: https://github.com/cronofy/cronofy-ruby/pull/77
 [#81]: https://github.com/cronofy/cronofy-ruby/pull/81
 [#85]: https://github.com/cronofy/cronofy-ruby/pull/85
+[#86]: https://github.com/cronofy/cronofy-ruby/pull/86

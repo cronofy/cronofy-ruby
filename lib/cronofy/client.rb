@@ -737,6 +737,14 @@ module Cronofy
       @auth.revoke!
     end
 
+    def revoke_by_sub(sub)
+      @auth.revoke_by_sub(sub)
+    end
+
+    def revoke_by_token(token)
+      @auth.revoke_by_token(token)
+    end
+
     # Public: Requests elevated permissions for a set of calendars.
     #
     # args - A Hash of options used to initialize the request (default: {}):
