@@ -29,14 +29,15 @@ to obtain an OAuth `client_id` and `client_secret` to be able to use the full AP
 ## Creating a client
 
 To make calls to the Cronofy API you must create a `Cronofy::Client`. This takes
-four keyword arguments, all of which are optional:
+five keyword arguments, all of which are optional:
 
 ```ruby
 cronofy = Cronofy::Client.new(
   client_id:     'CLIENT_ID',
   client_secret: 'CLIENT_SECRET',
   access_token:  'ACCESS_TOKEN',
-  refresh_token: 'REFRESH_TOKEN'
+  refresh_token: 'REFRESH_TOKEN',
+  data_center:   :de
 )
 ```
 
@@ -50,6 +51,8 @@ for a user, and when [refreshing an access token](https://www.cronofy.com/develo
 If `client_id` and `client_secret` are not specified explicitly the values from
 the environment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` will
 be used if present.
+
+`data_center` is the two-letter designation for the data center you want to operate against - for example `:de` for Germany, or `:au` for Australia. When omitted, this defaults to the US data center.
 
 ## Authorization
 

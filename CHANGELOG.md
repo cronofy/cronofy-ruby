@@ -1,3 +1,7 @@
+## [0.37.1]
+
+ * Rename `data_centre` to `data_centre` (with aliases for backwards compatibility) [#90] 
+
 ## [0.37.0]
 
  * Add `revoke_by_token` and `revoke_by_sub` to the Client [#86] 
@@ -177,6 +181,7 @@
 [0.36.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.0
 [0.36.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.1
 [0.37.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.0
+[0.37.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.1
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -219,3 +224,4 @@
 [#81]: https://github.com/cronofy/cronofy-ruby/pull/81
 [#85]: https://github.com/cronofy/cronofy-ruby/pull/85
 [#86]: https://github.com/cronofy/cronofy-ruby/pull/86
+[#90]: https://github.com/cronofy/cronofy-ruby/pull/90

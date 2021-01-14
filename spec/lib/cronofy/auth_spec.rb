@@ -92,7 +92,7 @@ describe Cronofy::Auth do
     let(:scheme) { 'https' }
     let(:host) { 'app.cronofy.com' }
     let(:path) { '/oauth/authorize' }
-    let(:data_centre_override) { nil }
+    let(:data_center_override) { nil }
     let(:default_params) do
       {
         'client_id' => client_id,
@@ -106,7 +106,7 @@ describe Cronofy::Auth do
       Cronofy::Auth.new(
         client_id: client_id,
         client_secret: client_secret,
-        data_centre: data_centre_override,
+        data_center: data_center_override,
       )
     end
 
@@ -156,8 +156,8 @@ describe Cronofy::Auth do
       it_behaves_like 'a user auth link provider'
     end
 
-    context 'when data centre overridden' do
-      let(:data_centre_override) { :de }
+    context 'when data center overridden' do
+      let(:data_center_override) { :de }
       let(:host) { 'app-de.cronofy.com' }
       let(:params) { default_params }
 
@@ -204,13 +204,13 @@ describe Cronofy::Auth do
   end
 
   describe '#get_token_from_code' do
-    let(:data_centre_override) { nil }
+    let(:data_center_override) { nil }
 
     subject do
       Cronofy::Auth.new(
         client_id: client_id,
         client_secret: client_secret,
-        data_centre: data_centre_override,
+        data_center: data_center_override,
       ).get_token_from_code(code, redirect_uri)
     end
 
@@ -236,7 +236,7 @@ describe Cronofy::Auth do
     end
 
     describe '#application_calendar' do
-      let(:data_centre_override) { nil }
+      let(:data_center_override) { nil }
 
       let(:application_calendar_id) { "my-application-calendar" }
       let(:cronofy_application_calendar_id) { "apc_54475485743" }
@@ -273,7 +273,7 @@ describe Cronofy::Auth do
         Cronofy::Auth.new(
           client_id: client_id,
           client_secret: client_secret,
-          data_centre: data_centre_override,
+          data_center: data_center_override,
         ).application_calendar(application_calendar_id)
       end
 
@@ -308,8 +308,8 @@ describe Cronofy::Auth do
       end
     end
 
-    context "with data centre overridden" do
-      let(:data_centre_override) { :de }
+    context "with data center overridden" do
+      let(:data_center_override) { :de }
       let(:api_token_url) { "https://api-de.cronofy.com/oauth/token" }
       let(:app_token_url) { "https://app-de.cronofy.com/oauth/token" }
 
@@ -372,14 +372,14 @@ describe Cronofy::Auth do
       it_behaves_like 'an authorization request'
     end
 
-    context "with data centre overridden" do
+    context "with data center overridden" do
       subject do
         Cronofy::Auth.new(
           client_id: client_id,
           client_secret: client_secret,
           access_token: access_token,
           refresh_token: refresh_token,
-          data_centre: :de,
+          data_center: :de,
         ).refresh!
       end
 

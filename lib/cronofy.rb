@@ -13,18 +13,26 @@ require 'openssl'
 
 module Cronofy
   def self.default_data_centre
-    @default_data_centre || ENV['CRONOFY_DATA_CENTRE']
+    default_data_center
   end
 
   def self.default_data_centre=(value)
-    @default_data_centre = value
+    default_data_center= value
   end
 
-  def self.api_url(data_centre_override)
-    if data_centre_override
-      api_url_for_data_centre(data_centre_override)
+  def self.default_data_center
+    @default_data_center || ENV['CRONOFY_DATA_CENTER'] || ENV['CRONOFY_DATA_CENTRE']
+  end
+
+  def self.default_data_center=(value)
+    @default_data_center = value
+  end
+
+  def self.api_url(data_center_override)
+    if data_center_override
+      api_url_for_data_center(data_center_override)
     else
-      ENV['CRONOFY_API_URL'] || api_url_for_data_centre(default_data_centre)
+      ENV['CRONOFY_API_URL'] || api_url_for_data_center(default_data_center)
     end
   end
 
@@ -32,7 +40,11 @@ module Cronofy
     @api_url = value
   end
 
-  def self.api_url_for_data_centre(dc)
+  def self.api_url_for_data_centre
+    api_url_for_data_center
+  end
+
+  def self.api_url_for_data_center(dc)
     @api_urls ||= Hash.new do |hash, key|
       if key.nil? || key.to_sym == :us
         url = "https://api.cronofy.com"
@@ -46,11 +58,11 @@ module Cronofy
     @api_urls[dc]
   end
 
-  def self.app_url(data_centre_override)
-    if data_centre_override
-      app_url_for_data_centre(data_centre_override)
+  def self.app_url(data_center_override)
+    if data_center_override
+      app_url_for_data_center(data_center_override)
     else
-      ENV['CRONOFY_APP_URL'] || app_url_for_data_centre(default_data_centre)
+      ENV['CRONOFY_APP_URL'] || app_url_for_data_center(default_data_center)
     end
   end
 
@@ -59,6 +71,10 @@ module Cronofy
   end
 
   def self.app_url_for_data_centre(dc)
+    app_url_for_data_center(dc)
+  end
+
+  def self.app_url_for_data_center(dc)
     @app_urls ||= Hash.new do |hash, key|
       if key.nil? || key.to_sym == :us
         url = "https://app.cronofy.com"
