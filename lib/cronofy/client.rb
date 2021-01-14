@@ -28,21 +28,21 @@ module Cronofy
     #           :refresh_token - An existing refresh token String for the user's
     #                            account (optional).
     #           :data_center   - An identifier to override the default data
-    #                            centre (optional).
+    #                            center (optional).
     def initialize(options = {})
       access_token  = options[:access_token]
       refresh_token = options[:refresh_token]
 
       @client_id     = options.fetch(:client_id, ENV["CRONOFY_CLIENT_ID"])
       @client_secret = options.fetch(:client_secret, ENV["CRONOFY_CLIENT_SECRET"])
-      @data_centre   = options[:data_center] || options[:data_centre]
+      @data_center   = options[:data_center] || options[:data_centre]
 
       @auth = Auth.new(
         client_id: @client_id,
         client_secret: @client_secret,
         access_token: access_token,
         refresh_token: refresh_token,
-        data_centre: @data_centre
+        data_center: @data_center
       )
     end
 
@@ -1889,7 +1889,7 @@ module Cronofy
     end
 
     def api_url
-      ::Cronofy.api_url(@data_centre)
+      ::Cronofy.api_url(@data_center)
     end
   end
 

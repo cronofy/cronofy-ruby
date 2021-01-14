@@ -2326,7 +2326,7 @@ describe Cronofy::Client do
   end
 
   describe "specifying data_centre" do
-    let(:data_centre) { :de }
+    let(:data_center) { :de }
 
     let(:client) do
       Cronofy::Client.new(
@@ -2334,12 +2334,12 @@ describe Cronofy::Client do
         client_secret: 'client_secret_456',
         access_token: token,
         refresh_token: 'refresh_token_456',
-        data_centre: data_centre,
+        data_centre: data_center,
       )
     end
 
     describe "Userinfo" do
-      let(:request_url) { "https://api-#{data_centre}.cronofy.com/v1/userinfo" }
+      let(:request_url) { "https://api-#{data_center}.cronofy.com/v1/userinfo" }
 
       describe "#userinfo" do
         let(:method) { :get }

@@ -11,13 +11,13 @@ module Cronofy
       access_token = options[:access_token]
       client_id = options[:client_id]
       client_secret = options[:client_secret]
-      data_centre = options[:data_centre]
+      data_center = options[:data_center]
       refresh_token = options[:refresh_token]
 
       @client_credentials_missing = blank?(client_id) || blank?(client_secret)
 
-      @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url(data_centre), connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
-      @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url(data_centre), connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
+      @auth_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.app_url(data_center), connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
+      @api_client = OAuth2::Client.new(client_id, client_secret, site: ::Cronofy.api_url(data_center), connection_opts: { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } })
 
       set_access_token(access_token, refresh_token) if access_token || refresh_token
       set_api_key(client_secret) if client_secret
