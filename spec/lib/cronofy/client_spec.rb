@@ -266,6 +266,7 @@ describe Cronofy::Client do
           ],
         }
       end
+
       let(:request_body) do
         {
           :event_id => "qTtZdczOccgaPncGJaCiLg",
@@ -1713,6 +1714,57 @@ describe Cronofy::Client do
             { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
             { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
           ]
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "when given query_periods instead of available_periods" do
+        let(:participants) do
+          { members: %w{acc_567236000909002 acc_678347111010113} }
+        end
+
+        let(:required_duration) { 60 }
+
+        let(:query_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  { "sub" => "acc_678347111010113" }
+                ],
+                "required" => "all"
+              }
+            ],
+            "query_periods" => [
+              {
+                "start" => "2017-01-03T09:00:00Z",
+                "end" => "2017-01-03T18:00:00Z"
+              },
+              {
+                "start" => "2017-01-04T09:00:00Z",
+                "end" => "2017-01-04T18:00:00Z"
+              }
+            ],
+            "required_duration" => { "minutes" => 60 },
+          }
+        end
+
+        subject do
+          client.availability(
+            participants: participants,
+            required_duration: required_duration,
+            query_periods: query_periods
+          )
         end
 
         it_behaves_like 'a Cronofy request'
