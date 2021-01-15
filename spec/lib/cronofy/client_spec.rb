@@ -1925,6 +1925,18 @@ describe Cronofy::Client do
 
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
+
+      context "when passing query_periods instead" do
+        before do
+          args[:query_periods] = args[:available_periods]
+          args.delete(:available_periods)
+          request_body["query_periods"] = request_body["available_periods"]
+          request_body.delete("available_periods")
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
     end
   end
 
