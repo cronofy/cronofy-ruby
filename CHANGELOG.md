@@ -1,3 +1,7 @@
+## [0.37.2]
+
+ * Support `query_periods` as well as the original `available_periods` for Availability Query and Sequenced Availability [#91] 
+
 ## [0.37.1]
 
  * Rename `data_centre` to `data_centre` (with aliases for backwards compatibility) [#90] 
@@ -182,6 +186,7 @@
 [0.36.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.36.1
 [0.37.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.0
 [0.37.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.1
+[0.37.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.2
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -225,3 +230,4 @@
 [#85]: https://github.com/cronofy/cronofy-ruby/pull/85
 [#86]: https://github.com/cronofy/cronofy-ruby/pull/86
 [#90]: https://github.com/cronofy/cronofy-ruby/pull/90
+[#91]: https://github.com/cronofy/cronofy-ruby/pull/91

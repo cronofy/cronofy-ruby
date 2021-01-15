@@ -803,7 +803,7 @@ module Cronofy
     #                                for a single participant group.
     #           :required_duration - An Integer representing the minimum number
     #                                of minutes of availability required.
-    #           :available_periods - An Array of available time periods Hashes,
+    #           :query_periods     - An Array of available time periods Hashes,
     #                                each must specify a start and end Time.
     #           :start_interval    - An Integer representing the start interval
     #                                of minutes for the availability query.
@@ -833,7 +833,7 @@ module Cronofy
         options[:buffer] = map_availability_buffer(buffer)
       end
 
-      translate_available_periods(options[:available_periods])
+      translate_available_periods(options[:query_periods] || options[:available_periods])
 
       response = post("/v1/availability", options)
 
@@ -847,7 +847,7 @@ module Cronofy
     # Public: Performs an sequenced availability query.
     #
     # options - The Hash options used to refine the selection (default: {}):
-    #           :sequence          - An Array of sequence defintions containing
+    #             :sequence          - An Array of sequence defintions containing
     #                                a Hash of:
     #             :sequence_id       - A String to uniquely identify this part
     #                                of the proposed sequence.
@@ -861,7 +861,7 @@ module Cronofy
     #                                of minutes for the availability query.
     #             :buffer            - An Hash containing the buffer to apply to
     #                                the availability query.
-    #           :available_periods - An Array of available time periods Hashes,
+    #             :query_periods     - An Array of available time periods Hashes,
     #                                each must specify a start and end Time.
     #
     # Returns an Array of Sequences.
@@ -878,7 +878,7 @@ module Cronofy
     def sequenced_availability(options = {})
       options[:sequence] = map_availability_sequence(options[:sequence])
 
-      translate_available_periods(options[:available_periods])
+      translate_available_periods(options[:query_periods] || options[:available_periods])
 
       response = post("/v1/sequenced_availability", options)
       parse_collection(Sequence, "sequences", response)
