@@ -475,10 +475,10 @@ module Cronofy
     #
     # args - A Hash containing the details of the push notification:
     #        :body - A String of the body of the notification.
-    #        :hmacs - A String Array of HMACs of the notification taken from the
+    #        :hmac - A String containing comma-separated values describing HMACs of the notification taken from the
     #                Cronofy-HMAC-SHA256 header.
     #
-    # Returns true if the HMAC provided matches the one calculated using the
+    # Returns true if one of the HMAC provided matches the one calculated using the
     # client secret, otherwise false.
     def hmac_match?(args)
       body = args[:body]
