@@ -2487,6 +2487,22 @@ describe Cronofy::Client do
     it "rejects an incorrect HMAC" do
       expect(client.hmac_match?(body: body, hmac: "something-else")).to be false
     end
+
+    it "verifies the correct HMAC when one of the multiple HMACs splitted by ',' match" do
+      expect(client.hmac_match?(body: body, hmac: "6r2/HjBkqymGegX0wOfifieeUXbbHwtV/LohHS+jv6c=,something-else")).to be true
+    end
+
+    it "rejects incorrect when multiple HMACs splitted by ',' don't match" do
+      expect(client.hmac_match?(body: body, hmac: "something-else,something-else2")).to be false
+    end
+
+    it "rejects if empty HMAC" do
+      expect(client.hmac_match?(body: body, hmac: "")).to be false
+    end
+
+    it "rejects if nil HMAC" do
+      expect(client.hmac_match?(body: body, hmac: nil)).to be false
+    end
   end
 
   describe "Smart Invite" do

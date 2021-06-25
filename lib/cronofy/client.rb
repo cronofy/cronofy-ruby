@@ -475,7 +475,7 @@ module Cronofy
     #
     # args - A Hash containing the details of the push notification:
     #        :body - A String of the body of the notification.
-    #        :hmac - A String of the HMAC of the notification taken from the
+    #        :hmacs - A String Array of HMACs of the notification taken from the
     #                Cronofy-HMAC-SHA256 header.
     #
     # Returns true if the HMAC provided matches the one calculated using the
@@ -484,11 +484,14 @@ module Cronofy
       body = args[:body]
       hmac = args[:hmac]
 
+      return false if hmac.nil? || hmac.empty?
+
       sha256 = OpenSSL::Digest.new('sha256')
       digest = OpenSSL::HMAC.digest(sha256, @client_secret, body)
       calculated = Base64.encode64(digest).strip
 
-      calculated == hmac
+      hmac_list = hmac.split(',')
+      hmac_list.include?(calculated)
     end
 
     # Public: Lists all the notification channels for the account.
