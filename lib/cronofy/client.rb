@@ -480,7 +480,7 @@ module Cronofy
     #
     # Returns true if one of the HMAC provided matches the one calculated using the
     # client secret, otherwise false.
-    def hmac_match?(args)
+    def hmac_valid?(args)
       body = args[:body]
       hmac = args[:hmac]
 
