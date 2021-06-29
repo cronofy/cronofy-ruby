@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.4', '2.5','2.6', '2.7' ]
+        ruby: [ '2.4','2.5','2.6','2.7' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +20,3 @@ jobs:
       
       - name: Run script/ci
         run: 'script/ci'
-      
-      - name: Run tests
-        run: bundle exec rake
