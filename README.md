@@ -1,6 +1,6 @@
 # Cronofy
 
-[![Build Status](https://travis-ci.org/cronofy/cronofy-ruby.svg?branch=master)](https://travis-ci.org/cronofy/cronofy-ruby)
+[![ruby CI](https://github.com/cronofy/cronofy-ruby/actions/workflows/ci.yml/badge.svg)](https://github.com/cronofy/cronofy-ruby/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/cronofy.svg)](http://badge.fury.io/rb/cronofy)
 
 [Cronofy](https://www.cronofy.com) - the scheduling platform for business
