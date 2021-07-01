@@ -471,6 +471,12 @@ module Cronofy
       parse_json(Channel, "channel", response)
     end
 
+    # DEPRECATED: Please use hmac_valid instead.
+    def hmac_match?(args)
+      warn "[DEPRECATION] `hmac_match` is deprecated. Please use `hmac_valid` instead."
+      hmac_valid?(args)
+    end
+
     # Public: Verifies a HMAC from a push notification using the client secret.
     #
     # args - A Hash containing the details of the push notification:
