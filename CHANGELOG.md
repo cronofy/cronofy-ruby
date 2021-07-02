@@ -1,6 +1,6 @@
 ## [0.37.3]
 
- * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#92] 
+ * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#95] 
 
 ## [0.37.2]
 
@@ -191,6 +191,7 @@
 [0.37.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.0
 [0.37.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.1
 [0.37.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.2
+[0.37.3]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.3
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -235,3 +236,4 @@
 [#86]: https://github.com/cronofy/cronofy-ruby/pull/86
 [#90]: https://github.com/cronofy/cronofy-ruby/pull/90
 [#91]: https://github.com/cronofy/cronofy-ruby/pull/91
+[#95]: https://github.com/cronofy/cronofy-ruby/pull/95
