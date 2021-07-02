@@ -1,3 +1,7 @@
+## [0.37.3]
+
+ * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#92] 
+
 ## [0.37.2]
 
  * Support `query_periods` as well as the original `available_periods` for Availability Query and Sequenced Availability [#91] 
