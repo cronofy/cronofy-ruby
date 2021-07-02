@@ -473,7 +473,7 @@ module Cronofy
 
     # DEPRECATED: Please use hmac_valid instead.
     def hmac_match?(args)
-      warn "[DEPRECATION] `hmac_match` is deprecated. Please use `hmac_valid` instead."
+      warn "[DEPRECATION] `hmac_match?` is deprecated. Please use `hmac_valid?` instead."
       hmac_valid?(args)
     end
 
