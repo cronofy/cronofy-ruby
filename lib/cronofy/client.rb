@@ -844,7 +844,7 @@ module Cronofy
 
       translate_available_periods(options[:query_periods] || options[:available_periods])
 
-      response = post("/v1/availability", options)
+      response = availability_post("/v1/availability", options)
 
       parse_collections(
         response,
@@ -1809,6 +1809,17 @@ module Cronofy
 
     def raw_post(url, body)
       wrapped_request { @auth.api_client.request(:post, url, json_request_args(body)) }
+    end
+
+    # Availability Query could originally be authenticated via an access_token
+    # Whilst it should be authed via an API key now, we allow it to fallback for
+    # backward compatibility
+    def availability_post(url, body)
+      if @auth.api_key
+        wrapped_request { api_key!.post(url, json_request_args(body)) }
+      else
+        post(url, body)
+      end
     end
 
     def wrapped_request

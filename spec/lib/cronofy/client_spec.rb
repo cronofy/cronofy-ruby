@@ -1257,6 +1257,17 @@ describe Cronofy::Client do
       let(:request_url) { 'https://api.cronofy.com/v1/availability' }
       let(:request_headers) { json_request_headers }
 
+      let(:client_id) { 'example_id' }
+      let(:client_secret) { 'example_secret' }
+      let(:token) { client_secret }
+
+      let(:client) do
+        Cronofy::Client.new(
+          client_id: client_id,
+          client_secret: client_secret,
+        )
+      end
+
       let(:request_body) do
         {
           "participants" => [
@@ -1765,6 +1776,34 @@ describe Cronofy::Client do
             required_duration: required_duration,
             query_periods: query_periods
           )
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "when trying to auth with only an access_token, as originally implemented" do
+        let(:access_token) { "access_token_123"}
+        let(:client) { Cronofy::Client.new(access_token: access_token) }
+        let(:request_headers) do
+          {
+            "Authorization" => "Bearer #{access_token}",
+            "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+            "Content-Type" => "application/json; charset=utf-8",
+          }
+        end
+
+        let(:participants) do
+          { members: %w{acc_567236000909002 acc_678347111010113} }
+        end
+
+        let(:required_duration) { 60 }
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
         end
 
         it_behaves_like 'a Cronofy request'
