@@ -1809,6 +1809,28 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
+
+      context "when trying to auth without a client_secret or access_token" do
+        let(:client) { Cronofy::Client.new }
+
+        let(:participants) do
+          { members: %w{acc_567236000909002 acc_678347111010113} }
+        end
+
+        let(:required_duration) { 60 }
+
+        let(:available_periods) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z"), end: Time.parse("2017-01-03T18:00:00Z") },
+            { start: Time.parse("2017-01-04T09:00:00Z"), end: Time.parse("2017-01-04T18:00:00Z") },
+          ]
+        end
+
+
+        it "raises an API Key error" do
+          expect{ subject }.to raise_error(Cronofy::CredentialsMissingError)
+        end
+      end
     end
   end
 

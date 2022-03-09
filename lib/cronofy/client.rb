@@ -1817,8 +1817,10 @@ module Cronofy
     def availability_post(url, body)
       if @auth.api_key
         wrapped_request { api_key!.post(url, json_request_args(body)) }
-      else
+      elsif @auth.access_token
         post(url, body)
+      else
+        api_key!
       end
     end
 
