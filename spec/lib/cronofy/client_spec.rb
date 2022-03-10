@@ -2040,6 +2040,45 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request'
         it_behaves_like 'a Cronofy request with mapped return value'
       end
+
+      context "when trying to auth with access_token only" do
+        let(:access_token) { "access_token_123"}
+        let(:client) { Cronofy::Client.new(access_token: access_token) }
+        let(:request_headers) do
+          {
+            "Authorization" => "Bearer #{access_token}",
+            "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+            "Content-Type" => "application/json; charset=utf-8",
+          }
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context "when trying to auth with both access_token and client_secret provided" do
+        let(:client_id) { 'example_id' }
+        let(:client_secret) { 'example_secret' }
+        let(:access_token) { "access_token_123"}
+
+        let(:client) do
+          Cronofy::Client.new(
+            client_id: client_id,
+            client_secret: client_secret,
+            access_token: access_token,
+          )
+        end
+        let(:request_headers) do
+          {
+            "Authorization" => "Bearer #{access_token}",
+            "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+            "Content-Type" => "application/json; charset=utf-8",
+          }
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
     end
   end
 
