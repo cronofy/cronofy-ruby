@@ -1871,6 +1871,17 @@ describe Cronofy::Client do
       let(:request_url) { 'https://api.cronofy.com/v1/sequenced_availability' }
       let(:request_headers) { json_request_headers }
 
+      let(:client_id) { 'example_id' }
+      let(:client_secret) { 'example_secret' }
+      let(:token) { client_secret }
+
+      let(:client) do
+        Cronofy::Client.new(
+          client_id: client_id,
+          client_secret: client_secret,
+        )
+      end
+
       let(:request_body) do
         {
           "sequence" => [

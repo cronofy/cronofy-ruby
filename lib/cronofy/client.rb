@@ -889,7 +889,7 @@ module Cronofy
 
       translate_available_periods(options[:query_periods] || options[:available_periods])
 
-      response = post("/v1/sequenced_availability", options)
+      response = availability_post("/v1/sequenced_availability", options)
       parse_collection(Sequence, "sequences", response)
     end
 
