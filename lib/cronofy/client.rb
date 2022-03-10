@@ -844,7 +844,7 @@ module Cronofy
 
       translate_available_periods(options[:query_periods] || options[:available_periods])
 
-      response = post("/v1/availability", options)
+      response = availability_post("/v1/availability", options)
 
       parse_collections(
         response,
@@ -889,7 +889,7 @@ module Cronofy
 
       translate_available_periods(options[:query_periods] || options[:available_periods])
 
-      response = post("/v1/sequenced_availability", options)
+      response = availability_post("/v1/sequenced_availability", options)
       parse_collection(Sequence, "sequences", response)
     end
 
@@ -1809,6 +1809,17 @@ module Cronofy
 
     def raw_post(url, body)
       wrapped_request { @auth.api_client.request(:post, url, json_request_args(body)) }
+    end
+
+    # Availability Query could originally be authenticated via an access_token
+    # Whilst it should be authed via an API key now, we try access_token first
+    # for backward compatibility
+    def availability_post(url, body)
+      if @auth.access_token
+        post(url, body)
+      else
+        wrapped_request { api_key!.post(url, json_request_args(body)) }
+      end
     end
 
     def wrapped_request

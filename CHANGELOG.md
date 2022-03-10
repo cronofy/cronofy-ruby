@@ -1,3 +1,7 @@
+## [0.37.4]
+
+* Support client_secret only clients being able to authorize `#availability` calls. [#97]
+
 ## [0.37.3]
 
  * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#95] 
@@ -192,6 +196,7 @@
 [0.37.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.1
 [0.37.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.2
 [0.37.3]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.3
+[0.37.4]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.4
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -237,3 +242,4 @@
 [#90]: https://github.com/cronofy/cronofy-ruby/pull/90
 [#91]: https://github.com/cronofy/cronofy-ruby/pull/91
 [#95]: https://github.com/cronofy/cronofy-ruby/pull/95
+[#97]: https://github.com/cronofy/cronofy-ruby/pull/97
