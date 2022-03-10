@@ -1812,15 +1812,13 @@ module Cronofy
     end
 
     # Availability Query could originally be authenticated via an access_token
-    # Whilst it should be authed via an API key now, we allow it to fallback for
-    # backward compatibility
+    # Whilst it should be authed via an API key now, we try access_token first
+    # for backward compatibility
     def availability_post(url, body)
-      if @auth.api_key
-        wrapped_request { api_key!.post(url, json_request_args(body)) }
-      elsif @auth.access_token
+      if @auth.access_token
         post(url, body)
       else
-        api_key!
+        wrapped_request { api_key!.post(url, json_request_args(body)) }
       end
     end
 
