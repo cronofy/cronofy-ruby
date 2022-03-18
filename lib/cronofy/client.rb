@@ -1033,7 +1033,7 @@ module Cronofy
     #                                         call
     #                    :required_duration - A hash stating the length of time the event will
     #                                         last for
-    #                    :available_periods - A hash stating the available periods for the event
+    #                    :query_periods     - A hash stating the available periods for the event
     #                    :start_interval    - An Integer representing the start interval
     #                                         of minutes for the availability query.
     #                    :buffer            - An Hash containing the buffer to apply to
@@ -1069,7 +1069,7 @@ module Cronofy
     #       }
     #     ],
     #     required_duration: { minutes: 60 },
-    #     available_periods: [{
+    #     query_periods: [{
     #       start: Time.utc(2017, 1, 1, 9, 00),
     #       end:   Time.utc(2017, 1, 1, 17, 00),
     #     }]
@@ -1110,7 +1110,7 @@ module Cronofy
         end
       end
 
-      translate_available_periods(availability[:available_periods])
+      translate_available_periods(availability[:query_periods] || availability[:available_periods])
       body[:availability] = availability
 
       response = raw_post("/v1/real_time_scheduling", body)
@@ -1176,7 +1176,7 @@ module Cronofy
     #                                         an array of invitees to invite to or reject from
     #                                         the event. Invitees are represented by a hash of
     #                                         :email and :display_name (optional).
-    #          :available_periods - A hash stating the available periods for the event
+    #          :query_periods - A hash stating the query periods for the event
     # target_calendars - An array of hashes stating into which calendars to insert the created
     #                    event
     # Raises Cronofy::CredentialsMissingError if no credentials available.
@@ -1194,7 +1194,8 @@ module Cronofy
 
       if availability = args[:availability]
         availability[:sequence] = map_availability_sequence(availability[:sequence])
-        translate_available_periods(availability[:available_periods]) if availability[:available_periods]
+        periods = availability[:query_periods] || availability[:available_periods]
+        translate_available_periods(periods) if periods
       end
 
       body[:availability] = availability
@@ -1748,8 +1749,10 @@ module Cronofy
             hash[:required_duration] = map_availability_required_duration(value)
           end
 
-          if sequence_item[:available_periods]
-            translate_available_periods(sequence_item[:available_periods])
+          periods = sequence_item[:query_periods] || sequence_item[:available_periods]
+
+          if periods
+            translate_available_periods(periods)
           end
 
           if value = sequence_item[:start_interval]

@@ -1,22 +1,26 @@
+## [0.37.5]
+
+ * Support `query_periods` as well as the original `available_periods` for Real-Time Scheduling and Real-Time Sequencing [#99]
+
 ## [0.37.4]
 
-* Support client_secret only clients being able to authorize `#availability` calls. [#97]
+ * Support client_secret only clients being able to authorize `#availability` calls. [#97]
 
 ## [0.37.3]
 
- * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#95] 
+ * Support `hmac_valid` as well as the original `hmac_match` for Client to verify a HMAC from a push notification using the client's secret.[#95]
 
 ## [0.37.2]
 
- * Support `query_periods` as well as the original `available_periods` for Availability Query and Sequenced Availability [#91] 
+ * Support `query_periods` as well as the original `available_periods` for Availability Query and Sequenced Availability [#91]
 
 ## [0.37.1]
 
- * Rename `data_centre` to `data_centre` (with aliases for backwards compatibility) [#90] 
+ * Rename `data_centre` to `data_centre` (with aliases for backwards compatibility) [#90]
 
 ## [0.37.0]
 
- * Add `revoke_by_token` and `revoke_by_sub` to the Client [#86] 
+ * Add `revoke_by_token` and `revoke_by_sub` to the Client [#86]
 
 ## [0.36.1]
 
@@ -197,6 +201,7 @@
 [0.37.2]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.2
 [0.37.3]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.3
 [0.37.4]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.4
+[0.37.5]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.5
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -243,3 +248,4 @@
 [#91]: https://github.com/cronofy/cronofy-ruby/pull/91
 [#95]: https://github.com/cronofy/cronofy-ruby/pull/95
 [#97]: https://github.com/cronofy/cronofy-ruby/pull/97
+[#99]: https://github.com/cronofy/cronofy-ruby/pull/99

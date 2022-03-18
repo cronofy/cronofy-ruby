@@ -2341,6 +2341,14 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request'
     end
 
+    context 'when passing query periods' do
+      it_behaves_like 'a Cronofy request'
+
+      before do
+        availability[:query_periods] = availability.delete(:available_periods)
+        mapped_availability[:query_periods] = mapped_availability.delete(:available_periods)
+      end
+    end
   end
 
   describe "Real time sequencing" do
@@ -2529,6 +2537,21 @@ describe Cronofy::Client do
       it_behaves_like 'a Cronofy request'
     end
 
+    context 'when passing query periods' do
+      it_behaves_like 'a Cronofy request'
+
+      before do
+        availability[:query_periods] = availability.delete(:available_periods)
+        availability[:sequence].each do |sequence|
+          sequence[:query_periods] = sequence.delete(:available_periods)
+        end
+
+        mapped_availability[:query_periods] = mapped_availability.delete(:available_periods)
+        mapped_availability[:sequence].each do |sequence|
+          sequence[:query_periods] = sequence.delete(:available_periods)
+        end
+      end
+    end
   end
 
   describe "specifying data_centre" do
