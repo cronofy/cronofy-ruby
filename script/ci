@@ -54,14 +54,16 @@ run_all() {
 
   for gemfile in $gemfiles; do
     echo
-    pretty_echo "Testing with $gemfile"
-    pretty_run bundle install --gemfile $gemfile --path $bundle_path --binstubs $bin_path
+    BUNDLE_GEMFILE=$gemfile
+    pretty_echo "Testing with $BUNDLE_GEMFILE"
+    pretty_run bundle install --path $bundle_path --binstubs $bin_path
     pretty_run bundle exec rake spec
   done
 
   echo
+  unset BUNDLE_GEMFILE
   pretty_echo "Testing with default Gemfile"
-  pretty_run bundle install --gemfile Gemfile --path $bundle_path --binstubs $bin_path
+  pretty_run bundle install --path $bundle_path --binstubs $bin_path
   pretty_run bundle exec rake spec
 }
 
