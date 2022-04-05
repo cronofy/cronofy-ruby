@@ -1,3 +1,7 @@
+## [0.37.6]
+
+ * Adds support for disabling and fetching the status of Real-Time Scheduling links [#100]
+
 ## [0.37.5]
 
  * Support `query_periods` as well as the original `available_periods` for Real-Time Scheduling and Real-Time Sequencing [#99]
@@ -202,6 +206,7 @@
 [0.37.3]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.3
 [0.37.4]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.4
 [0.37.5]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.5
+[0.37.6]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.6
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -249,3 +254,4 @@
 [#95]: https://github.com/cronofy/cronofy-ruby/pull/95
 [#97]: https://github.com/cronofy/cronofy-ruby/pull/97
 [#99]: https://github.com/cronofy/cronofy-ruby/pull/99
+[#100]: https://github.com/cronofy/cronofy-ruby/pull/100
