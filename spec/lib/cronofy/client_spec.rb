@@ -2411,7 +2411,7 @@ describe Cronofy::Client do
 
       context 'when passing neither id nor token' do
         let(:args) { Hash.new }
-        it 'raises an error' do
+        it 'raises an ArgumentError' do
           expect { subject }.to raise_error(ArgumentError)
         end
       end
@@ -2452,6 +2452,18 @@ describe Cronofy::Client do
 
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'
+
+      context 'when omitting id argument' do
+        let(:args) do
+          {
+            display_message: 'example message'
+          }
+        end
+        
+        it 'raises an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
     end
   end
 

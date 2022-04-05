@@ -1155,15 +1155,18 @@ module Cronofy
     #
     # Returns a RealTimeSchedulingStatus.
     #
+    # Raises ArgumentError if no 'id' argument is passed.
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::InvalidRequestError if the request contains invalid
     # parameters.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
     def disable_real_time_scheduling(args = {})
-      url = "/v1/real_time_scheduling/#{args.delete(:id)}/disable"
+      id = args.delete(:id)
 
-      response = wrapped_request { api_key!.post(url, json_request_args(args)) }
+      raise ArgumentError.new('id argument is required') unless id
+
+      response = wrapped_request { api_key!.post("/v1/real_time_scheduling/#{id}/disable", json_request_args(args)) }
       parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
     end
 
