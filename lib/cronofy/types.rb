@@ -413,4 +413,8 @@ module Cronofy
   class AvailabilityRule < CronofyMash
     coerce_key :weekly_periods, WeeklyPeriodEnumerable
   end
+
+  class RealTimeSchedulingStatus < CronofyMash
+    coerce_key :event, Event
+  end
 end

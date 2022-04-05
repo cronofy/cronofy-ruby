@@ -2190,25 +2190,8 @@ describe Cronofy::Client do
   end
 
   describe "Real time scheduling" do
-    let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling" }
-    let(:url) { URI("https://example.com") }
-    let(:method) { :post }
-
-    let(:request_headers) do
-      {
-        "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
-        "Content-Type" => "application/json; charset=utf-8",
-      }
-    end
-
-    let(:location) { { :description => "Board room" } }
-    let(:transparency) { nil }
     let(:client_id) { 'example_id' }
     let(:client_secret) { 'example_secret' }
-    let(:scope) { 'read_events delete_events' }
-    let(:state) { 'example_state' }
-    let(:redirect_uri) { 'http://example.com/redirect' }
-
     let(:client) do
       Cronofy::Client.new(
         client_id: client_id,
@@ -2216,6 +2199,9 @@ describe Cronofy::Client do
       )
     end
 
+    let(:url) { URI("https://example.com") }
+    let(:location) { { :description => "Board room" } }
+    let(:transparency) { nil }
     let(:event) do
       {
         :event_id => "qTtZdczOccgaPncGJaCiLg",
@@ -2232,121 +2218,251 @@ describe Cronofy::Client do
       }
     end
 
-    let(:oauth_body) do
+    let(:real_time_scheduling_status_response) do
       {
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
+        real_time_scheduling: {
+          real_time_scheduling_id: 'example_id',
+          url: 'https://app.cronofy.com/real_time_scheduling/example_token',
+          event: event,
+          status: 'disabled',
+        }
       }
     end
 
-    let(:target_calendars) do
-      [
+    describe "#real_time_scheduling" do
+      let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling" }
+
+      let(:method) { :post }
+
+      let(:request_headers) do
         {
-          sub: "acc_567236000909002",
-          calendar_id: "cal_n23kjnwrw2_jsdfjksn234",
+          "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+          "Content-Type" => "application/json; charset=utf-8",
         }
-      ]
-    end
+      end
 
-    let(:availability) do
-      {
-        participants: [
-          {
-            members: [{
-              sub: "acc_567236000909002",
-              calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
-            }],
-            required: 'all'
-          }
-        ],
-        required_duration: { minutes: 60 },
-        available_periods: [{
-          start: Time.utc(2017, 1, 1, 9, 00),
-          end:   Time.utc(2017, 1, 1, 17, 00),
-        }],
-        start_interval: { minutes: 60 },
-        buffer: {
-          before: { minutes: 30 },
-          after: { minutes: 45 },
+      let(:scope) { 'read_events delete_events' }
+      let(:state) { 'example_state' }
+      let(:redirect_uri) { 'http://example.com/redirect' }
+
+      let(:oauth_body) do
+        {
+          scope: scope,
+          redirect_uri: redirect_uri,
+          state: state,
         }
-      }
-    end
+      end
 
-    let(:mapped_availability) do
-      {
-        participants: [
+      let(:target_calendars) do
+        [
           {
-            members: [{
-              sub: "acc_567236000909002",
-              calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
-            }],
-            required: 'all'
+            sub: "acc_567236000909002",
+            calendar_id: "cal_n23kjnwrw2_jsdfjksn234",
           }
-        ],
-        required_duration: { minutes: 60 },
-        start_interval: { minutes: 60 },
-        buffer: {
-          before: { minutes: 30 },
-          after: { minutes: 45 },
-        },
-        available_periods: [{
-          start: "2017-01-01T09:00:00Z",
-          end:   "2017-01-01T17:00:00Z",
-        }]
-      }
-    end
+        ]
+      end
 
-    let(:args) do
-      {
-        oauth: oauth_body,
-        event: event,
-        target_calendars: target_calendars,
-        availability: availability,
-      }
-    end
-
-    let(:request_body) do
-      {
-        client_id: client_id,
-        client_secret: client_secret,
-        oauth: oauth_body,
-        event: {
-          :event_id => "qTtZdczOccgaPncGJaCiLg",
-          :summary => "Board meeting",
-          :description => "Discuss plans for the next quarter.",
-          :url => url.to_s,
-          :location => location,
-          :transparency => transparency,
-          :reminders => [
-            { :minutes => 60 },
-            { :minutes => 0 },
-            { :minutes => 10 },
+      let(:availability) do
+        {
+          participants: [
+            {
+              members: [{
+                sub: "acc_567236000909002",
+                calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+              }],
+              required: 'all'
+            }
           ],
-        },
-        target_calendars: target_calendars,
-        availability: mapped_availability,
-      }
-    end
-    let(:correct_response_code) { 202 }
-    let(:correct_response_body) do
-      {
-        oauth_url: "http://www.example.com/oauth?token=example"
-      }
+          required_duration: { minutes: 60 },
+          available_periods: [{
+            start: Time.utc(2017, 1, 1, 9, 00),
+            end:   Time.utc(2017, 1, 1, 17, 00),
+          }],
+          start_interval: { minutes: 60 },
+          buffer: {
+            before: { minutes: 30 },
+            after: { minutes: 45 },
+          }
+        }
+      end
+
+      let(:mapped_availability) do
+        {
+          participants: [
+            {
+              members: [{
+                sub: "acc_567236000909002",
+                calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+              }],
+              required: 'all'
+            }
+          ],
+          required_duration: { minutes: 60 },
+          start_interval: { minutes: 60 },
+          buffer: {
+            before: { minutes: 30 },
+            after: { minutes: 45 },
+          },
+          available_periods: [{
+            start: "2017-01-01T09:00:00Z",
+            end:   "2017-01-01T17:00:00Z",
+          }]
+        }
+      end
+
+      let(:args) do
+        {
+          oauth: oauth_body,
+          event: event,
+          target_calendars: target_calendars,
+          availability: availability,
+        }
+      end
+
+      let(:request_body) do
+        {
+          client_id: client_id,
+          client_secret: client_secret,
+          oauth: oauth_body,
+          event: {
+            :event_id => "qTtZdczOccgaPncGJaCiLg",
+            :summary => "Board meeting",
+            :description => "Discuss plans for the next quarter.",
+            :url => url.to_s,
+            :location => location,
+            :transparency => transparency,
+            :reminders => [
+              { :minutes => 60 },
+              { :minutes => 0 },
+              { :minutes => 10 },
+            ],
+          },
+          target_calendars: target_calendars,
+          availability: mapped_availability,
+        }
+      end
+      let(:correct_response_code) { 202 }
+      let(:correct_response_body) do
+        {
+          oauth_url: "http://www.example.com/oauth?token=example"
+        }
+      end
+
+      subject { client.real_time_scheduling(args) }
+
+      context 'when start/end are Times' do
+        it_behaves_like 'a Cronofy request'
+      end
+
+      context 'when passing query periods' do
+        it_behaves_like 'a Cronofy request'
+
+        before do
+          availability[:query_periods] = availability.delete(:available_periods)
+          mapped_availability[:query_periods] = mapped_availability.delete(:available_periods)
+        end
+      end
     end
 
-    subject { client.real_time_scheduling(args) }
+    describe "#get_real_time_scheduling_status" do
+      let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling" }
+      let(:method) { :get }
+      let(:url) { "https://example.com" }
+      let(:request_headers) do
+        {
+          "Authorization" => "Bearer #{client_secret}",
+          "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+          "Accept" => "*/*",
+          "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+        }
+      end
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) { real_time_scheduling_status_response }
+      let(:correct_mapped_result) do
+        Cronofy::RealTimeSchedulingStatus.new(correct_response_body[:real_time_scheduling])
+      end
 
-    context 'when start/end are Times' do
+      subject { client.get_real_time_scheduling_status(args) }
+
+      context 'when passing id' do
+        let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling/example_id" }
+
+        let(:args) do
+          {
+            id: 'example_id'
+          }
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context 'when passing token' do
+        let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling?token=example_token" }
+        let(:args) do
+          {
+            token: 'example_token'
+          }
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
+      context 'when passing neither id nor token' do
+        let(:args) { Hash.new }
+        it 'raises an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    describe "#disable_real_time_scheduling" do
+      let(:request_url) { "https://api.cronofy.com/v1/real_time_scheduling/example_id/disable" }
+      let(:url) { "https://example.com" }
+      let(:method) { :post }
+      let(:request_headers) do
+        {
+          "Authorization" => "Bearer #{client_secret}",
+          "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
+          "Content-Type" => "application/json; charset=utf-8",
+        }
+      end
+
+      let(:args) do
+        {
+          id: 'example_id',
+          display_message: 'example message'
+        }
+      end
+
+      let(:request_body) do
+        {
+          display_message: 'example message'
+        }
+      end
+
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) { real_time_scheduling_status_response }
+      let(:correct_mapped_result) do
+        Cronofy::RealTimeSchedulingStatus.new(correct_response_body[:real_time_scheduling])
+      end
+
+      subject { client.disable_real_time_scheduling(args) }
+
       it_behaves_like 'a Cronofy request'
-    end
+      it_behaves_like 'a Cronofy request with mapped return value'
 
-    context 'when passing query periods' do
-      it_behaves_like 'a Cronofy request'
-
-      before do
-        availability[:query_periods] = availability.delete(:available_periods)
-        mapped_availability[:query_periods] = mapped_availability.delete(:available_periods)
+      context 'when omitting id argument' do
+        let(:args) do
+          {
+            display_message: 'example message'
+          }
+        end
+        
+        it 'raises an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
       end
     end
   end

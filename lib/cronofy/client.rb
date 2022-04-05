@@ -1117,6 +1117,59 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    # Public: Gets the status of a Real-Time Scheduling link.
+    # 
+    # Provide one of the following arguments to identify the link:
+    # id    - A String uniquely identifying the link, returned on initial
+    #         creation
+    # token - The token portion of the link's URL
+    #
+    # See https://docs.cronofy.com/developers/api/scheduling/real-time-scheduling/status/ for reference.
+    #
+    # Returns a RealTimeSchedulingStatus.
+    #
+    # Raises ArgumentError if neither 'id' nor 'token' arguments are passed.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def get_real_time_scheduling_status(args = {})
+      if args[:token]
+        url = "/v1/real_time_scheduling?token=#{args[:token]}"
+      elsif args[:id]
+        url = "/v1/real_time_scheduling/#{args[:id]}"
+      else
+        raise ArgumentError.new("Must pass either token or id argument")
+      end
+
+      response = wrapped_request { api_key!.get(url) }
+      parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
+    end
+
+    # Public: Disables a Real-Time Scheduling link.
+    # 
+    # id              - A String uniquely identifying the link, returned 
+    #                   on initial creation
+    # display_message - A message to display to visitors of the disabled link
+    #
+    # See https://docs.cronofy.com/developers/api/scheduling/real-time-scheduling/disable/ for reference.
+    #
+    # Returns a RealTimeSchedulingStatus.
+    #
+    # Raises ArgumentError if no 'id' argument is passed.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def disable_real_time_scheduling(args = {})
+      id = args.delete(:id)
+
+      raise ArgumentError.new('id argument is required') unless id
+
+      response = wrapped_request { api_key!.post("/v1/real_time_scheduling/#{id}/disable", json_request_args(args)) }
+      parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
+    end
+
     # Public: Generates an real time sequencing link to start the OAuth process with
     # an event to be automatically upserted
     #
