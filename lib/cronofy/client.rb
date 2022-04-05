@@ -1117,6 +1117,21 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    # Public: Gets the status of a Real-Time Scheduling link.
+    # 
+    # Provide one of the following arguments to identify the link:
+    # id    - A String uniquely identifying the link, returned on initial
+    #         creation
+    # token - The token portion of the link's URL
+    #
+    # See https://docs.cronofy.com/developers/api/scheduling/real-time-scheduling/status/ for reference.
+    #
+    # Returns a RealTimeSchedulingStatus.
+    #
+    # Raises Cronofy::ArgumentError if neither 'id' nor 'token' arguments are passed.
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
     def get_real_time_scheduling_status(args = {})
       if args[:token]
         url = "/v1/real_time_scheduling?token=#{args[:token]}"
@@ -1130,6 +1145,21 @@ module Cronofy
       parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
     end
 
+    # Public: Disables a Real-Time Scheduling link.
+    # 
+    # id              - A String uniquely identifying the link, returned 
+    #                   on initial creation
+    # display_message - A message to display to visitors of the disabled link
+    #
+    # See https://docs.cronofy.com/developers/api/scheduling/real-time-scheduling/disable/ for reference.
+    #
+    # Returns a RealTimeSchedulingStatus.
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::InvalidRequestError if the request contains invalid
+    # parameters.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
     def disable_real_time_scheduling(args = {})
       url = "/v1/real_time_scheduling/#{args.delete(:id)}/disable"
 
