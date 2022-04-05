@@ -2412,7 +2412,7 @@ describe Cronofy::Client do
       context 'when passing neither id nor token' do
         let(:args) { Hash.new }
         it 'raises an error' do
-          expect { subject }.to raise_error(::Cronofy::ArgumentError)
+          expect { subject }.to raise_error(ArgumentError)
         end
       end
     end

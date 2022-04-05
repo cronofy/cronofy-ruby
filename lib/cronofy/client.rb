@@ -1128,7 +1128,7 @@ module Cronofy
     #
     # Returns a RealTimeSchedulingStatus.
     #
-    # Raises Cronofy::ArgumentError if neither 'id' nor 'token' arguments are passed.
+    # Raises ArgumentError if neither 'id' nor 'token' arguments are passed.
     # Raises Cronofy::CredentialsMissingError if no credentials available.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
@@ -1138,7 +1138,7 @@ module Cronofy
       elsif args[:id]
         url = "/v1/real_time_scheduling/#{args[:id]}"
       else
-        raise ::Cronofy::ArgumentError.new("Must pass either token or id argument")
+        raise ArgumentError.new("Must pass either token or id argument")
       end
 
       response = wrapped_request { api_key!.get(url) }

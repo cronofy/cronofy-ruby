@@ -8,9 +8,6 @@ module Cronofy
     end
   end
 
-  class ArgumentError < CronofyError
-  end
-
   class APIError < CronofyError
     attr_reader :response
 
