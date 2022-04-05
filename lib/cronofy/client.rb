@@ -1117,6 +1117,26 @@ module Cronofy
       parse_json(AddToCalendarResponse, nil , response)
     end
 
+    def get_real_time_scheduling_status(args = {})
+      if args[:token]
+        url = "/v1/real_time_scheduling?token=#{args[:token]}"
+      elsif args[:id]
+        url = "/v1/real_time_scheduling/#{args[:id]}"
+      else
+        raise ::Cronofy::ArgumentError.new("Must pass either token or id argument")
+      end
+
+      response = wrapped_request { api_key!.get(url) }
+      parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
+    end
+
+    def disable_real_time_scheduling(args = {})
+      url = "/v1/real_time_scheduling/#{args.delete(:id)}/disable"
+
+      response = wrapped_request { api_key!.post(url, json_request_args(args)) }
+      parse_json(RealTimeSchedulingStatus, 'real_time_scheduling' , response)
+    end
+
     # Public: Generates an real time sequencing link to start the OAuth process with
     # an event to be automatically upserted
     #
