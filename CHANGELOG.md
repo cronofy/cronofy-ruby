@@ -1,3 +1,7 @@
+## [0.37.7]
+
+ * Update Gem description
+
 ## [0.37.6]
 
  * Adds support for disabling and fetching the status of Real-Time Scheduling links [#100]
@@ -207,6 +211,7 @@
 [0.37.4]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.4
 [0.37.5]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.5
 [0.37.6]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.6
+[0.37.7]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.7
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
