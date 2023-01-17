@@ -658,14 +658,15 @@ describe Cronofy::Client do
     let(:request_url) { "https://api.cronofy.com/v1/service_account_authorizations" }
     let(:method) { :post }
     let(:request_headers) { json_request_headers }
-    let(:request_body) { { email: email, scope: scope.join(' '), callback_url: callback_url } }
+    let(:request_body) { { email: email, scope: scope.join(' '), callback_url: callback_url, state: state } }
     let(:correct_response_code) { 202 }
     let(:correct_response_body) { nil }
     let(:email) { "foo@example.com" }
     let(:scope) { ['foo', 'bar'] }
     let(:callback_url) { "http://example.com/not_found" }
+    let(:state) { 'state' }
 
-    subject { client.authorize_with_service_account(email, scope, callback_url) }
+    subject { client.authorize_with_service_account(email, scope, callback_url, state) }
 
     it_behaves_like 'a Cronofy request'
   end

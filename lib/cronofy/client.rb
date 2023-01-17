@@ -641,7 +641,7 @@ module Cronofy
     # longer valid.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def authorize_with_service_account(email, scope, callback_url)
+    def authorize_with_service_account(email, scope, callback_url, state)
       if scope.respond_to?(:join)
         scope = scope.join(' ')
       end
@@ -649,7 +649,8 @@ module Cronofy
       params = {
         email: email,
         scope: scope,
-        callback_url: callback_url
+        callback_url: callback_url,
+        state: state
       }
       post("/v1/service_account_authorizations", params)
       nil
