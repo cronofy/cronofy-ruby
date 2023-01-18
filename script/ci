@@ -38,7 +38,7 @@ pretty_echo() {
 
 run_all() {
   echo
-  pretty_run gem install bundler
+  pretty_run gem install bundler -v 2.3.26
 
   echo
   pretty_echo "Setting bundler paths"
