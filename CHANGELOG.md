@@ -1,3 +1,7 @@
+## [0.38.0]
+
+ * Add state parameter to Service Account authorizations [#104]
+
 ## [0.37.7]
 
  * Update Gem description
@@ -212,6 +216,7 @@
 [0.37.5]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.5
 [0.37.6]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.6
 [0.37.7]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.7
+[0.38.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.38.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -260,3 +265,4 @@
 [#97]: https://github.com/cronofy/cronofy-ruby/pull/97
 [#99]: https://github.com/cronofy/cronofy-ruby/pull/99
 [#100]: https://github.com/cronofy/cronofy-ruby/pull/100
+[#104]: https://github.com/cronofy/cronofy-ruby/pull/104
