@@ -417,4 +417,7 @@ module Cronofy
   class RealTimeSchedulingStatus < CronofyMash
     coerce_key :event, Event
   end
+
+  class ConferencingServiceAuthorizationResponse < CronofyMash
+  end
 end
