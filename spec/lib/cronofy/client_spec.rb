@@ -3712,7 +3712,7 @@ describe Cronofy::Client do
   end
 
   describe 'Conferencing Services' do
-    describe '#get_conferencing_service_authorization' do
+    describe '#get_conferencing_service_authorizations' do
       let(:redirect_uri) { "http://example.com/not_found" }
       let(:request_url) { "https://api.cronofy.com/v1/conferencing_service_authorizations" }
       let(:method) { :post }
@@ -3731,7 +3731,7 @@ describe Cronofy::Client do
         Cronofy::ConferencingServiceAuthorizationResponse.new(correct_response_body['authorization_request'])
       end
 
-      subject { client.get_conferencing_service_authorization(redirect_uri) }
+      subject { client.get_conferencing_service_authorizations(redirect_uri) }
 
       it_behaves_like 'a Cronofy request'
       it_behaves_like 'a Cronofy request with mapped return value'

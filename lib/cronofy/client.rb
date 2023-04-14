@@ -323,7 +323,7 @@ module Cronofy
     # Raises Cronofy::AuthenticationFailureError if the client ID and secret are
     # not valid.
     # Raises Cronofy::CredentialsMissingError if no credentials available.
-    def get_conferencing_service_authorization(redirect_uri)
+    def get_conferencing_service_authorizations(redirect_uri)
       data = { redirect_uri: redirect_uri }
 
       response = post "/v1/conferencing_service_authorizations", data
