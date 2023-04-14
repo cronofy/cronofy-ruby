@@ -3712,7 +3712,7 @@ describe Cronofy::Client do
   end
 
   describe 'Conferencing Services' do
-    describe '#get_conferencing_service_authorization_url' do
+    describe '#get_conferencing_service_authorization' do
       let(:redirect_uri) { "http://example.com/not_found" }
       let(:request_url) { "https://api.cronofy.com/v1/conferencing_service_authorizations" }
       let(:method) { :post }
