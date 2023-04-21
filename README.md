@@ -45,8 +45,8 @@ When using a [personal access token](https://app.cronofy.com/oauth/applications/
 you only need to provide the `access_token` argument.
 
 When working against your own OAuth application you will need to provide the
-`client_id` and `client_secret` when [going through the authorization process](https://www.cronofy.com/developers/api/#authorization)
-for a user, and when [refreshing an access token](https://www.cronofy.com/developers/api/#token-refresh).
+`client_id` and `client_secret` when [going through the authorization process](https://docs.cronofy.com/developers/api/authorization/request-authorization/)
+for a user, and when [refreshing an access token](https://docs.cronofy.com/developers/api/authorization/refresh-token/).
 
 If `client_id` and `client_secret` are not specified explicitly the values from
 the environment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` will
@@ -56,7 +56,7 @@ be used if present.
 
 ## Authorization
 
-[API documentation](https://www.cronofy.com/developers/api/#authorization)
+[API documentation](https://docs.cronofy.com/developers/api/authorization/request-authorization/)
 
 Generate a link for a user to grant access to their calendars:
 
@@ -83,7 +83,7 @@ to perform this process.
 
 ## List calendars
 
-[API documentation](https://www.cronofy.com/developers/api/#calendars)
+[API documentation](https://docs.cronofy.com/developers/api/calendars/list-calendars/)
 
 Get a list of all the user's calendars:
 
@@ -93,7 +93,7 @@ calendars = cronofy.list_calendars
 
 ## Read events
 
-[API documentation](https://www.cronofy.com/developers/api/#read-events)
+[API documentation](https://docs.cronofy.com/developers/api/events/read-events/)
 
 Get a list of events from the user's calendars:
 
@@ -105,7 +105,7 @@ Note that the gem handles iterating through the pages on your behalf.
 
 ## Create or update events
 
-[API documentation](https://www.cronofy.com/developers/api/#upsert-event)
+[API documentation](https://docs.cronofy.com/developers/api/events/upsert-event/)
 
 To create/update an event in the user's calendar:
 
@@ -126,7 +126,7 @@ cronofy.upsert_event(calendar_id, event_data)
 
 ## Delete events
 
-[API documentation](https://www.cronofy.com/developers/api/#delete-event)
+[API documentation](https://docs.cronofy.com/developers/api/events/delete-event/)
 
 To delete an event from user's calendar:
 
@@ -145,6 +145,6 @@ If you would like to request a feature is added by our team then please let us k
 
 ## Links
 
- * [API documentation](https://www.cronofy.com/developers/api)
+ * [API documentation](https://docs.cronofy.com/developers/api/)
  * [API mailing list](https://groups.google.com/d/forum/cronofy-api)
 
