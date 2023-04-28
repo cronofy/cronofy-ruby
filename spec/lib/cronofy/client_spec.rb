@@ -663,7 +663,7 @@ describe Cronofy::Client do
     let(:correct_response_body) { nil }
     let(:email) { "foo@example.com" }
     let(:scope) { ['foo', 'bar'] }
-    let(:callback_url) { "http://example.com/not_found" }
+    let(:callback_url) { "https://example.com/callback" }
     let(:state) { 'state' }
 
     subject { client.authorize_with_service_account(email, scope, callback_url, state) }
