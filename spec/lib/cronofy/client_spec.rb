@@ -663,7 +663,7 @@ describe Cronofy::Client do
     let(:correct_response_body) { nil }
     let(:email) { "foo@example.com" }
     let(:scope) { ['foo', 'bar'] }
-    let(:callback_url) { "http://example.com/not_found" }
+    let(:callback_url) { "https://example.com/callback" }
     let(:state) { 'state' }
 
     subject { client.authorize_with_service_account(email, scope, callback_url, state) }
@@ -3709,5 +3709,32 @@ describe Cronofy::Client do
 
     it_behaves_like 'a Cronofy request'
     it_behaves_like 'a Cronofy request with mapped return value'
+  end
+
+  describe 'Conferencing Services' do
+    describe '#get_conferencing_service_authorizations' do
+      let(:redirect_uri) { "http://example.com/not_found" }
+      let(:request_url) { "https://api.cronofy.com/v1/conferencing_service_authorizations" }
+      let(:method) { :post }
+      let(:request_body) {
+        { redirect_uri: redirect_uri }
+      }
+      let(:correct_response_code) { 200 }
+      let(:correct_response_body) do
+        {
+          "authorization_request" => {
+            "url": "https://app.cronofy.com/conferencing_services/foo"
+          }
+        }
+      end
+      let(:correct_mapped_result) do
+        Cronofy::ConferencingServiceAuthorizationResponse.new(correct_response_body['authorization_request'])
+      end
+
+      subject { client.get_conferencing_service_authorizations(redirect_uri) }
+
+      it_behaves_like 'a Cronofy request'
+      it_behaves_like 'a Cronofy request with mapped return value'
+    end
   end
 end
