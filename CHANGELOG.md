@@ -221,7 +221,7 @@
 [0.37.6]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.6
 [0.37.7]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.7
 [0.38.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.38.0
-[0.39.0]: 
+[0.39.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.39.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
