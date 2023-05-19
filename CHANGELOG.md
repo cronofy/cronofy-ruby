@@ -1,3 +1,7 @@
+## [0.40.0]
+
+ * Update version of [OAuth2](https://rubygems.org/gems/oauth2) required [#102]
+
 ## [0.39.0]
 
  * Add conferencing services authorization
@@ -222,6 +226,7 @@
 [0.37.7]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.37.7
 [0.38.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.38.0
 [0.39.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.39.0
+[0.40.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.40.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -270,5 +275,6 @@
 [#97]: https://github.com/cronofy/cronofy-ruby/pull/97
 [#99]: https://github.com/cronofy/cronofy-ruby/pull/99
 [#100]: https://github.com/cronofy/cronofy-ruby/pull/100
+[#102]: https://github.com/cronofy/cronofy-ruby/pull/102
 [#104]: https://github.com/cronofy/cronofy-ruby/pull/104
 [#108]: https://github.com/cronofy/cronofy-ruby/pull/108
