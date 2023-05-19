@@ -15,6 +15,7 @@ module Cronofy
     # @see Client#request
     def request(verb, path, opts = {}, &block)
       configure_authentication!(opts)
+      opts = { snaky: false }.merge(opts)
       do_request { @client.request(verb, path, opts, &block) }
     end
 
