@@ -35,7 +35,7 @@ module Cronofy
     #                :state - Array of states to retain during the OAuth
     #                         authorization process (optional).
     #
-    # See http://www.cronofy.com/developers/api#authorization for reference.
+    # See https://docs.cronofy.com/developers/api/authorization/request-authorization/ for reference.
     #
     # Returns the URL as a String.
     def user_auth_link(redirect_uri, options = {})
