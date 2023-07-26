@@ -863,6 +863,10 @@ module Cronofy
 
       translate_available_periods(options[:query_periods] || options[:available_periods])
 
+      if query_slots = options[:query_slots]
+        translate_query_slots(options:[:query_slots])
+      end
+
       response = availability_post("/v1/availability", options)
 
       parse_collections(
@@ -1717,6 +1721,14 @@ module Cronofy
       end
     end
 
+    def translate_query_slots(query_slots)
+      periods.each do |params|
+        QUERY_SLOTS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+          params[tp] = to_iso8601(params[tp])
+        end
+      end
+    end
+
     def map_availability_participants(participants)
       case participants
       when Hash
@@ -1845,6 +1857,10 @@ module Cronofy
     AVAILABLE_PERIODS_TIME_PARAMS = %i{
       start
       end
+    }.freeze
+
+    QUERY_SLOTS_TIME_PARAMS = %i{
+      start
     }.freeze
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
