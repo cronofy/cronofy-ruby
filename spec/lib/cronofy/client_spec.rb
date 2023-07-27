@@ -1783,6 +1783,51 @@ describe Cronofy::Client do
         it_behaves_like 'a Cronofy request with mapped return value'
       end
 
+      context 'when given query_slots instead of available_periods with start interval' do
+        let(:participants) do
+          { members: %w{acc_567236000909002 acc_678347111010113} }
+        end
+
+        let(:required_duration) { 60 }
+
+        let(:query_slots) do
+          [
+            { start: Time.parse("2017-01-03T09:00:00Z")},
+            { start: Time.parse("2017-01-04T09:00:00Z") },
+          ]
+        end
+
+        let(:request_body) do
+          {
+            "participants" => [
+              {
+                "members" => [
+                  { "sub" => "acc_567236000909002" },
+                  { "sub" => "acc_678347111010113" }
+                ],
+                "required" => "all"
+              }
+            ],
+            "query_slots" => [
+              { "start" => "2017-01-03T09:00:00Z" },
+              { "start" => "2017-01-04T09:00:00Z" }
+            ],
+            "required_duration" => { "minutes" => 60 },
+          }
+        end
+
+        subject do
+          client.availability(
+            participants: participants,
+            required_duration: required_duration,
+            query_slots: query_slots
+          )
+        end
+
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
+      end
+
       context "when trying to auth with only an access_token, as originally implemented" do
         let(:access_token) { "access_token_123"}
         let(:client) { Cronofy::Client.new(access_token: access_token) }
@@ -2361,6 +2406,56 @@ describe Cronofy::Client do
         before do
           availability[:query_periods] = availability.delete(:available_periods)
           mapped_availability[:query_periods] = mapped_availability.delete(:available_periods)
+        end
+      end
+
+      context 'when passing query slots' do
+        let(:availability) do
+          {
+            participants: [
+              {
+                members: [{
+                  sub: "acc_567236000909002",
+                  calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+                }],
+                required: 'all'
+              }
+            ],
+            required_duration: { minutes: 60 },
+            query_slots: [
+              { start: Time.utc(2017, 1, 1, 9, 00) }, 
+              { start: Time.utc(2017, 1, 1, 17, 00) }
+            ],
+            buffer: {
+              before: { minutes: 30 },
+              after: { minutes: 45 },
+            }
+          }
+        end
+  
+        let(:mapped_availability) do
+          {
+            participants: [
+              {
+                members: [{
+                  sub: "acc_567236000909002",
+                  calendar_ids: ["cal_n23kjnwrw2_jsdfjksn234"]
+                }],
+                required: 'all'
+              }
+            ],
+            required_duration: { minutes: 60 },
+            buffer: {
+              before: { minutes: 30 },
+              after: { minutes: 45 },
+            },
+            query_slots: [
+              { start: Time.utc(2017, 1, 1, 9, 00) },
+              { start: Time.utc(2017, 1, 1, 17, 00) }
+            ],
+          }
+        it_behaves_like 'a Cronofy request'
+        it_behaves_like 'a Cronofy request with mapped return value'
         end
       end
     end

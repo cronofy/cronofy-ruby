@@ -835,8 +835,10 @@ module Cronofy
     #                                each must specify a start and end Time.
     #           :start_interval    - An Integer representing the start interval
     #                                of minutes for the availability query.
-    #           :buffer            - An Hash containing the buffer to apply to
+    #           :buffer            - A Hash containing the buffer to apply to
     #                                the availability query.
+    #           :query_slots       - A Hash containing the query slots to be
+    #                                used in the availability query.
     #
     # Returns an Array of AvailablePeriods.
     #
@@ -861,7 +863,13 @@ module Cronofy
         options[:buffer] = map_availability_buffer(buffer)
       end
 
-      translate_available_periods(options[:query_periods] || options[:available_periods])
+      if query_periods = options[:query_periods] || options[:available_periods]
+        translate_available_periods(query_periods)
+      end
+
+      if query_slots = options[:query_slots]
+        translate_query_slots(query_slots)
+      end
 
       response = availability_post("/v1/availability", options)
 
@@ -1052,7 +1060,9 @@ module Cronofy
     #                                         call
     #                    :required_duration - A hash stating the length of time the event will
     #                                         last for
-    #                    :query_periods     - A hash stating the available periods for the event
+    #                    :query_periods     - A Hash stating the available periods for the event
+    #                    :query_slots       - A Hash containing the query slots to be
+    #                                         used in the availability query.
     #                    :start_interval    - An Integer representing the start interval
     #                                         of minutes for the availability query.
     #                    :buffer            - An Hash containing the buffer to apply to
@@ -1129,7 +1139,14 @@ module Cronofy
         end
       end
 
-      translate_available_periods(availability[:query_periods] || availability[:available_periods])
+      if query_periods = availability[:query_periods] || availability[:available_periods]
+        translate_available_periods(query_periods)
+      end
+
+      if query_slots = availability[:query_slots]
+        translate_query_slots(query_slots)
+      end
+
       body[:availability] = availability
 
       response = raw_post("/v1/real_time_scheduling", body)
@@ -1717,6 +1734,14 @@ module Cronofy
       end
     end
 
+    def translate_query_slots(query_slots)
+      query_slots.each do |params|
+        QUERY_SLOTS_TIME_PARAMS.select { |tp| params.key?(tp) }.each do |tp|
+          params[tp] = to_iso8601(params[tp])
+        end
+      end
+    end
+
     def map_availability_participants(participants)
       case participants
       when Hash
@@ -1845,6 +1870,10 @@ module Cronofy
     AVAILABLE_PERIODS_TIME_PARAMS = %i{
       start
       end
+    }.freeze
+
+    QUERY_SLOTS_TIME_PARAMS = %i{
+      start
     }.freeze
 
     FREE_BUSY_DEFAULT_PARAMS = { tzid: "Etc/UTC" }.freeze
