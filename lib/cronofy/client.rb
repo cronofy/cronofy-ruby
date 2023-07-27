@@ -1060,7 +1060,9 @@ module Cronofy
     #                                         call
     #                    :required_duration - A hash stating the length of time the event will
     #                                         last for
-    #                    :query_periods     - A hash stating the available periods for the event
+    #                    :query_periods     - A Hash stating the available periods for the event
+    #                    :query_slots       - A Hash containing the query slots to be
+    #                                         used in the availability query.
     #                    :start_interval    - An Integer representing the start interval
     #                                         of minutes for the availability query.
     #                    :buffer            - An Hash containing the buffer to apply to
@@ -1137,7 +1139,14 @@ module Cronofy
         end
       end
 
-      translate_available_periods(availability[:query_periods] || availability[:available_periods])
+      if query_periods = availability[:query_periods] || availability[:available_periods]
+        translate_available_periods(query_periods)
+      end
+
+      if query_slots = availability[:query_slots]
+        translate_query_slots(query_slots)
+      end
+
       body[:availability] = availability
 
       response = raw_post("/v1/real_time_scheduling", body)
