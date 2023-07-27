@@ -1,3 +1,7 @@
+## [0.41.0]
+
+ * Adds support for the query_slots parameter [#111]
+
 ## [0.40.0]
 
  * Update version of [OAuth2](https://rubygems.org/gems/oauth2) required [#102]
@@ -227,6 +231,7 @@
 [0.38.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.38.0
 [0.39.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.39.0
 [0.40.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.40.0
+[0.41.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -278,3 +283,4 @@
 [#102]: https://github.com/cronofy/cronofy-ruby/pull/102
 [#104]: https://github.com/cronofy/cronofy-ruby/pull/104
 [#108]: https://github.com/cronofy/cronofy-ruby/pull/108
+[#111]: https://github.com/cronofy/cronofy-ruby/pull/111
