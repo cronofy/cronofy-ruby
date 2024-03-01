@@ -1,3 +1,7 @@
+## [0.41.1]
+
+ * Loosen the version requirement on Hashie to allow 5.X [#114]
+
 ## [0.41.0]
 
  * Adds support for the query_slots parameter [#111]
@@ -232,6 +236,7 @@
 [0.39.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/0.39.0
 [0.40.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.40.0
 [0.41.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.0
+[0.41.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.1
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -284,3 +289,4 @@
 [#104]: https://github.com/cronofy/cronofy-ruby/pull/104
 [#108]: https://github.com/cronofy/cronofy-ruby/pull/108
 [#111]: https://github.com/cronofy/cronofy-ruby/pull/111
+[#114]: https://github.com/cronofy/cronofy-ruby/pull/114
