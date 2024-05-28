@@ -1,3 +1,7 @@
+## [0.41.2]
+
+ * Bump Rack to version 2.1.4 [#113]
+
 ## [0.41.1]
 
  * Loosen the version requirement on Hashie to allow 5.X [#114]
@@ -289,4 +293,5 @@
 [#104]: https://github.com/cronofy/cronofy-ruby/pull/104
 [#108]: https://github.com/cronofy/cronofy-ruby/pull/108
 [#111]: https://github.com/cronofy/cronofy-ruby/pull/111
+[#113]: https://github.com/cronofy/cronofy-ruby/pull/113
 [#114]: https://github.com/cronofy/cronofy-ruby/pull/114
