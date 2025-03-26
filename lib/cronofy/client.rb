@@ -651,6 +651,8 @@ module Cronofy
     # scope - Array or String of scopes describing the access to
     #         request from the user to the users calendars (required).
     # callback_url - the url to callback to
+    # state - A value that will be returned to you unaltered along with the
+    #         authorization request decision.
     #
     # Returns nothing
     #
@@ -659,7 +661,7 @@ module Cronofy
     # longer valid.
     # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
     # limits for the application.
-    def authorize_with_service_account(email, scope, callback_url, state)
+    def authorize_with_service_account(email, scope, callback_url, state=nil)
       if scope.respond_to?(:join)
         scope = scope.join(' ')
       end
