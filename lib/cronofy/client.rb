@@ -29,6 +29,9 @@ module Cronofy
     #                            account (optional).
     #           :data_center   - An identifier to override the default data
     #                            center (optional).
+    #           :connection_options - A Hash of Faraday connection options,
+    #                                 such as request timeouts, used for every
+    #                                 request made by the client (optional).
     def initialize(options = {})
       access_token  = options[:access_token]
       refresh_token = options[:refresh_token]
@@ -42,7 +45,8 @@ module Cronofy
         client_secret: @client_secret,
         access_token: access_token,
         refresh_token: refresh_token,
-        data_center: @data_center
+        data_center: @data_center,
+        connection_options: options[:connection_options]
       )
     end
 
@@ -2025,7 +2029,7 @@ module Cronofy
       end
 
       def http_get(url, params = {})
-        response = Faraday.get(url, params, oauth_headers)
+        response = access_token.client.connection.get(url, params, oauth_headers)
         Errors.raise_if_error(response)
         response
       end
@@ -2033,7 +2037,6 @@ module Cronofy
       def oauth_headers
         {
           "Authorization" => "Bearer #{access_token.token}",
-          "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}",
         }
       end
 

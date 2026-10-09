@@ -29,7 +29,7 @@ to obtain an OAuth `client_id` and `client_secret` to be able to use the full AP
 ## Creating a client
 
 To make calls to the Cronofy API you must create a `Cronofy::Client`. This takes
-five keyword arguments, all of which are optional:
+six keyword arguments, all of which are optional:
 
 ```ruby
 cronofy = Cronofy::Client.new(
@@ -53,6 +53,16 @@ the environment variables `CRONOFY_CLIENT_ID` and `CRONOFY_CLIENT_SECRET` will
 be used if present.
 
 `data_center` is the two-letter designation for the data center you want to operate against - for example `:de` for Germany, or `:au` for Australia. When omitted, this defaults to the US data center.
+
+`connection_options` is an optional Hash of [Faraday connection options](https://lostisland.github.io/faraday/#/customization/connection-options)
+used for every request the client makes, for example to set request timeouts:
+
+```ruby
+cronofy = Cronofy::Client.new(
+  access_token:       'ACCESS_TOKEN',
+  connection_options: { request: { open_timeout: 5, timeout: 10 } }
+)
+```
 
 ## Authorization
 
