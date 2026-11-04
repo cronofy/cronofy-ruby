@@ -1,3 +1,7 @@
+## [0.41.3]
+
+ * Bump Rack to version 2.2.25 [#120]
+
 ## [0.41.2]
 
  * Bump Rack to version 2.1.4 [#113]
@@ -295,3 +299,4 @@
 [#111]: https://github.com/cronofy/cronofy-ruby/pull/111
 [#113]: https://github.com/cronofy/cronofy-ruby/pull/113
 [#114]: https://github.com/cronofy/cronofy-ruby/pull/114
+[#120]: https://github.com/cronofy/cronofy-ruby/pull/120
