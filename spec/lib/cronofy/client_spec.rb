@@ -671,6 +671,47 @@ describe Cronofy::Client do
     it_behaves_like 'a Cronofy request'
   end
 
+  describe 'Service Account impersonation with an inline response' do
+    let(:request_url) { "https://api.cronofy.com/v1/service_account_authorizations" }
+    let(:method) { :post }
+    let(:request_headers) { json_request_headers }
+    let(:request_body) { { email: email, scope: scope.join(' '), response_type: "inline" } }
+    let(:email) { "foo@example.com" }
+    let(:scope) { ['foo', 'bar'] }
+    let(:correct_response_code) { 200 }
+    let(:correct_response_body) do
+      {
+        token_type: "bearer",
+        access_token: "fffff",
+        expires_in: 3600,
+        refresh_token: "2222",
+        scope: scope.join(' '),
+        account_id: "acc_456",
+        sub: "acc_567",
+      }
+    end
+
+    subject { client.authorize_with_service_account_inline(email, scope) }
+
+    it_behaves_like 'a Cronofy request'
+
+    it "returns the credentials" do
+      stub_request(method, request_url)
+        .with(headers: request_headers, body: request_body)
+        .to_return(status: correct_response_code,
+                   headers: correct_response_headers,
+                   body: correct_response_body.to_json)
+
+      expect(subject).to be_a(Cronofy::Credentials)
+      expect(subject.access_token).to eq "fffff"
+      expect(subject.refresh_token).to eq "2222"
+      expect(subject.expires_in).to eq 3600
+      expect(subject.scope).to eq "foo bar"
+      expect(subject.account_id).to eq "acc_456"
+      expect(subject.sub).to eq "acc_567"
+    end
+  end
+
   describe 'Channels' do
     let(:request_url) { 'https://api.cronofy.com/v1/channels' }
 

@@ -674,6 +674,36 @@ module Cronofy
       nil
     end
 
+    # Public: Attempts to authorize the email with impersonation from a service
+    # account, receiving the credentials in the response rather than via a
+    # callback.
+    #
+    # email - the email address to impersonate
+    # scope - Array or String of scopes describing the access to
+    #         request from the user to the users calendars (required).
+    #
+    # Returns Cronofy::Credentials for the impersonated user
+    #
+    # Raises Cronofy::CredentialsMissingError if no credentials available.
+    # Raises Cronofy::AuthenticationFailureError if the access token is no
+    # longer valid.
+    # Raises Cronofy::TooManyRequestsError if the request exceeds the rate
+    # limits for the application.
+    def authorize_with_service_account_inline(email, scope)
+      if scope.respond_to?(:join)
+        scope = scope.join(' ')
+      end
+
+      params = {
+        email: email,
+        scope: scope,
+        response_type: "inline",
+      }
+
+      response = post("/v1/service_account_authorizations", params)
+      Credentials.new(OAuth2::AccessToken.from_hash(@auth.api_client, response.parsed))
+    end
+
     # Public: Generates a URL to send the user to in order to perform the OAuth
     # 2.0 authorization process.
     #
