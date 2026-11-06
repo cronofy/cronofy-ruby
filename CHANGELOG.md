@@ -1,3 +1,9 @@
+## [0.42.0]
+
+ * Add `authorize_with_service_account_inline` to receive service account authorization credentials in the response [#121]
+ * Remove Rack pin from the downgraded-hashie test Gemfile [#122]
+ * Upgrade Rake development dependency to 13.0 [#123]
+
 ## [0.41.3]
 
  * Bump Rack to version 2.2.25 [#120]
@@ -245,6 +251,7 @@
 [0.40.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.40.0
 [0.41.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.0
 [0.41.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.1
+[0.42.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.42.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -300,3 +307,6 @@
 [#113]: https://github.com/cronofy/cronofy-ruby/pull/113
 [#114]: https://github.com/cronofy/cronofy-ruby/pull/114
 [#120]: https://github.com/cronofy/cronofy-ruby/pull/120
+[#121]: https://github.com/cronofy/cronofy-ruby/pull/121
+[#122]: https://github.com/cronofy/cronofy-ruby/pull/122
+[#123]: https://github.com/cronofy/cronofy-ruby/pull/123
