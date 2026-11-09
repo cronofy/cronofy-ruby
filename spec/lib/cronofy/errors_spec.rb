@@ -52,7 +52,10 @@ describe Cronofy::Errors do
       end
 
       it "includes the errors in the message" do
-        expect(subject.message).to eq('message - {"event_id"=>[{"key"=>"errors.required", "description"=>"required"}]}')
+        deserialized_errors = JSON.parse(body)["errors"]
+
+        # Hash#inspect output differs between Ruby versions
+        expect(subject.message).to eq("message - #{deserialized_errors.inspect}")
       end
     end
 
