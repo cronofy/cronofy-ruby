@@ -225,6 +225,17 @@ describe Cronofy::Auth do
         expect(WebMock).to have_requested(:post, app_token_url)
           .with(headers: { "User-Agent" => "Cronofy Ruby #{Cronofy::VERSION}", "X-Custom" => "custom" })
       end
+
+      context "that set the User-Agent" do
+        let(:connection_options) { { headers: { "User-Agent" => "Custom Agent" } } }
+
+        it "keeps the Cronofy User-Agent" do
+          subject
+
+          expect(WebMock).to have_requested(:post, app_token_url)
+            .with(headers: { "User-Agent" => "Cronofy Ruby #{Cronofy::VERSION}" })
+        end
+      end
     end
 
     context "with account_id" do

@@ -177,11 +177,9 @@ module Cronofy
     end
 
     def connection_opts(connection_options)
-      default_opts = { headers: { "User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}" } }
+      headers = (connection_options[:headers] || {}).merge("User-Agent" => "Cronofy Ruby #{::Cronofy::VERSION}")
 
-      default_opts.merge(connection_options) do |_key, default_value, value|
-        default_value.merge(value)
-      end
+      connection_options.merge(headers: headers)
     end
   end
 end
