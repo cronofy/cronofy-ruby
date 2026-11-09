@@ -30,8 +30,12 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
-    # Only release from the default branch
+    # Only release from the default branch. The rubygems environment enforces this,
+    # because a manual run uses the workflow file from the branch it's started on.
     if: github.ref == 'refs/heads/master'
+    environment:
+      name: rubygems
+      url: https://rubygems.org/gems/cronofy
 
     permissions:
       contents: write # to push the version tag
