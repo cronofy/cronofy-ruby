@@ -1,0 +1,73 @@
+name: Release gem
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          bundler-cache: true
+
+      - name: Run specs
+        run: bundle exec rake spec
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    # Only release from the default branch. The rubygems environment enforces this,
+    # because a manual run uses the workflow file from the branch it's started on.
+    if: github.ref == 'refs/heads/master'
+    environment:
+      name: rubygems
+      url: https://rubygems.org/gems/cronofy
+
+    permissions:
+      contents: write # to push the version tag
+      id-token: write # for RubyGems trusted publishing
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # fetch tags so we can check the version is new
+          persist-credentials: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          bundler-cache: false
+
+      - name: Install gems
+        run: bundle install
+
+      - name: Check version is new
+        run: |
+          version=$(ruby -r ./lib/cronofy/version -e 'puts Cronofy::VERSION')
+          echo "Version: $version"
+
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "::error::Tag v$version already exists. Bump lib/cronofy/version.rb before releasing."
+            exit 1
+          fi
+
+          if ! grep -q "^## \[$version\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for $version."
+            exit 1
+          fi
+
+      # Builds the gem, creates and pushes the v<version> tag, and pushes the gem to RubyGems
+      - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
