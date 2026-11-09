@@ -18,15 +18,19 @@ jobs:
       id-token: write # for RubyGems trusted publishing
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # fetch tags so we can check the version is new
+          persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
         with:
           ruby-version: '2.7'
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install gems
+        run: bundle install
 
       - name: Check version is new
         run: |
@@ -46,10 +50,5 @@ jobs:
       - name: Run specs
         run: bundle exec rake spec
 
-      - name: Configure git user for the release tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       # Builds the gem, creates and pushes the v<version> tag, and pushes the gem to RubyGems
-      - uses: rubygems/release-gem@v1
+      - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
