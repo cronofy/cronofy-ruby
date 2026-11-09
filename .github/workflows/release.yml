@@ -8,7 +8,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+
+      - name: Run specs
+        run: bundle exec rake spec
+
   release:
+    needs: test
     runs-on: ubuntu-latest
     # Only release from the default branch
     if: github.ref == 'refs/heads/master'
@@ -46,9 +66,6 @@ jobs:
             echo "::error::CHANGELOG.md has no entry for $version."
             exit 1
           fi
-
-      - name: Run specs
-        run: bundle exec rake spec
 
       # Builds the gem, creates and pushes the v<version> tag, and pushes the gem to RubyGems
       - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
