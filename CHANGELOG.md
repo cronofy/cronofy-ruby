@@ -1,4 +1,4 @@
-## [Unreleased]
+## [0.43.0]
 
  * Allow Faraday connection options, such as request timeouts, to be passed to the client [#119]
 
@@ -256,6 +256,7 @@
 [0.41.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.0
 [0.41.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.1
 [0.42.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.42.0
+[0.43.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.43.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
