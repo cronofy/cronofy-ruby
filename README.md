@@ -33,11 +33,12 @@ six keyword arguments, all of which are optional:
 
 ```ruby
 cronofy = Cronofy::Client.new(
-  client_id:     'CLIENT_ID',
-  client_secret: 'CLIENT_SECRET',
-  access_token:  'ACCESS_TOKEN',
-  refresh_token: 'REFRESH_TOKEN',
-  data_center:   :de
+  client_id:          'CLIENT_ID',
+  client_secret:      'CLIENT_SECRET',
+  access_token:       'ACCESS_TOKEN',
+  refresh_token:      'REFRESH_TOKEN',
+  data_center:        :de,
+  connection_options: { request: { timeout: 10 } }
 )
 ```
 
