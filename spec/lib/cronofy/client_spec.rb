@@ -455,6 +455,25 @@ describe Cronofy::Client do
         client.read_events(params).to_a
       end
 
+      context 'when connection options are given' do
+        let(:client) do
+          Cronofy::Client.new(
+            client_id: 'client_id_123',
+            client_secret: 'client_secret_456',
+            access_token: token,
+            refresh_token: 'refresh_token_456',
+            connection_options: { headers: { "X-Custom" => "custom" } },
+          )
+        end
+
+        it 'applies them to every page request' do
+          subject
+
+          expect(WebMock).to have_requested(:get, request_url).with(headers: { "X-Custom" => "custom" })
+          expect(WebMock).to have_requested(:get, next_page_url).with(headers: { "X-Custom" => "custom" })
+        end
+      end
+
       context 'when all params are passed' do
         let(:params) do
           {

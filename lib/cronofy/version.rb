@@ -1,3 +1,3 @@
 module Cronofy
-  VERSION = "0.42.0".freeze
+  VERSION = "0.43.0".freeze
 end

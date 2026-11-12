@@ -1,3 +1,7 @@
+## [0.43.0]
+
+ * Allow Faraday connection options, such as request timeouts, to be passed to the client [#119]
+
 ## [0.42.0]
 
  * Add `authorize_with_service_account_inline` to receive service account authorization credentials in the response [#121]
@@ -252,6 +256,7 @@
 [0.41.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.0
 [0.41.1]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.41.1
 [0.42.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.42.0
+[0.43.0]: https://github.com/cronofy/cronofy-ruby/releases/tag/v0.43.0
 
 [#13]: https://github.com/cronofy/cronofy-ruby/pull/13
 [#16]: https://github.com/cronofy/cronofy-ruby/pull/16
@@ -306,6 +311,7 @@
 [#111]: https://github.com/cronofy/cronofy-ruby/pull/111
 [#113]: https://github.com/cronofy/cronofy-ruby/pull/113
 [#114]: https://github.com/cronofy/cronofy-ruby/pull/114
+[#119]: https://github.com/cronofy/cronofy-ruby/pull/119
 [#120]: https://github.com/cronofy/cronofy-ruby/pull/120
 [#121]: https://github.com/cronofy/cronofy-ruby/pull/121
 [#122]: https://github.com/cronofy/cronofy-ruby/pull/122

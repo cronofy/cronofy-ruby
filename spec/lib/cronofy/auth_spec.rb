@@ -205,13 +205,37 @@ describe Cronofy::Auth do
 
   describe '#get_token_from_code' do
     let(:data_center_override) { nil }
+    let(:connection_options) { nil }
 
     subject do
       Cronofy::Auth.new(
         client_id: client_id,
         client_secret: client_secret,
         data_center: data_center_override,
+        connection_options: connection_options,
       ).get_token_from_code(code, redirect_uri)
+    end
+
+    context "with connection options" do
+      let(:connection_options) { { headers: { "X-Custom" => "custom" } } }
+
+      it "applies them to the token request" do
+        subject
+
+        expect(WebMock).to have_requested(:post, app_token_url)
+          .with(headers: { "User-Agent" => "Cronofy Ruby #{Cronofy::VERSION}", "X-Custom" => "custom" })
+      end
+
+      context "that set the User-Agent" do
+        let(:connection_options) { { headers: { "User-Agent" => "Custom Agent" } } }
+
+        it "keeps the Cronofy User-Agent" do
+          subject
+
+          expect(WebMock).to have_requested(:post, app_token_url)
+            .with(headers: { "User-Agent" => "Cronofy Ruby #{Cronofy::VERSION}" })
+        end
+      end
     end
 
     context "with account_id" do
@@ -387,6 +411,40 @@ describe Cronofy::Auth do
       let(:app_token_url) { "https://app-de.cronofy.com/oauth/token" }
 
       it_behaves_like 'an authorization request'
+    end
+
+    context "with connection options" do
+      subject do
+        Cronofy::Auth.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          access_token: access_token,
+          refresh_token: refresh_token,
+          connection_options: { headers: { "X-Custom" => "custom" } },
+        ).refresh!
+      end
+
+      it "applies them to the refresh request" do
+        subject
+
+        expect(WebMock).to have_requested(:post, api_token_url)
+          .with(headers: { "User-Agent" => "Cronofy Ruby #{Cronofy::VERSION}", "X-Custom" => "custom" })
+      end
+    end
+  end
+
+  describe "connection options" do
+    subject do
+      Cronofy::Auth.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        connection_options: { request: { open_timeout: 5, timeout: 10 } },
+      )
+    end
+
+    it "sets the request timeouts" do
+      expect(subject.api_client.connection.options.open_timeout).to eq 5
+      expect(subject.api_client.connection.options.timeout).to eq 10
     end
   end
 
